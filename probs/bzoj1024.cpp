@@ -1,45 +1,23 @@
-/*
-
-
-
-*/
 #include <cstdio>
 #include <algorithm>
-#include <cmath>
-using namespace std;
-
-double ans=2147483600, s0;
-
-int gcd(int a, int b) {
-    return b ? gcd(b, a%b) : a;
+using std::min;
+using std::max;
+double dfs(double x, double y, int k) { // Cut an x * y cake into k parts, min of max(ratio(x0, y0)).
+    if (k == 1) {
+        return (x > y) ? (double)x / y : (double)y / x;
+    }
+    double r = 100000.0, x1, y1;
+    for (int k1 = 1; k1 <= k / 2; ++k1) {
+        x1 = (double)x / k * k1;
+        y1 = (double)y / k * k1;
+        r = min(r, min(max(dfs(x1, y, k1), dfs(x - x1, y, k - k1)), max(dfs(x, y1, k1), dfs(x, y - y1, k - k1))));
+    }
+    return r;
 }
 
-double dfs(int x, int y, int t, double rmax) { // t for times left
-    if (t==0) {
-        ans=min(ans, rmax);
-        return 1.0;
-    }
-    if (x<y) swap(x, y);
-    if (y==0) return 1.0;
-    for (int i=0; i<2; ++i) {
-        int amin=floor(s0/y);
-        for (int a=amin; a<=x; ++a) {
-            rmax=max(max(rmax, dfs(a, y, t-1)), dfs(x-a, y, t-1))
-        } 
-
-        swap(x, y);
-    }
-    return rmax;
-}
-
-int x, y, n, g;
 int main() {
+    int x, y, n;
     scanf("%d%d%d", &x, &y, &n);
-    g=gcd(x, y);
-    x/=g;
-    y/=g;
-    s0=x*y/ ((double)n);
-    dfs(x, y, n-1, 1.0);
-    printf("%d\n", ans);
+    printf("%.6f", dfs(x, y, n));
     return 0;
 }
