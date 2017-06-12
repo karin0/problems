@@ -6,8 +6,7 @@
 #define LC(x) ((x) << 1)
 #define RC(x) (((x) << 1) | 1)
 #define MID(x, y) ((x) + (((y) - (x)) >> 1))
-const int MAXN = 100010;
-
+#define MAXN 500010
 int n, root, mod;
 
 // Graph
@@ -25,57 +24,67 @@ void add_edge(int u, int v) {
     adj[v] = e_last;
 }
 
-int tr_pos[MAXN];
+int tr_pos[4 * MAXN];
 // Segment Tree
-int st[4 * MAXN], lazy[4 * MAXN];
+struct Segment {
+    int val, tag;
+    int l, r;
+};
+Segment st[4 * MAXN];
 void build(int k, int l, int r) {
+    st[k].l = l;
+    st[k].r = r;
+    st[k].tag = 0;
     if (l == r) {
-        st[k] = n_val[tr_pos[k]];
+        st[k].val = n_val[tr_pos[l]];
     } else {
         int mid = MID(l, r);
         build(LC(k), l, mid);
         build(RC(k), mid + 1, r);
-        st[k] = st[LC(k)] + st[RC(k)];
+        st[k].val = st[LC(k)].val + st[RC(k)].val;
+        st[k].val %= mod;
     }
 }
-void unlazy(int k, int l, int r) {
-    lazy[LC(k)] = lazy[RC(k)] = lazy[k];
-    int mid = MID(l, r);
-    st[LC(k)] += lazy[k] * (mid - l + 1);
-    st[RC(k)] += lazy[k] * (r - mid);
-    lazy[k] = -1;
+void unlazy(int k) {
+    int t = st[k].tag;
+    st[LC(k)].tag += t; // +=, not =
+    st[RC(k)].tag += t;
+    int mid = MID(st[k].l, st[k].r);
+    st[LC(k)].val += t * ((mid - st[k].l + 1) % mod);
+    st[RC(k)].val += t * ((st[k].r - mid) % mod);
+    st[k].tag = 0;
 }
-void update(int k, int l, int r, int tl, int tr, int d) { // add d to it
-    if (tr < l || r < tl) return;
-    if (tl <= l && r <= tr) {
-        lazy[k] += d; // nodes in the subtrees need to be added d.
-        st[k] += d * (r - l + 1); // itself is processed, so we trust all nodes we meet..
-        st[k] %= mod;
+void update(int k, int tl, int tr, int d) { // add d to it
+    Segment &seg = st[k];
+    if (tr < seg.l || seg.r < tl) return;
+    if (tl <= seg.l && seg.r <= tr) {
+        seg.tag += d; // nodes in the subtrees need to be added d.
+        seg.val += d * (seg.r - seg.l + 1); // itself is processed, so we trust all nodes we meet..
     } else {
-        if (lazy[k] != -1) unlazy(k, l, r);
-        int mid = MID(l, r);
-        update(LC(k), l, mid, tl, tr, d);
-        update(RC(k), mid + 1, r, tl, tr, d);
-        st[k] = (st[LC(k)] + st[RC(k)]) % mod; // Ensure st[k] is trustable
+        if (seg.tag) unlazy(k);
+        update(LC(k), tl, tr, d);
+        update(RC(k), tl, tr, d);
+        seg.val = st[LC(k)].val + st[RC(k)].val; // Ensure st[k] is trustable
+    }
+    seg.val %= mod;
+}
+int query(int k, int tl, int tr) {
+    Segment &seg = st[k];
+    seg.val %= mod;
+    if (tr < seg.l || seg.r < tl) return 0;
+    if (tl <= seg.l && seg.r <= tr) {
+        return seg.val;
+    } else {
+        if (seg.tag) unlazy(k);
+        return query(LC(k), tl, tr) + query(RC(k), tl, tr);
     }
 }
-int query(int k, int l, int r, int tl, int tr) {
-    if (tr < l || r < tl) return 0;
-    if (tl <= l && r <= tr) {
-        return st[k];
-    } else {
-        if (lazy[k] != -1) unlazy(k, l, r);
-        int mid = MID(l, r);
-        return query(LC(k), l, mid, tl, tr) + query(RC(k), mid + 1, r, tl, tr);
-    }
-} 
 void st_init() {
-    memset(lazy, -1, sizeof(lazy));
     build(1, 1, n);
 }
 // Tree with HLD
 int fa[MAXN], hson[MAXN], depth[MAXN], size[MAXN];
-int htop[MAXN], hld[MAXN],  hld_last = 0; // tr_pos[MAXN];
+int htop[MAXN], hld[MAXN], hld_last = 0; // tr_pos[MAXN];
 void dfs1(int u, int deep) {
     int hson_size = -1;
     depth[u] = deep;
@@ -99,8 +108,8 @@ void dfs2(int u, int top) {
     htop[u] = top;
     hld[u] = ++hld_last;
     tr_pos[hld_last] = u;
-    if (hson[u]) dfs2(hson[u], u);
-    
+    if (!hson[u]) return;
+    dfs2(hson[u], top);
     int v;
     for (int e = adj[u]; e; e = e_next[e]) {
         v = e_to[e];
@@ -109,6 +118,7 @@ void dfs2(int u, int top) {
         }
     }
 }
+/*
 void update_path(int x, int y, int z) { // path(x, y)
     while (htop[x] != htop[y]) {
         if (depth[x] > depth[y]) std::swap(x, y); // To assume dep[x] < dep[y]
@@ -129,7 +139,38 @@ int query_path(int x, int y) {
     res += query(1, 1, n, hld[x], hld[y]);
     return res;
 }
-
+*/
+void update_path(int x, int y, int z) { // path(x, y)
+    int tx = htop[x], ty = htop[y];
+    while (tx != ty) {
+        if (depth[tx] > depth[ty]) {
+            std::swap(x, y);
+            std::swap(tx, ty);
+        }
+        update(1, hld[ty], hld[y], z);
+        y = fa[ty];
+        ty = htop[y];
+    }
+    if (depth[x] > depth[y]) std::swap(x, y);
+    update(1, hld[x], hld[y], z);
+}
+int query_path(int x, int y) {
+    int res = 0;
+    int tx = htop[x], ty = htop[y];
+    while (tx != ty) {
+        if (depth[tx] > depth[ty]) {
+            std::swap(x, y);
+            std::swap(tx, ty);
+        }
+        res += query(1, hld[ty], hld[y]);
+        res %= mod;
+        y = fa[ty];
+        ty = htop[y];
+    }
+    if (depth[x] > depth[y]) std::swap(x, y); // To assume dep[x] < dep[y]
+    res += query(1, hld[x], hld[y]);
+    return res %= mod;
+}
 
 
 void hld_init() {
@@ -154,16 +195,16 @@ int main() {
         scanf("%d", &oper);
         if (oper == 1) { // Add z to value of each node in path(x, y)
             scanf("%d%d%d", &x, &y, &z);
-            update_path(x, y, z);
+            update_path(x, y, z % mod);
         } else if (oper == 2) { // Query sum of values of nodes in path(x, y)
             scanf("%d%d", &x, &y);
             printf("%d\n", query_path(x, y));
         } else if (oper == 3) { // Add z to value of each node in sub-tree(x)
             scanf("%d%d", &x, &z);
-            update(1, 1, n, hld[x], hld[x] + size[x] - 1, z); // as hld[] is continous in a sub-tree
+            update(1, hld[x], hld[x] + size[x] - 1, z % mod); // as hld[] is continous in a sub-tree
         } else { // Query sum of values of nodes in sub-tree(x)
             scanf("%d", &x);
-            printf("%d\n", query(1, 1, n, hld[x], hld[x] + size[x] - 1)); // as hld[] is continous in a sub-tree
+            printf("%d\n", query(1, hld[x], hld[x] + size[x] - 1) % mod); // as hld[] is continous in a sub-tree
         }
     }
 }
