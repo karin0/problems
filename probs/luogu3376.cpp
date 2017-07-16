@@ -9,9 +9,11 @@
 using std::min;
 
 int n, m, s, t;
-int adj[MAXN], elast = -1;
+int adj[MAXN];
 int to[MAXM], cap[MAXM], flow[MAXM], next[MAXM];
 int dist[MAXN], vis[MAXN], cur[MAXN]; // why cur?
+
+int elast = -1;
 void add_edge(int u, int v, int c) {
     ++elast;
     to[elast] = v;
@@ -82,7 +84,6 @@ int main() {
         scanf("%d%d%d", &tu, &tv, &tc);
         add_edge(tu, tv, tc);
     }
-    //printf("goood");
     printf("%d\n", dinic());
     return 0;
 }

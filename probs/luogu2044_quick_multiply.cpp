@@ -12,7 +12,7 @@ typedef long long LL;
 
 LL mod;
 
-LL qmul(LL a, LL b) { // 二进制竖式
+LL qmul(LL a, LL b) {
     LL res = 0;
     for (; b; b >>= 1, (a <<= 1) %= mod)
         if (b & 1) (res += a) %= mod;

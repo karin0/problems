@@ -28,8 +28,7 @@ std::stack<int> sta;
 bool in_sta[MAXN];
 int dfn[MAXN], low[MAXN], time = 0;
 void tarjan(int u) {
-    dfn[u] = ++time;
-    low[u] = time;
+    dfn[u] = ++time; low[u] = time;
     sta.push(u);
     in_sta[u] = true;
     int v;
