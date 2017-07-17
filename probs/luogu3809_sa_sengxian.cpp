@@ -1,11 +1,10 @@
-// 后缀数组模板
 #include <cstdio>
 #include <cstring>
 #include <algorithm>
 #define MAXN 5000010
 using std::fill;
 
-static const int maxNode = 1000000 + 20;
+static const int maxNode = 100000 + 3;
 int sa[maxNode], rank[maxNode], n;
 char str[maxNode];
 void buildSA(int m) {
@@ -36,6 +35,7 @@ void buildSA(int m) {
         if (unique) break;
     }
 }
+
 
 int main() {
     scanf("%s", str);
