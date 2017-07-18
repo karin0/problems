@@ -22,7 +22,8 @@ void rotate(int o) {
 }
 void splay(int o) { // So fun.
     for (int x; (x = fa[o]); rotate(o)) 
-        if (fa[x]) rotate(chd(o) == chd(x) ? x : o);
+        if (fa[x])
+            rotate(chd(o) == chd(x) ? x : o);
 }
 int add_node(int v) {
     val[++ln] = v;

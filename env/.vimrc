@@ -1,7 +1,5 @@
 syntax enable
 filetype indent on
-colorscheme desert
-set background=dark
 
 set mouse=a
 set history=700
@@ -33,3 +31,7 @@ au InsertLeave * silent! wa
 nmap ; :
 nmap <F5> :!g++ % -g -Wall -o ./a.ao && ./a.ao<CR>
 nmap <F6> :!g++ % -g -Wall -o ./a.ao && gdb<CR>
+
+set background=dark
+colorscheme solarized
+" colorscheme desert
