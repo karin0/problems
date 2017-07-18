@@ -30,4 +30,5 @@ set tabstop=4
 au FocusLost * silent! wa
 au InsertLeave * silent! wa
 nmap ; :
-nmap <F5> :!g++ % -g -Wall -o ./a.ao  && ./a.ao<CR>
+nmap <F5> :!g++ % -g -Wall -o ./a.ao && ./a.ao<CR>
+nmap <F6> :!g++ % -g -Wall -o ./a.ao && gdb<CR>
