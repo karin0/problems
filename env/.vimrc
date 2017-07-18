@@ -13,6 +13,7 @@ set encoding=utf8
 set autoread
 set autowrite
 
+set ci
 set ai
 set si
 
