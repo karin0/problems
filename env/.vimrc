@@ -30,7 +30,7 @@ au FocusLost * silent! wa
 au InsertLeave * silent! wa
 nmap ; :
 nmap <F5> :!g++ % -g -Wall -o ./a.ao && ./a.ao<CR>
-nmap <F6> :!g++ % -g -Wall -o ./a.ao && gdb<CR>
+nmap <F6> :!g++ % -g -Wall -o ./a.ao && gdb a.ao<CR>
 
 set background=dark
 colorscheme solarized
