@@ -1,6 +1,6 @@
 // Taihen da.
 #include <cstdio>
-#define MAXN 1000100
+#define MAXN 100100
 #define LC(x) ((x) << 1)
 #define RC(x) (((x) << 1) | 1)
 #define MID(x, y) ((x) + (((y) - (x)) >> 1))
@@ -8,7 +8,7 @@
 int n;
 long long mod;
 long long a[MAXN], val[MAXN * 4], tag[MAXN * 4][2];
-int lb[MAXN], rb[MAXN]; 
+int lb[MAXN * 4], rb[MAXN * 4]; 
 
 int s_l, s_r, s_v;
 // Caution:

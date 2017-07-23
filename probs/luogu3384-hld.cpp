@@ -108,14 +108,14 @@ void dfs2(int u, int top) {
     htop[u] = top;
     hld[u] = ++hld_last;
     tr_pos[hld_last] = u;
-    if (!hson[u]) return;
+    if (!hson[u])
+        return;
     dfs2(hson[u], top);
-    int v;
-    for (int e = adj[u]; e; e = e_next[e]) {
+    int v, e;
+    for (adj[u]; e; e = e_next[e]) {
         v = e_to[e];
-        if (v != fa[u] && v != hson[u]) {
+        if (v != fa[u] && v != hson[u])
             dfs2(v, v);
-        }
     }
 }
 /*
