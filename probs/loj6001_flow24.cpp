@@ -2,18 +2,18 @@
 #include <cstring>
 #include <algorithm>
 #include <vector>
-const int MAXN = 1000050;
-const int INF = 2147483647; // c <= 2 ^ 31 - 1
+const int MAXV = 150;
+const int INF = 2147483647;
 
-int n, m, s, t;
+int n, s, t;
 struct Node {
     std::vector<struct Edge> adj;
     struct Edge* cur;
     int dist;
-} nodes[MAXN];
+} nodes[MAXV];
 struct Edge {
     Node* to;
-    int cap, rev; // rev 是反向边在其起点的邻接表中的下标
+    int cap, rev;
     Edge(Node* to, int cap, int rev): to(to), cap(cap), rev(rev) {}
 };
 inline void add_edge(int u, int v, int c) {
@@ -21,18 +21,18 @@ inline void add_edge(int u, int v, int c) {
     nodes[v].adj.push_back(Edge(&nodes[u], 0, nodes[u].adj.size() - 1));
 }
 
-Node* que[MAXN];
+Node* que[MAXV];
 inline bool bfs() {
-    int front = 1, back = 0; // 手动队列
+    int front = 1, back = 0;
     Node *u, *v;
     for (u = &nodes[1]; u <= &nodes[n]; ++u)
         u -> dist = 0;
     que[++back] = &nodes[s];
-    nodes[s].dist = 1; // 不用特判
+    nodes[s].dist = 1;
     
     while (front <= back) {
         u = que[front++];
-        for (Edge *e = &(u -> adj.front()); e <= &(u -> adj.back()); ++e) // 这比用迭代器遍历更快
+        for (Edge *e = &(u -> adj.front()); e <= &(u -> adj.back()); ++e)
             if (!((v = e -> to) -> dist) && e -> cap > 0)  {
                 v -> dist = u -> dist + 1;
                 que[++back] = v;
@@ -53,7 +53,7 @@ int dfs(Node* u, int a) {
             e -> cap -= f;
             v -> adj[e -> rev].cap += f;
             if (a == 0)
-                break; // 及时跳出
+                break;
         }
     }
     return res;
@@ -62,41 +62,66 @@ inline int dinic() {
     int f = 0, i;
     Node *sp = &nodes[s], *u;
     while (bfs()) {
-        // printf("%d\n", nodes[t].dist);
         for (i = 1; i <= n; ++i) {
             u = &nodes[i];
             u -> cur = &(u -> adj.front());
-        } // 需在 bfs 前进行初始化
+        }
         f += dfs(sp, INF);
     }
     return f;
 }
 
-void read(int &res) {
+bool read(int &res) {
     res = 0;
     register char ch = 0;
-    while (ch < '0' || ch > '9')
-        ch = getchar();
-    while (ch >= '0' && ch <= '9') {
-        // res = res * 10 + (ch - '0');
-        res = (res << 3) + (res << 1) + (ch - '0');
+    while (ch < '0' || ch > '9') {
         ch = getchar();
     }
+    while (ch >= '0' && ch <= '9') {
+        res = res * 10 + (ch - '0');
+        ch = getchar();
+    }
+    return ch != '\n' && ch != '\r';
 }
 
 int main() {
-    int u, v, c, i;
-    read(n);
-    read(m);
-    read(s);
-    read(t);
-    
-    for (i = 0; i < m; ++i) {
-        read(u);
-        read(v);
-        read(c);
-        add_edge(u, v, c);
+    int e_card, i_card, u, r, p_sum = 0, ans;
+    read(e_card);
+    read(i_card);
+    n = e_card + i_card;
+    s = n + 1;
+    t = n + 2;
+    for (u = 1; u <= e_card; ++u) {
+        if (read(r)) {
+            add_edge(s, u, r);
+            p_sum += r;
+        } else {
+            add_edge(s, u, r);
+            p_sum += r;
+            continue;
+        } // 防止 R(i) = ∅ 时出错
+        while (read(r)) {
+            add_edge(u, e_card + r, INF);
+        }
+        add_edge(u, e_card + r, INF);
     }
-    printf("%d\n", dinic());
+    for (u = e_card + 1; u <= n; ++u) {
+        read(r);
+        add_edge(u, t, r);
+    }
+    n += 2;
+    ans = p_sum - dinic();
+    n -= 2;
+    
+    // 仅有最后在 bfs 过程中仍能访问到的点在最小割的 S 集合中
+    for (u = 1; u <= e_card; ++u)
+        if (nodes[u].dist)
+            printf("%d ", u);
+    printf("\n");
+    for (u = e_card + 1; u <= n; ++u)
+        if (nodes[u].dist)
+            printf("%d ", u - e_card);
+    printf("\n%d\n", ans);
+
     return 0;
 }
