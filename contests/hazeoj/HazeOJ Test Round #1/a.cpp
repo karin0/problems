@@ -1,24 +1,24 @@
 #include <cstdio>
 #include <cmath>
-
-struct Point {
-    long long x, y;
+typedef long long LL;
+struct Vector {
+    LL x, y;
+    Vector(LL x, LL y): x(x), y(y) {}
+    Vector(): x(0), y(0) {}
 };
-inline double dist(Point& a, Point& b) {
-    return sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
+LL det(Vector& a, Vector& b) {
+    return std::abs(a.x * b.y - a.y * b.x);
 }
-inline long long area2(Point& a, Point& b, Point& c) {
-    double la = dist(b, c);
-    double lb = dist(a, c);
-    double lc = dist(a, b);
-    double p = (la + lb + lc) / 2.0;
-    return round(2.0 * sqrt(p * (p - la) * (p - lb) * (p - lc)));
+Vector operator - (Vector& a, Vector& b) {
+    return Vector(a.x - b.x, a.y - b.y);
 }
 
 int main() {
-    Point v[3];
+    Vector v[3], v1, v2;
     scanf("%lld%lld%lld%lld%lld%lld", &v[0].x, &v[0].y, &v[1].x, &v[1].y, &v[2].x, &v[2].y);
-    printf("%lld\n", area2(v[0], v[1], v[2]));
+    v1 = v[1] - v[0];
+    v2 = v[2] - v[0];
+    printf("%lld", det(v1, v2));
 
     return 0;
 }
