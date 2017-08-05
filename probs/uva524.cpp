@@ -37,7 +37,7 @@ void dfs(int pos){
 int main(){
     for (int i=0; i<2*MAXN+10; i++) isprime[i]=true;
     while (true) {
-        if (scanf("%d", &n)==EOF) break:
+        if (scanf("%d", &n)==EOF) break;
         if (cse!=0) printf("\n");
         cse++;
         printf("Case %d:\n", cse);
