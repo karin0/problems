@@ -17,7 +17,7 @@ struct Node {
 } nodes[MAXV];
 struct Edge {
     Node* to;
-    int cap, flow, rev;
+    int cap, flow, re:
     Edge(Node* to, int cap, int rev): to(to), cap(cap), flow(0), rev(rev) {}
 };
 inline void add_edge(int u, int v, int c) {
