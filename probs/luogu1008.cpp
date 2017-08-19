@@ -21,7 +21,6 @@ int main(){
             for (int k=0; k<=2; k++) {
                 if(checker[dig[k]]) goto _out;
                 checker[dig[k]]=true;
-                // THE WORLD!!!
             }
         }
         printf("%d %d %d\n", que[0], que[1], que[2]);
