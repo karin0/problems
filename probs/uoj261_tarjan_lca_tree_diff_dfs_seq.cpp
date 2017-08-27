@@ -26,7 +26,7 @@ struct Query {
 };
 int s[MAXM], t[MAXM], lca[MAXM];
 std::vector<Query> query[MAXV];
-inline void tarjan(int u, int deep) {
+inline void dfs(int u, int deep) {
     as_begin_of_node[++stamp].push_back(u);
     begin[u] = stamp;
     depth[u] = deep;
@@ -38,7 +38,7 @@ inline void tarjan(int u, int deep) {
         v = to[e];
         if (!fa[v]) {
             fa[v] = u;
-            tarjan(v, deep + 1);
+            dfs(v, deep + 1);
             pa[v] = u;
         }
     }
@@ -74,7 +74,7 @@ int main() {
         query[t[i]].push_back(Query{s[i], i});
     }
     fa[1] = -1;
-    tarjan(1, 0);
+    dfs(1, 0);
     for (i = 1; i <= m; ++i) {
         mark1[begin[s[i]]].push_back((Mark){depth[s[i]], 1});
         if (fa[lca[i]] != -1)
