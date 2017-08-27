@@ -1,7 +1,7 @@
 #include <cstdio>
 #include <vector>
 
-const int MAXV = 3e5 + 5, MAXE = 6e5 + 10, MAXM = 3e5 + 5;
+const int MAXV = 3e5 + 10, MAXE = 6e5 + 10, MAXM = 3e5 + 5;
 
 int n, adj[MAXV], w[MAXV], to[MAXE], next[MAXE];
 inline void add_edge(int u, int v, int e) {
@@ -16,7 +16,11 @@ inline int find(int x) {
 }
 
 int fa[MAXV], depth[MAXV], begin[MAXV], stamp = 0, ans1[MAXV], ans2[MAXV];
-std::vector<int> as_begin_of_node[MAXV], as_end_of_node[MAXV], as_begin_of_path[MAXV], as_end_of_path[MAXV], as_begin_of_path2[MAXV], as_end_of_path2[MAXV];
+std::vector<int> as_begin_of_node[MAXV], as_end_of_node[MAXV];
+struct Mark {
+    int v, d;
+};
+std::vector<Mark> mark1[MAXV], mark2[MAXV];
 struct Query {
     int v, id;
 };
@@ -72,50 +76,33 @@ int main() {
     fa[1] = -1;
     tarjan(1, 0);
     for (i = 1; i <= m; ++i) {
-        as_begin_of_path[begin[s[i]]].push_back(i);
-        as_end_of_path[begin[lca[i]]].push_back(i);
+        mark1[begin[s[i]]].push_back((Mark){depth[s[i]], 1});
+        if (fa[lca[i]] != -1)
+            mark1[begin[fa[lca[i]]]].push_back((Mark){depth[s[i]], -1});
+        if (t[i] != lca[i]) {
+            mark2[begin[t[i]]].push_back((Mark){2 * depth[lca[i]] - depth[s[i]], 1});
+            mark2[begin[lca[i]]].push_back((Mark){2 * depth[lca[i]] - depth[s[i]], -1});
+        }
     }
     int *pu;
+    Mark *pm;
     for (i = 1; i <= n; ++i) {
         for (pu = &as_begin_of_node[i].front(); pu && pu <= &as_begin_of_node[i].back(); ++pu) {
             u = *pu;
-            ans1[u] = cnt1[depth[u] - w[u] + n];
-            // w[j] = depth[j] - depth[s_i]
-        }
-        for (pu = &as_begin_of_path[i].front(); pu && pu <= &as_begin_of_path[i].back(); ++pu) {
-            u = *pu;
-            ++cnt1[depth[s[u]] + n];
-        }
-        for (pu = &as_end_of_path[i].front(); pu && pu <= &as_end_of_path[i].back(); ++pu) {
-            u = *pu;
-            --cnt1[depth[s[u]] + n];
-        }
-        for (pu = &as_end_of_node[i].front(); pu && pu <= &as_end_of_node[i].back(); ++pu) {
-            u = *pu;
-            ans1[u] = cnt1[depth[u] - w[u] + n] - ans1[u];
-        }
-    }
-    for (i = 1; i <= m; ++i) {
-        as_begin_of_path2[begin[t[i]]].push_back(i);
-        as_end_of_path2[begin[fa[lca[i]]]].push_back(i);
-    }
-    for (i = 1; i <= n; ++i) {
-        for (pu = &as_begin_of_node[i].front(); pu && pu <= &as_begin_of_node[i].back(); ++pu) {
-            u = *pu;
+            ans1[u] = cnt1[depth[u] + w[u] + n];
             ans2[u] = cnt2[depth[u] - w[u] + n];
-            // w[j] = depth[j] - depth[lca_i] + (depth[s_i] - depth[lca_i])
-            // depth[j] - w[j] = 2 * depth[lca_i] - depth[s_i]
+            // w[j] = depth[s_i] - depth[j]  (1)
+            // w[j] - (depth[s_i] - depth[lca_i]) = depth[j] - depth[lca_i]  (2)
         }
-        for (pu = &as_begin_of_path2[i].front(); pu && pu <= &as_begin_of_path2[i].back(); ++pu) {
-            u = *pu;
-            ++cnt2[depth[lca[u]] * 2 - depth[s[u]] + n];
+        for (pm = &mark1[i].front(); pm && pm <= &mark1[i].back(); ++pm) {
+            cnt1[pm -> v + n] += pm -> d;
         }
-        for (pu = &as_end_of_path2[i].front(); pu && pu <= &as_end_of_path2[i].back(); ++pu) {
-            u = *pu;
-            --cnt2[depth[lca[u]] * 2 - depth[s[u]] + n];
+        for (pm = &mark2[i].front(); pm && pm <= &mark2[i].back(); ++pm) {
+            cnt2[pm -> v + n] += pm -> d;
         }
         for (pu = &as_end_of_node[i].front(); pu && pu <= &as_end_of_node[i].back(); ++pu) {
             u = *pu;
+            ans1[u] = cnt1[depth[u] + w[u] + n] - ans1[u];
             ans2[u] = cnt2[depth[u] - w[u] + n] - ans2[u];
         }
     }
