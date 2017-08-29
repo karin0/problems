@@ -106,8 +106,8 @@ int main() {
             ans2[u] = cnt2[depth[u] - w[u] + n] - ans2[u];
         }
     }
-    for (i = 1; i <= n; ++i)
+    for (i = 1; i < n; ++i)
         printf("%d ", ans1[i] + ans2[i]);
-    printf("\n");
+    printf("%d", ans1[n] + ans2[n]);
     return 0;
 }
