@@ -23,6 +23,7 @@ int main() {
         u = (1 << n) - 1;
         for (i = 0; i < n; ++i)
             scanf("%lf%lf", x + i, y + i);
+
         for (i = 0; i < n; ++i) {
             for (j = i + 1; j < n; ++j) {
                 int &ki = left[i][j];
