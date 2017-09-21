@@ -1,7 +1,7 @@
 #include <cstdio>
 #include <algorithm>
 
-const int MAXM = 100010;
+const int MAXM = 200010;
 int n, m, s;
 int l[MAXM], r[MAXM];
 long long k, sum, gain;
@@ -19,8 +19,8 @@ inline bool qaq2(const Record &x, const Record &y) {
 }
 
 int main() {
-    freopen("express.in", "r", stdin);
-    freopen("express.out", "w", stdout);
+    // freopen("express.in", "r", stdin);
+    // freopen("express.out", "w", stdout);
     int i, j, x, c, val;
     scanf("%d%d%d%lld", &n, &m, &s, &k);
     for (i = 1; i <= m; ++i) {
@@ -57,12 +57,12 @@ int main() {
                     }
                 }
                 if (c > x) {
-                    puts("-23333333\n");
+                    puts("-23333333");
                     return 0;
                 } else {
                     s -= c; // 特判 k = 0
                     if (s < 0) {
-                        puts("-23333333\n");
+                        puts("-23333333");
                         return 0;
                     }
                 }

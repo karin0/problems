@@ -47,15 +47,12 @@ inline void push_down(int o) {
     seg.tm = 1;
     seg.ta = 0;
 }
-inline void push_up(int o) {
-    Seg &seg = st[o], &lc = st[LC(o)], &rc = st[RC(o)];
-    seg.sum = mod1(lc.sum + rc.sum);
-}
 inline void update_mul(int o, int l, int r, int v) {
     Seg &seg = st[o];
     if (seg.r < l || r < seg.l)
         return;
-    push_down(o);
+    //if (seg.tm != 1 || seg.ta != 0)
+        push_down(o);
     if (l <= seg.l && seg.r <= r) {
         seg.tm = v;
         seg.sum = (seg.sum * v) % mod;
@@ -63,13 +60,14 @@ inline void update_mul(int o, int l, int r, int v) {
     }
     update_mul(LC(o), l, r, v);
     update_mul(RC(o), l, r, v);
-    push_up(o);
+    seg.sum = mod1(st[LC(o)].sum + st[RC(o)].sum);
 }
 inline void update_add(int o, int l, int r, int v) {
     Seg &seg = st[o];
     if (seg.r < l || r < seg.l)
         return;
-    push_down(o);
+    // if (seg.tm != 1 || seg.ta != 0)
+        push_down(o);
     if (l <= seg.l && seg.r <= r) {
         seg.ta = v;
         seg.sum = mod1(seg.sum + v * (seg.r - seg.l + 1));
@@ -77,13 +75,14 @@ inline void update_add(int o, int l, int r, int v) {
     }
     update_add(LC(o), l, r, v);
     update_add(RC(o), l, r, v);
-    push_up(o);
+    seg.sum = mod1(st[LC(o)].sum + st[RC(o)].sum);
 }
 inline ll query(int o, int l, int r) {
-    Seg &seg = st[o];
+    const Seg &seg = st[o];
     if (seg.r < l || r < seg.l)
         return 0;
-    push_down(o);
+    //if (seg.tm != 1 || seg.ta != 0)
+        push_down(o);
     if (l <= seg.l && seg.r <= r)
         return seg.sum;
     ll res = mod1(query(LC(o), l, r) + query(RC(o), l, r));
@@ -97,7 +96,7 @@ int main() {
         scanf("%lld", a + i);
     build(1, 1, n);
     scanf("%d", &m);
-    while (m--) {
+    for (int kase = 1; kase <= m; ++kase) {
         scanf("%d%d%d", &opt, &l, &r);
         if (opt == 1) {
             scanf("%d", &x);
