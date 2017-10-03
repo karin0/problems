@@ -20,7 +20,7 @@ void rotate(int o) {
     link(x, o, d ^ 1); // Reversing the two makes wrong
     if (x == root) root = o; // Diffed
 }
-void splay(int o) { // So fun.
+void splay(int o) {
     for (int x; (x = fa[o]); rotate(o)) 
         if (fa[x])
             rotate(chd(o) == chd(x) ? x : o);
@@ -32,7 +32,7 @@ int add_node(int v) {
 void insert(int o, int v) {
     for (int x; (x = ch[o][v >= val[o]]); o = x);
     link(add_node(v), o, v >= val[o]);
-    splay(ln); // Assuming I = 0.1A
+    splay(ln);
 }
 void init() {
     root = add_node(INF);

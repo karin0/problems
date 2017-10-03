@@ -10,7 +10,6 @@ inline ll gcd(ll x, ll y) {
 int main() {
     ll r, g, b1, ans = 0, u, vv, v;
     scanf("%lld", &r);
-
     for (g = 1; g * g <= 2 * r; ++g) {
         if (!((2 * r) % g)) {
             b1 = 2 * r / g;

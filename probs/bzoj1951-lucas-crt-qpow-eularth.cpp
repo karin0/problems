@@ -25,15 +25,6 @@ inline void init() {
         fi[mo - 1] = qpow(fa[mo - 1], mo - 2, mo);
         for (i = mo - 2; i >= 0; --i)
             fi[i] = fi[i + 1] * (i + 1) % mo;
-        /*
-         * Pepcy_Ch's method
-        fi[1] = 1;
-        for (i = 2; i < mo; ++i)
-            fi[i] = (mo - mo / i) * fi[mo % i] % mo;
-        fi[0] = 1;
-        for (i = 1; i <= mo; ++i)
-            fi[i] = fi[i] * fi[i - 1] % mo;
-        */
     }
 }
 inline ll comb(ll n, ll k, int j) {
