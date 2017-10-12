@@ -20,36 +20,51 @@ inline void put_guard(int i, int j, int x) {
 struct State {
     int i, j, len, rs;
 };
-int dis[MAXN][MAXN], ach[MAXN][MAXN]; // achievement = chesses removed
+int dis[MAXN][MAXN]; // ach[MAXN][MAXN]; // achievement = chesses removed
+bool vis[MAXN][MAXN][(1 << 14) + 5];
+State prev[MAXN][MAXN];
 int dx[8] = {-2, -2, +2, +2, -1, -1, +1, +1}, 
     dy[8] = {-1, +1, -1, +1, -2, +2, -2, +2};
 void solve() {
-    static int i, j, k, ni, nj;
+    static int i, j, k, ni, nj, nrs;
     memset(dis, 0x3f, sizeof(dis));
-    memset(ach, 0, sizeof(ach));
+    // memset(ach, 0, sizeof(ach));
+    memset(vis, false, sizeof(vis));
     State sta;
     std::queue<State> que;
     que.push((State){si, sj, 0, 0});
+    dis[si][sj] = 0;
     while (!que.empty()) {
         sta = que.front();
         que.pop();
         i = sta.i;
         j = sta.j;
         // printf("(%d, %d, %d, %d)\n", i, j, sta.len, sta.rs);
+        /*
         if (((ach[i][j] | sta.rs) == ach[i][j]) && dis[i][j] <= sta.len)
             continue;
         ach[i][j] |= sta.rs;
-        dis[i][j] = std::min(dis[i][j], sta.len);
+        */
+        if (vis[i][j][sta.rs])
+            continue;
+        vis[i][j][sta.rs] = true;
+        // dis[i][j] = std::min(dis[i][j], sta.len);
        
         if (i != ti || j != tj) {
             for (k = 0; k < 8; ++k) {
                 ni = i + dx[k];
                 nj = j + dy[k];
-                if (leg(ni, nj) && (guard[ni][nj] | sta.rs) == sta.rs)
-                    que.push((State){ni, nj, sta.len + 1, (chess[ni][nj] == -1) ? sta.rs : (sta.rs | (1 << chess[ni][nj]))});
+                if (leg(ni, nj) && ((guard[ni][nj] | sta.rs) == sta.rs)) {
+                    nrs = (chess[ni][nj] == -1) ? sta.rs : (sta.rs | (1 << chess[ni][nj]));
+                    if (dis[ni][nj] > sta.len + 1) {
+                        dis[ni][nj] = sta.len + 1;
+                        prev[ni][nj] = sta;
+                    }
+                    if (!vis[ni][nj][nrs])
+                        que.push((State){ni, nj, sta.len + 1, nrs});
+                }
             }
         }
-        
     }
 }
 int main() {
@@ -218,8 +233,32 @@ int main() {
             puts("-1");
             continue;
         }
+        for (i = 1; i <= n; ++i) {
+            for (j  =1; j <= n; ++j) {
+                // putchar(opt[i][j] ? opt[i][j] : '.');
+                putchar(guard[i][j] ? 'X' : '.');
+            }
+            putchar('\n');
+        }
         solve();
         printf("%d\n", dis[ti][tj] < INF ? dis[ti][tj] : -1);
+
+        char opt[MAXN][MAXN];
+        int cc = 0;
+        while (ti != si || tj != sj) {
+            opt[ti][tj] = '0' + cc++;
+            State p = prev[ti][tj];
+            printf("(%d, %d) -> (%d, %d), %d in %d\n", p.i, p.j, ti, tj, guard[ti][tj], p.rs);
+            ti = p.i;
+            tj = p.j;
+        }
+            putchar('\n');
+        for (i = 1; i <= n; ++i) {
+            for (j  =1; j <= n; ++j) {
+                putchar(opt[i][j] ? opt[i][j] : '.');
+            }
+            putchar('\n');
+        }
     }
     
     return 0;
