@@ -1,7 +1,7 @@
 #include <cstdio>
-
+ 
 typedef long long ll;
-
+ 
 const int p = 2333;
 int c[p + 5][p + 5], s[p + 5][p + 5];
 void init() {
@@ -43,14 +43,22 @@ int solve(ll n, ll k) {
     tmp = s[nmp][p - 1] - s[nmp][kmp];
     if (tmp < 0)
         tmp += p;
-    tmp2 = solve(ndp, kdp);
+    tmp2 = solve(ndp, kdp - 1);
     res = s[nmp][kmp] * (tmp2 + lucas(ndp, kdp)) % p + tmp * tmp2 % p;
-    // res = s[nmp][kmp] * tmp2 % p + tmp * (tmp2 + lucas(ndp, kdp + 1)) % p;
     if (res >= p)
         return res - p;
     return res;
 }
-
+ 
+inline int solve2(ll n, ll k) {
+    static const int MOD = 2333;
+    if (k < 0) return 0;
+    if (k == 0) return 1;
+ 
+    int s1 = solve(n / MOD, k / MOD - 1), s2 = (s1 + lucas(n / MOD, k / MOD)) % MOD;
+ 
+    return ((s[n % MOD][k % MOD] * s2 % MOD + (s[n % MOD][MOD - 1] - s[n % MOD][k % MOD] + MOD) * s1) % MOD + MOD) % MOD;
+}
 int main() {
     static int t, kase;
     static ll n, k;
@@ -60,6 +68,6 @@ int main() {
         scanf("%lld%lld", &n, &k);
         printf("%d\n", solve(n, k));
     }
-
+ 
     return 0;
 }
