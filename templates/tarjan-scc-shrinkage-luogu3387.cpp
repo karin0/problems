@@ -30,7 +30,7 @@ void tarjan(int u) {
         if (!dfn[v])
             tarjan(v), low[u] = std::min(low[u], low[v]);
         else if (ins[v])
-            low[u] = std::min(low[u], dfn[v]);
+            low[u] = std::min(low[u], low[v]);
     }
     if (low[u] == dfn[u]) {
         ++scnt;
