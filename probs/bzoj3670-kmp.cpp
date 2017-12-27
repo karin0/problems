@@ -25,6 +25,7 @@ int main() {
                 j = next[j];
             if (s[j + 1] == s[i])
                 ++j;
+
             while ((j << 1) > i)
                 j = next[j];
             res = (long long)res * (num[j] + 1) % mo;

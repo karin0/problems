@@ -2,7 +2,7 @@
 #include <algorithm>
 
 const int MAXN = 500005;
-int n, ecnt;
+int n;
 struct Node {
     struct Edge *adj;
     Node *fa, *hch, *top;
@@ -114,7 +114,7 @@ struct Seg {
 } *segt;
 Seg *build(const int l, const int r) {
     if (l == r)
-        return new Seg(l, r, NULL, NULL);
+        return new Seg(l, l, NULL, NULL);
     int mid = (l + r) >> 1;
     return new Seg(l, r, build(l, mid), build(mid + 1, r));
 }
@@ -127,16 +127,21 @@ void init() {
 
 int query(Node *u, Node *v) {
     static int ucnt, utc, vcnt, vtc, rcnt, rtc;
-    if (u->top->dep < v->top->dep)
-        std::swap(u, v);
-    if (u->top == v->top)
+    if (u->top == v->top) {
+        if (u->dep < v->dep)
+            std::swap(u, v);
         return segt->query(v->dfn, u->dfn); // 特判！
+    }
+    /*
     ucnt = segt->query(u->top->dfn, u->dfn);
     utc = segt->query_col(u->top->dfn);
     vcnt = segt->query(v->top->dfn, v->dfn);
     vtc = segt->query_col(v->top->dfn);
     u = u->top->fa;
     v = v->top->fa;
+    */
+    ucnt = vcnt = 0;
+    utc = vtc = -1;
     while (u->top != v->top) {
         if (u->top->dep < v->top->dep)
             std::swap(u, v), std::swap(ucnt, vcnt), std::swap(utc, vtc);
@@ -155,12 +160,6 @@ int query(Node *u, Node *v) {
     return ucnt + vcnt - (utc == vtc);
 }
 void update(Node *u, Node *v, const int c) {
-    if (u->top->dep < v->top->dep)
-        std::swap(u, v);
-    if (u->top == v->top) {
-        segt->update(v->dfn, u->dfn, c); // 特判！
-        return;
-    }
     while (u->top != v->top) {
         if (u->top->dep < v->top->dep)
             std::swap(u, v);
@@ -205,12 +204,12 @@ int main() {
     }
     init();
     for (i = 1; i <= m; ++i) {
-        scanf("%s%d%d", opt, &u, &v);
-        if (opt[0] == 'Q') {
-            printf("%d\n", query(g + u, g + v));
-        } else {
+        scanf("%s %d %d", opt, &u, &v);
+        if (opt[0] == 'C') {
             scanf("%d", &x);
             update(g + u, g + v, x);
+        } else {
+            printf("%d\n", query(g + u, g + v));
         }
     }
     return 0;
