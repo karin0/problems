@@ -5,10 +5,9 @@ struct Node *root;
 struct Node {
     Node *fa, *ch[2];
     int x, size, cnt;
+    bool rev, bound;
 
-    Node(Node *_fa, int _x) : fa(_fa), x(_x), size(1), cnt(1) {
-        ch[0] = ch[1] = NULL;
-    }
+    Node(Node *_fa, int _x, bool _bound) : fa(_fa), x(_x), size(1), rev(false), bound(_bound) {}
     int rel() {
         return this == fa->ch[1];
     }
@@ -19,7 +18,19 @@ struct Node {
         if (ch[1])
             size += ch[1]->size;
     }
+    void push_down() {
+        if (rev) {
+            std::swap(ch[0], ch[1]);
+            if (ch[0])
+                ch[0]->rev ^= 1;
+            if (ch[1])
+                ch[1]->rev ^= 1;
+            rev = false;
+        }
+    }
     void rotate() {
+        fa->push_down();
+        push_down();
         Node *of = fa;
         int r = rel();
         fa = of->fa;
@@ -37,6 +48,7 @@ struct Node {
     }
     void splay(Node *dest = NULL) { // 目标节点的父节点
         while (fa != dest) {
+            fa->fa->push_down();
             if (fa->fa == dest)
                 rotate();
             else if (fa->rel() == rel())
@@ -44,12 +56,6 @@ struct Node {
             else
                 rotate(), rotate();
         }
-    }
-    Node *adj(int d) { // 0 for pred, 1 for succ
-        static Node *o;
-        int rd = d ^ 1;
-        for (o = ch[d]; o->ch[rd]; o = o->ch[rd]);
-        return o;
     }
     int rank() {
         return ch[0] ? ch[0]->size : 0;
@@ -76,32 +82,6 @@ Node *find(int x) {
         o->splay();
     return o;
 }
-void erase(Node *o) {
-    Node *pre = o->adj(0), *suc = o->adj(1);
-    pre->splay();
-    suc->splay(pre);
-    if (o->size > 1)
-        --o->size, --o->cnt;
-    else {
-        delete suc->ch[0];
-        suc->ch[0] = NULL;
-    }
-}
-void erase_x(int x) {
-    Node *o = find(x);
-    if (!o)
-        return;
-    erase(o);
-}
-int adj(int x, int d) {
-    Node *o = find(x);
-    if (o)
-        return o->adj(d)->x;
-    o = insert(x);
-    int res = o->adj(d)->x;
-    erase(o);
-    return res;
-}
 int rank(int x) {
     Node *o = find(x);
     if (o)
@@ -127,18 +107,22 @@ int select(int k) {
     o->splay();
     return o->x;
 }
+int n;
+void build()
 void init() {
-    root = NULL;
     insert(INT_MAX);
     insert(INT_MIN);
+    for (i = 1; i <= n; ++i)
+        insert(i);
 }
 
 int main() {
-    static int m, opt, x;
+    static int m, opt, l, r;
+
     init();
-    scanf("%d", &m);
+    scanf("%d%d", &n, &m);
     while (m--) {
-        scanf("%d%d", &opt, &x);
+        scanf("%d%d", &l, &r);
         if (opt == 1)
             insert(x);
         else if (opt == 2)
