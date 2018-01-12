@@ -6,11 +6,9 @@ struct Node {
     Node *fa, *ch[2];
     int x, size, cnt;
 
-    Node(Node *_fa, int _x) : fa(_fa), x(_x), size(1), cnt(1) {
-        ch[0] = ch[1] = NULL;
-    }
+    Node(Node *_fa, int _x) : fa(_fa), x(_x), size(1), cnt(1) {}
     int rel() {
-        return this == fa->ch[1];
+        return fa ? (this == fa->ch[1]) : 0;
     }
     void maintain() {
         size = cnt;
@@ -19,18 +17,19 @@ struct Node {
         if (ch[1])
             size += ch[1]->size;
     }
+    void link(Node *o, Node *p, int r) {
+        if (o)
+            o->fa = p;
+        if (p)
+            p->ch[r] = o;
+    }
     void rotate() {
-        Node *of = fa;
+        Node *f = fa;
         int r = rel();
-        fa = of->fa;
-        if (fa)
-            fa->ch[of->rel()] = this;
-        if (ch[r ^ 1])
-            ch[r ^ 1]->fa = of;
-        of->ch[r] = ch[r ^ 1];
-        of->fa = this;
-        ch[r ^ 1] = of;
-        of->maintain();
+        link(this, f->fa, f->rel());
+        link(ch[r ^ 1], f, r);
+        link(f, this, r ^ 1);
+        f->maintain();
         maintain();
         if (fa == NULL)
             root = this;
@@ -55,6 +54,26 @@ struct Node {
         return ch[0] ? ch[0]->size : 0;
     }
 };
+/*
+Node *insert(int x) {
+    Node *o = root, *f = NULL;
+    while (o && o->x != x) {
+        f = o;
+        ++o->size;
+        o = o->ch[x >= o->x];
+    }
+    if (o)
+        ++o->cnt, ++o->size;
+    else {
+        o = new Node(f, x);
+        if (f)
+            f->ch[x >= f->x] = o;
+        else
+            root = o;
+    }
+    o->splay();
+    return root;
+}*/
 Node *insert(int x) {
     Node **o = &root, *fa = NULL;
     while (*o && (*o)->x != x) {

@@ -6,10 +6,10 @@ int n;
 struct Node *root;
 struct Node {
     Node *fa, *ch[2];
-    int x, size;
+    int x, max, add, size; // tag is to add
     bool rev;
 
-    Node(Node *_fa, int _x) : fa(_fa), x(_x), size(1), rev(false) {}
+    Node(Node *_fa, int _x) : fa(_fa), x(_x), max(0), add(0), size(1), rev(false) {}
     void link(Node *o, Node *p, int r) {
         if (o)
             o->fa = p;
@@ -20,11 +20,13 @@ struct Node {
         return fa ? (this == fa->ch[1]) : 0;
     }
     void maintain() {
+        push_down();
         size = 1;
+        max = x;
         if (ch[0])
-            size += ch[0]->size;
+            size += ch[0]->size, max = std::max(max, ch[0]->max);
         if (ch[1])
-            size += ch[1]->size;
+            size += ch[1]->size, max = std::max(max, ch[1]->max);
     }
     void push_down() {
         if (rev) {
@@ -35,8 +37,16 @@ struct Node {
                 ch[1]->rev ^= 1;
             rev = false;
         }
+        if (add) {
+            if (ch[0])
+                ch[0]->add += add, ch[0]->x += add, ch[0]->max += add;
+            if (ch[1])
+                ch[1]->add += add, ch[1]->x += add, ch[1]->max += add;
+            add = 0;
+        }
     }
     void rotate() {
+        // push_down();
         Node *f = fa;
         int r = rel();
         link(this, f->fa, f->rel());
@@ -47,7 +57,7 @@ struct Node {
         if (fa == NULL)
             root = this;
     }
-    void splay(Node *dest = NULL) { // 目标节点的父节点
+    void splay(Node *dest = NULL) {
         while (fa != dest) {
             if (fa->fa == dest)
                 rotate();
@@ -59,15 +69,6 @@ struct Node {
     }
     int rank() {
         return ch[0] ? ch[0]->size : 0;
-    }
-    void print() {
-        push_down();
-        if (ch[0])
-            ch[0]->print();
-        if (x >= 1 && x <= n)
-            printf("%d ",  x);
-        if (ch[1])
-            ch[1]->print();
     }
 };
 Node *select(int k) {
@@ -91,7 +92,7 @@ Node *build(int l, int r, Node *fa) {
     if (l > r)
         return NULL;
     int mid = (l + r) >> 1;
-    Node *o = new Node(fa, mid);
+    Node *o = new Node(fa, 0);
     if (l < r) {
         o->ch[0] = build(l, mid - 1, o); // **
         o->ch[1] = build(mid + 1, r, o);
@@ -102,23 +103,30 @@ Node *build(int l, int r, Node *fa) {
 void init() {
     root = build(0, n + 1, NULL);
 }
-void reverse(int l, int r) {
+Node *select_range(int l, int r) {
     static Node *p, *q;
     q = select(r + 1);
     p = select(l - 1);
     p->splay();
     q->splay(p);
-    q->ch[0]->rev ^= 1;
+    return q->ch[0];
 }
 
 int main() {
-    static int m, l, r;
+    static int m, opt, l, r, x;
+    static Node *o;
     scanf("%d%d", &n, &m);
     init();
     while (m--) {
-        scanf("%d%d", &l, &r);
-        reverse(l, r);
+        scanf("%d%d%d", &opt, &l, &r);
+        o = select_range(l, r);
+        if (opt == 1) { // add
+            scanf("%d", &x);
+            o->add += x, o->x += x, o->max += x; // 及时修改，否则 maintain() 时会使用错误的子树信息
+        } else if (opt == 2)
+            o->rev ^= 1;
+        else
+            printf("%d\n", o->max);
     }
-    root->print();
     return 0;
 }
