@@ -6,10 +6,10 @@ int n, a[100005];
 struct Node *root;
 struct Node {
     Node *fa, *ch[2], *vall;
-    int x, min, size; // tag is to add
+    int x, ord, min, size;
     bool rev;
 
-    Node(Node *_fa, int _x) : fa(_fa), vall(this), x(_x), min(_x), size(1), rev(false) {}
+    Node(Node *_fa, int _x, int _ord) : fa(_fa), vall(this), x(_x), ord(_ord), min(_x), size(1), rev(false) {}
     void link(Node *o, Node *p, int r) {
         if (o)
             o->fa = p;
@@ -26,12 +26,12 @@ struct Node {
         vall = this;
         if (ch[0]) {
             size += ch[0]->size;
-            if (ch[0]->min < min)
+            if (ch[0]->min < min || (ch[0]->min == min && ch[0]->vall->ord < vall->ord))
                 min = ch[0]->min, vall = ch[0]->vall;
         }
         if (ch[1]) {
             size += ch[1]->size;
-            if (ch[1]->min < min)
+            if (ch[1]->min < min || (ch[1]->min == min && ch[1]->vall->ord < vall->ord))
                 min = ch[1]->min, vall = ch[1]->vall;
         }
     }
@@ -46,7 +46,6 @@ struct Node {
         }
     }
     void rotate() {
-        // push_down();
         Node *f = fa;
         int r = rel();
         link(this, f->fa, f->rel());
@@ -75,6 +74,11 @@ struct Node {
         for (o = this; o; o = o->fa)
             o->maintain();
     }
+    void clear() {
+        if (fa)
+            fa->clear();
+        push_down();
+    }
 };
 Node *select(int k) {
     Node *o = root;
@@ -97,7 +101,7 @@ Node *build(int l, int r, Node *fa) {
     if (l > r)
         return NULL;
     int mid = (l + r) >> 1;
-    Node *o = new Node(fa, a[mid]);
+    Node *o = new Node(fa, a[mid], mid);
     if (l < r) {
         o->ch[0] = build(l, mid - 1, o); // **
         o->ch[1] = build(mid + 1, r, o);
@@ -127,11 +131,11 @@ int main() {
     init();
     for (i = 0; i < n; ++i) {
         o = root->vall;
-        // printf("%d: %d\n", i, o->x);
-        o->splay();
-        o->push_down();
+        o->clear(); // 伸展前须清除标记
+        // o->splay();
         rk = o->rank();
-        printf("%d ", rk + i);
+        printf("%d", rk + i);
+        putchar(i == n - 1 ? '\n' : ' ');
         o = select_range(rk, rk);
         o->fa->ch[0] = NULL;
         o->fa->update();
