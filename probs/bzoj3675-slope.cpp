@@ -39,7 +39,6 @@ int main() {
         }
     }
     printf("%lld\n", f[m & 1][n]);
-    // printf("%lld\n", f[n][m]);
 
     return 0;
 }
