@@ -6,12 +6,10 @@ typedef long long ll;
 int n, m, s[N], j;
 ll f[2][N];
 inline bool less(int p, int q, int x) { // assert p <= q
-    if (p > q)
-        std::swap(p, q);
     return (f[j ^ 1][p] - (ll)s[p] * s[p] - f[j ^ 1][q] + (ll)s[q] * s[q]) > ((ll)(s[p] - s[q]) * x);
 }
 inline bool less_slope(int p1, int q1, int p2, int q2) { // assert both p <= q
-    return ((f[j ^ 1][p1] - (ll)s[p1] * s[p1] - f[j ^ 1][q1] + (ll)s[q1] * s[q1]) * ((ll)(s[p2] - s[q2]))) < 
+    return ((f[j ^ 1][p1] - (ll)s[p1] * s[p1] - f[j ^ 1][q1] + (ll)s[q1] * s[q1]) * ((ll)(s[p2] - s[q2]))) <
            ((f[j ^ 1][p2] - (ll)s[p2] * s[p2] - f[j ^ 1][q2] + (ll)s[q2] * s[q2]) * ((ll)(s[p1] - s[q1])));
 }
 int main() {
