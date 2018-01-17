@@ -2,9 +2,9 @@
 #include <algorithm>
 
 typedef long long ll;
-const int N = 50003;
-bool np[N];
-int n, pri[N], mu[N], pcnt, k;
+const int n = 50000;
+bool np[n + 5];
+int pri[n + 5], mu[n + 5], pcnt;
 void sieve() {
     static int i, j;
     static ll v;
@@ -27,29 +27,24 @@ void sieve() {
     for (i = 2; i <= n; ++i)
         mu[i] += mu[i - 1];
 }
-ll solve(int a, int b) {
-    static ll res;
-    static int i, ni, da, db;
-    res = 0;
-    if (b < a)
-        std::swap(a, b);
-    a /= k, b /= k;
-    for (i = 1; i <= a; i = ni + 1) {
-        da = a / i, db = b / i;
-        ni = std::min(a / da, b / db);
-        res += (ll)(mu[ni] - mu[i - 1]) * da * db;
-    }
-    return res;
-}
 
 int main() {
-    static int a, b, c, d, m;
-    n = N;
-    scanf("%d", &m);
+    static int a, b, c, d, k, m, i, ni, da, db;
+    static ll res;
     sieve();
+    scanf("%d", &m);
     while (m--) {
+        res = 0;
         scanf("%d%d%d%d%d", &a, &b, &c, &d, &k);
-        printf("%lld\n", solve(b, d) - solve(a - 1, d) - solve(b, c - 1) + solve(a - 1, c - 1));
+        if (b < a)
+            std::swap(a, b);
+        a /= k, b /= k;
+        for (i = 1; i <= a; i = ni + 1) {
+            da = a / i, db = b / i;
+            ni = std::min(a / da, b / db);
+            res += (ll)(mu[ni] - mu[i - 1]) * da * db;
+        }
+        printf("%lld\n", res);
     }
     return 0;
 }
