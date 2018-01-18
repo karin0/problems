@@ -40,7 +40,7 @@ struct Network {
         if (u == t || lim == 0)
             return lim;
         int res = 0, f;
-        for (Edge *e = u->cur; e; e = e->next)
+        for (Edge *&e = u->cur; e; e = e->next)
             if (e->flow < e->cap && e->v->lvl == u->lvl + 1 && (f = dfs(e->v, std::min(lim, e->cap - e->flow))) > 0) {
                 e->flow += f;
                 e->rev->flow -= f;
