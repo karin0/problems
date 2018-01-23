@@ -50,7 +50,7 @@ void dfs2(Node *u, Node *top) {
     Node *v;
     for (Edge *e = u->adj; e; e = e->next) {
         v = e->v;
-        if (v->fa == u && v != u-> hch)
+        if (v->fa == u && v != u->hch)
             dfs2(v, v);
     }
 }
