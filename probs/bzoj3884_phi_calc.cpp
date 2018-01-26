@@ -1,6 +1,6 @@
 #include <cstdio>
 
-inline int qpow(int x, int p, int mo) {
+int qpow(int x, int p, int mo) {
     static int res;
     for (res = 1; p; p >>= 1, x = (long long)x * x % mo) // use ll!
         if (p & 1)
