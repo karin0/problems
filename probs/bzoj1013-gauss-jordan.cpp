@@ -26,7 +26,8 @@ bool gauss(int n) {
             }
     }
     return true;
-}
+} // ans[i] = a[i][n] / a[i][i]
+// a[0 ~ n - 1][0 ~ n]
 
 int main() {
     static int n, i, j;

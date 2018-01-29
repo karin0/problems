@@ -52,9 +52,7 @@ void init_ht() {
     for (k = 0, i = 0; i < n - 1; ++i) {
         if (k)
             --k;
-        j = sa[rk[i] - 1];
-        while (str[i + k] == str[j + k])
-            ++k;
+        for (j = sa[rk[i] - 1]; str[i + k] == str[j + k]; ++k);
         ht[rk[i]] = k;
     }
 }
