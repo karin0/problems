@@ -18,7 +18,7 @@ int kmp(char *s, char *pat) {
     get_next(pat, next, lp);
     res = 0;
     for (i = 1, j = 0; i <= ls; ++i) {
-        for (j && pat[j + 1] != s[i]; j = next[j]);
+        for (; j && pat[j + 1] != s[i]; j = next[j]);
         if (pat[j + 1] == s[i])
             ++j;
         if (j == lp)

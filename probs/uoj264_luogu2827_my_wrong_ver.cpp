@@ -43,8 +43,7 @@ Akari& choose() {
     if (x.len >= y.len && x.len >= z.len) que.pop();
     else if (y.len >= x.len && y.len >= z.len) {
         x = y; quea.pop();
-    }
-    else {
+    } else {
         x = z; queb.pop();
     }
     return x;

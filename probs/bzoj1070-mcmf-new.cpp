@@ -41,7 +41,6 @@ namespace G {
         static std::queue<Node *> q;
         static int flow, cost;
         static Node *u, *v;
-        flow = cost = 0;
         while (true) {
             for (u = g + 1; u <= g + n; ++u) {
                 u->prev = NULL;

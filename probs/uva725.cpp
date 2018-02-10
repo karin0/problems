@@ -1,12 +1,5 @@
-/*
-UVa 725
-AC
-简单枚举
-*/
 #include <cstdio>
 using namespace std;
-
-// i / j = n
 
 bool checker[12];
 bool cins(char n){
