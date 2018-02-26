@@ -2,18 +2,18 @@
 #include <algorithm>
 #include <queue>
 
-const int N = 100005;
+const int N = 200005;
 struct Heap {
     std::priority_queue<int> q, d;
     inline void clean() {
         while (!q.empty() && !d.empty() && q.top() == d.top())
             q.pop(), d.pop();
     }
-    inline void insert(int x) {
+    inline void insert(const int x) {
         if (x >= 0)
             q.push(x);
     }
-    inline void remove(int x) {
+    inline void remove(const int x) {
         if (x >= 0)
             d.push(x);
     }
@@ -22,7 +22,7 @@ struct Heap {
     }
     inline int top() {
         clean();
-        return size() ? q.top() : -1234567;
+        return q.empty() ? -1234567 : q.top();
     }
     inline void pop() {
         clean();
@@ -32,13 +32,8 @@ struct Heap {
     inline int top2() {
         static int t, tt;
         t = top();
-        if (t < 0)
-            return -1234567;
-        // pop();
-        remove(t);
+        pop();
         tt = top();
-        if (tt < 0)
-            return -1234567;
         insert(t);
         return t + tt;
     }
@@ -60,6 +55,7 @@ void arc(Node *u, Node *v) {
 }
 void darc(Node *u, Node *v) {
     u->de = new Edge(v, u->de);
+    v->dfa = u;
 }
 int n, ocnt;
 Node *a[N];
@@ -85,14 +81,7 @@ Node *center(Node *u) {
     }
     return res;
 }
-void dfs2(Node *u, Node *f) {
-    for (Edge *e = u->de; e; e = e->e)
-        if (e->v != f) {
-            e->v->dfa = u;
-            dfs2(e->v, u);
-        }
-}
-Node *st[N << 1][20];
+Node *st[N << 1][22];
 int teu;
 void dfs0(Node *u) {
     st[++teu][0] = u;
@@ -106,17 +95,15 @@ void dfs0(Node *u) {
     if (teu != u->deu)
         st[++teu][0] = u;
 }
-int lb[N];
+int lb[N << 1];
 void st_init() {
     static int i, j;
-    lb[1] = 0;
-    for (i = 1; i <= teu; ++i)
+    for (i = 2; i <= teu; ++i)
         lb[i] = lb[i - 1] + ((1 << (lb[i - 1] + 1)) <= i);
     // for (i = 1; i <= teu; ++i)
     //     printf("e %d = %ld\n", i, st[i][0] - g);
     for (j = 1; (1 << j) <= teu; ++j) {
         for (i = 1; i + (1 << j) - 1 <= teu; ++i) {
-            printf("Making %d, %d\n", i, j);
             if (st[i][j - 1]->dep < st[i + (1 << (j - 1))][j - 1]->dep)
                 st[i][j] = st[i][j - 1];
             else
@@ -136,9 +123,7 @@ Node *lca(Node *u, Node *v) {
         return st[r - (1 << t) + 1][t];
 }
 inline int dis(Node *u, Node *v) {
-    if (u == v)
-        return 0;
-    return u->dep + v->dep - lca(u, v)->dep * 2;
+    return (u != v) ? u->dep + v->dep - lca(u, v)->dep * 2 : 0;
 }
 Node *rt;
 Node *build(Node *u) {
@@ -149,47 +134,50 @@ Node *build(Node *u) {
             darc(u, build(e->v));
     return u;
 }
+void dfs2(Node *u) {
+    u->dh2.insert(0);
+    if (u->de) {
+        for (Edge *e = u->de; e; e = e->e) {
+            dfs2(e->v);
+            u->dh2.insert(e->v->dh1.top());
+        }
+        th.insert(u->dh2.top2());
+    }
+}
 void update(Node *u) {
-    static int d, t;
     static Node *v;
     if (u->ok) {
-        printf("Opening %d\n", u - g);
         u->ok = false;
         --ocnt;
-        for (v = u; v; v = v->dfa) {
-            d = dis(u, v);
-            if (v->dfa) {
-                t = dis(v, v->dfa);
-                th.remove(v->dfa->dh2.top2());
-                v->dfa->dh2.remove(v->dh1.top() + t);
-                v->dh1.remove(d);
-                v->dfa->dh2.insert(v->dh1.top() + t);
-                th.insert(v->dfa->dh2.top2());
-            } else
-                v->dh1.remove(d);
+        th.remove(u->dh2.top2());
+        u->dh2.remove(0);
+        th.insert(u->dh2.top2());
+        for (v = u; v->dfa; v = v->dfa) {
+            th.remove(v->dfa->dh2.top2());
+            v->dfa->dh2.remove(v->dh1.top());
+            v->dh1.remove(dis(u, v->dfa));
+            v->dfa->dh2.insert(v->dh1.top());
+            th.insert(v->dfa->dh2.top2());
         }
         return;
     }
     u->ok = true;
-    printf("Closing %d\n", u - g);
     ++ocnt;
-    for (v = u; v; v = v->dfa) {
-        d = dis(u, v);
-        printf("dis(%d, %d) = %d\n", u - g, v - g, d);
-        if (v->dfa) {
-            t = dis(v, v->dfa);
-            printf("t (dis(%d to fa %d)) is %d\n", v - g, v->dfa - g, t);
-            th.remove(v->dfa->dh2.top2());
-            v->dfa->dh2.remove(v->dh1.top() + t);
-            v->dh1.insert(d);
-            v->dfa->dh2.insert(v->dh1.top() + t);
-            th.insert(v->dfa->dh2.top2());
-        } else
-            v->dh1.insert(d);
+    th.remove(u->dh2.top2());
+    u->dh2.insert(0);
+    th.insert(u->dh2.top2());
+    for (v = u; v->dfa; v = v->dfa) {
+        th.remove(v->dfa->dh2.top2());
+        v->dfa->dh2.remove(v->dh1.top());
+        v->dh1.insert(dis(u, v->dfa));
+        v->dfa->dh2.insert(v->dh1.top());
+        th.insert(v->dfa->dh2.top2());
     }
 }
-inline int query() {
-    return th.top();
+void init(Node *u) {
+    u->ok = true;
+    for (Node *v = u; v->dfa; v = v->dfa)
+        v->dh1.insert(dis(u, v->dfa)); // printf("%d dh1 <- %d\n", v-g, dis(u,v));
 }
 
 int main() {
@@ -205,19 +193,18 @@ int main() {
     dfs0(&g[1]);
     st_init();
     rt = build(&g[1]);
-    dfs2(rt, NULL);
     for (i = 1; i <= n; ++i)
-        update(&g[i]);
+        init(&g[i]);
+    ocnt = n;
+    dfs2(rt);
     scanf("%d", &m);
     while (m--) {
-        for (i = 1; i <= n; ++i)
-            printf("%d's q1 siz = %d, q2 siz = %d\n", i, g[i].dh1.size(), g[i].dh2.size());
-        printf("ocnt is %d\n", ocnt);
         scanf("%s", opt);
         if (opt[0] == 'C') {
             scanf("%d", &u);
             update(&g[u]);
         } else
-            printf("%d\n", (ocnt <= 1) ? ocnt - 1 : query());
+            printf("%d\n", (ocnt <= 1) ? ocnt - 1 : th.top());
     }
+    return 0;
 }
