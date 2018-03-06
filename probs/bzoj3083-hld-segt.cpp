@@ -6,7 +6,7 @@
 #define re(__i,__s,__t) for((__i)=(__s);(__i)<(__t);++(__i))
 #define news new (alloc(sizeof(SegT)))
 #define newe new (alloc(sizeof(Edge)))
-
+ 
 typedef unsigned int uint;
 const int N = 100003;
 const uint inf = UINT_MAX;
@@ -151,11 +151,10 @@ uint query(Node *u) {
             break;
         }
     }
-    return p ? std::min(segt->query(1, n, 1, p->dfn - 1), 
-                    segt->query(1, n, p->dfn + p->siz, n))
+    return p ? std::min(segt->query(1, n, 1, p->dfn - 1), segt->query(1, n, p->dfn + p->siz, n))
              : segt->query(1, n, u->dfn, u->dfn + u->siz - 1);
 }
-
+ 
 int main() {
     static int m, i, u, v, opt;
     static uint x;
