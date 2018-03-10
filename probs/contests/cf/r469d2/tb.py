@@ -11,9 +11,10 @@ def foo(n):
     a = [e] * (2 * n)
     for i in range(1, n + 1):
         a[2 * i - 1] = str(i);
-    #show([i for i in range(len(a))])
+    show([i for i in range(len(a))])
     cnt = 0
     while True:
+        show(a)
         i = j = 0
         for i in range(len(a) - 1, 0, -1):
             if a[i] != e:
@@ -28,6 +29,6 @@ def foo(n):
     show(a)
     return a
 
-l = foo(100)
+l = foo(8)
 #for k in range(100):
 #    print(k, foo(k))

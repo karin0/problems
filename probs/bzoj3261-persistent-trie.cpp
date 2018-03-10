@@ -1,6 +1,6 @@
 #include <cstdio>
 #include <new>
-
+ 
 const int N = 600005, W = 23;
 inline bool bit(const int x, const int k) {
     return (x >> k) & 1;
@@ -12,7 +12,7 @@ struct Trie {
         ch[0] = lc, ch[1] = rc;
     }
     Trie() {}
-
+ 
     Trie *insert(const int x, const int k = W) {
         if (k < 0)
             return new (curr++) Trie(nil, nil);
@@ -49,7 +49,7 @@ int query(const int l, const int r, const int x) {
     }
     return res;
 }
-
+ 
 int main() {
     static int n, m, i, l, r, x, xs;
     static char opt[4];
@@ -71,6 +71,6 @@ int main() {
             printf("%d\n", query(l - 1, r - 1, xs ^ x));
         }
     }
-
+ 
     return 0;
 }
