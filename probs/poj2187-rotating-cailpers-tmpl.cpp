@@ -1,13 +1,11 @@
 #include <cstdio>
-#include <climits>
-#include <algorithm>
-#include <new>
+#include <cmath>
 #include <cctype>
+#include <algorithm>
 #define rep(__i,__s,__t) for((__i)=(__s);(__i)<=(__t);++(__i))
 #define re(__i,__s,__t) for((__i)=(__s);(__i)<(__t);++(__i))
 #define per(__i,__s,__t) for((__i)=(__s);(__i)>=(__t);--(__i))
 #define pe(__i,__s,__t) for((__i)=(__s);(__i)>(__t);--(__i))
-#define news new (alloc(sizeof(SegT)))
 
 struct IO {
     static const int L = 1000000;
@@ -71,48 +69,72 @@ struct IO {
     }
 } io;
 
-typedef long long ll;
-const int N = 100003;
-int n, a[N], t[N], c[N];
-ll ext[N], st[N];
-// c[i] := (f[i] - f[i - 1]) / 1
-// f[i] 
-void update(int l, int r) {
-    c[l] += 1;
-    c[r + 1] -= 1;
+const int N = 50007;
+
+struct Point {
+    int x, y;
+    Point(int _x = 0, int _y = 0) : x(_x), y(_y) {}
+    bool operator < (const Point &rhs) const {
+        return x < rhs.x || (x == rhs.x && y < rhs.y);
+    }
+    Point operator - (const Point &rhs) const {
+        return Point(x - rhs.x, y - rhs.y);
+    }
+    int norm() const {
+        return x * x + y * y;
+    }
+} po[N], co[N];
+inline Point vec(const Point &a, const Point &b) {
+    return b - a;
 }
+inline int cross(const Point &a, const Point &b) {
+    return a.x * b.y - a.y * b.x;
+}
+int build_convex(int n) {
+    static int m, i, k;
+    std::sort(po, po + n);
+    m = 0;
+    re (i, 0, n) {
+        while (m > 1 && cross(vec(co[m - 2], co[m - 1]), vec(co[m - 2], po[i])) <= 0)
+            --m;
+        co[m++] = po[i];
+    }
+    k = m;
+    per (i, n - 1, 0) {
+        while (m > k && cross(vec(co[m - 2], co[m - 1]), vec(co[m - 2], po[i])) <= 0)
+            --m;
+        co[m++] = po[i];
+    }
+    if (m > 1)
+        --m;
+    return m;
+}
+int rc(int n) {
+    static int ans, k, i;
+    static Point s;
+    ans = 0;
+    co[n] = co[0];
+    k = 1;
+    re (i, 0, n) {
+        s = vec(co[i + 1], co[i]);
+        while (cross(vec(co[i + 1], co[k]), s) < 
+               cross(vec(co[i + 1], co[k + 1]), s)) {
+            ++k;
+            if (k == n)
+                k = 0;
+        }
+        ans = std::max(ans, std::max(vec(co[i], co[k]).norm(), vec(co[i + 1], co[k + 1]).norm()));
+    }
+    return ans;
+}
+
 int main() {
-    static int i, j, l, r, x;
-    static ll s, tt, pp;
+    static int i, n;
     n = io;
-    rep (i, 1, n)
-        a[i] = io;
-    rep (i, 1, n)
-        t[i] = io, st[i] = st[i - 1] + t[i];
-    st[n + 1] = st[n];
-    rep (i, 1, n) {
-        l = i - 1, r = n;
-        tt = st[i - 1];
-        pp = a[i];
-        while (r - l > 1) {
-            x = (l + r) >> 1;
-            if (st[x] - tt < pp)
-                l = x;
-            else
-                r = x;
-        };
-        j = l + 1;
-        if (st[j] - tt <= pp)
-            ++j;
-        if (j - 1 >= i)
-            update(i, j - 1);
-        ext[j] += pp - st[j - 1] + tt;
-    }
-    rep (i, 1, n) {
-        s += c[i];
-        io.print(s * t[i] + ext[i]);
-        io.pc(i < n ? ' ' : '\n');
-    }
+    re (i, 0, n)
+        po[i].x = io, po[i].y = io;
+    printf("%d\n", rc(build_convex(n)));
+
     io.flush();
     return 0;
 }

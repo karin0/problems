@@ -1,13 +1,11 @@
 #include <cstdio>
-#include <climits>
-#include <algorithm>
-#include <new>
 #include <cctype>
+#include <algorithm>
+#include <queue>
 #define rep(__i,__s,__t) for((__i)=(__s);(__i)<=(__t);++(__i))
 #define re(__i,__s,__t) for((__i)=(__s);(__i)<(__t);++(__i))
 #define per(__i,__s,__t) for((__i)=(__s);(__i)>=(__t);--(__i))
 #define pe(__i,__s,__t) for((__i)=(__s);(__i)>(__t);--(__i))
-#define news new (alloc(sizeof(SegT)))
 
 struct IO {
     static const int L = 1000000;
@@ -70,49 +68,39 @@ struct IO {
         fwrite(b, 1, p - b, stdout);
     }
 } io;
-
 typedef long long ll;
-const int N = 100003;
-int n, a[N], t[N], c[N];
-ll ext[N], st[N];
-// c[i] := (f[i] - f[i - 1]) / 1
-// f[i] 
-void update(int l, int r) {
-    c[l] += 1;
-    c[r + 1] -= 1;
-}
+const int pri[] = {1, 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127}, pc = 31;
+struct Item {
+    ll v;
+    int mfi, f1c, f2c;
+    bool operator < (const Item &rhs) const {
+        return v < rhs.v;
+    }
+};
+std::priority_queue<Item> pq;
 int main() {
-    static int i, j, l, r, x;
-    static ll s, tt, pp;
+    static ll n, a, b;
+    static int k, i, t, p;
+    static Item x;
     n = io;
-    rep (i, 1, n)
-        a[i] = io;
-    rep (i, 1, n)
-        t[i] = io, st[i] = st[i - 1] + t[i];
-    st[n + 1] = st[n];
-    rep (i, 1, n) {
-        l = i - 1, r = n;
-        tt = st[i - 1];
-        pp = a[i];
-        while (r - l > 1) {
-            x = (l + r) >> 1;
-            if (st[x] - tt < pp)
-                l = x;
-            else
-                r = x;
-        };
-        j = l + 1;
-        if (st[j] - tt <= pp)
-            ++j;
-        if (j - 1 >= i)
-            update(i, j - 1);
-        ext[j] += pp - st[j - 1] + tt;
+    k = io;
+    rep (i, 1, pc) {
+        p = pri[i];
+        b = n / p;
+        // for (a = 1, t = -1; a * p <= n; a *= p, ++t); // ** it's wrong desu
+        for (a = 1, t = -1; a <= b; a *= p, ++t);
+        pq.push((Item){a, i, t, 0});
     }
-    rep (i, 1, n) {
-        s += c[i];
-        io.print(s * t[i] + ext[i]);
-        io.pc(i < n ? ' ' : '\n');
+    while (--k) {
+        x = pq.top();
+        pq.pop();
+        if (x.mfi)
+            pq.push((Item){x.v / pri[x.mfi] * pri[x.mfi - 1], x.mfi - 1, 1, x.f1c - 1});
+        if (x.f2c)
+            pq.push((Item){x.v / pri[x.mfi + 1] * pri[x.mfi], x.mfi, x.f1c + 1, x.f2c - 1});
     }
-    io.flush();
+    io.print(pq.top().v);
+    io.pc('\n');
+    io.flush(); // ***
     return 0;
 }

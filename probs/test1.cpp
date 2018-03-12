@@ -1,4 +1,5 @@
 #include<cstdio>
+#include <vector>
 #include <algorithm>
 const int maxn=100005;
 typedef long long ll;
@@ -13,6 +14,7 @@ inline bool less_slope(int p1, int q1, int p2, int q2) { // assert both p <= q
     return ((of[p1] - (ll)s[p1] * s[p1] - of[q1] + (ll)s[q1] * s[q1]) * ((ll)(s[p2] - s[q2]))) < 
 	           ((of[p2] - (ll)s[p2] * s[p2] - of[q2] + (ll)s[q2] * s[q2]) * ((ll)(s[p1] - s[q1])));
 }
+std::vector<bool> vec;
 
 int main()
 {

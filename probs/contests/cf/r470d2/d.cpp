@@ -76,10 +76,11 @@ inline bool bit(const int x, const int k) {
 struct Trie *curr;
 struct Trie {
     Trie *ch[2], *fa;
-    Trie(Trie *_f) : fa(_f) {}
-    Trie() {}
+    int cnt;
+    Trie(Trie *_f = NULL) : fa(_f), cnt(0) {}
 
     void insert(const int x, const int k = W) {
+        ++cnt;
         if (k < 0)
             return;
         int v = bit(x, k);
@@ -100,47 +101,36 @@ inline void init() {
     root = new (curr++) Trie;
 }
 int query(const int x) {
-    static Trie *p, *f, *q;
+    static Trie *p, *q;
     static int res, k;
     static bool v;
     p = root;
     for (res = 0, k = W; k >= 0; --k) {
         v = bit(x, k);
-        if (!p->ch[v])
-            p = p->ch[!v], res = (res << 1) | 1 ;// printf("Go %d\n", !v);
-        else
+        if (p->ch[v] && p->ch[v]->cnt > 0)
             p = p->ch[v], res = res << 1; // printf("Og %d\n", v);
+        else
+            p = p->ch[!v], res = (res << 1) | 1 ;// printf("Go %d\n", !v);
     }
+    /*
     q = NULL;
-    while (true) {
-        if (q == root)
-            break;
-        f = p->fa;
-        if ((p->ch[0] && !p->ch[1]) || (p->ch[1] && !p->ch[0]) || (!p->ch[0] && !p->ch[1]))
-            p->ch[0] = p->ch[1] = NULL;
-        else {
-            if (q == p->ch[0])
-                p->ch[0] = NULL;
-            else
-                p->ch[1] = NULL;
-            break;
-        }
-        q = p;
-        p = f;
-    }
+    while (p->fa && !(p->ch[0] && p->ch[1]))
+        q = p, p = p->fa;
+    p->ch[p->ch[1] == q] = NULL;
+    */
+    while (p)
+        --p->cnt, p = p->fa;
     return res;
 }
 
 int main() {
-    static int n, i, a[N], p[N];
+    static int n, a[N], i;
     init();
     n = io;
     rep (i, 1, n)
         a[i] = io;
-    rep (i, 1, n) {
-        p[i] = io;
-        root->insert(p[i]);
-    }
+    rep (i, 1, n)
+        root->insert(io);
     rep (i, 1, n) {
         io.print(query(a[i]));
         io.pc(i == n ? '\n' : ' ');

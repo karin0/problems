@@ -28,14 +28,14 @@ int mpf(int x) {
     ans = 1;
     for (i = 2; i * i <= x; ++i) {
         if (x % i == 0) {
-            ans = std::max(ans, i);
+            ans = i;
             x /= i;
             while (x % i == 0)
                 x /= i;
         }
     }
     if (x != 1)
-        ans = std::max(ans, x);
+        ans = x;
     return ans;
 }
 int main() {
@@ -45,8 +45,8 @@ int main() {
     sieve(x);
     p = mpf(x);
     for (i = x - p + 1; i <= x; ++i) {
-        if (!np[i])
-            continue;
+        //if (!np[i])
+        //    continue;
         z = mpf(i);
         if (i == z)
             continue;

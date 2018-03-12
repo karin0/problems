@@ -90,9 +90,8 @@ int main() {
         du = d[u];
         rep (v, 1, n)
             du[v] = inf;
+        du[u] = 0;
     }
-    rep (u, 1, n)
-        d[u][u] = 0;
     rep (i, 1, m) {
         u = io, v = io;
         d[u][v] = d[v][u] = io;

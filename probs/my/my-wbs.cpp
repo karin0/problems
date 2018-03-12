@@ -16,7 +16,7 @@ struct Matrix {
             for (j = 0; j < n; ++j) {
                 res(i, j) = 0;
                 for (k = 0; k < n; ++k) 
-                    res(i, j) = (res(i, j) + (ll)v[i][k] * b(k, j) % mo) % mo;
+                    (res(i, j) += (ll)v[i][k] * b(k, j)) %= mo;
             }
         }
         return res;
@@ -39,6 +39,6 @@ int main() {
     b(0, 0) = 0;
     b(0, 1) = 1;
     pow(b, n - 2, res);
-    printf("%d\n", (int) (((ll)res(1, 0) * a1 % mo + (ll)res(1, 1) * a2 % mo) % mo));
+    printf("%d\n", (b(1, 0) * a1 % mo + b(1, 1) * a2 % mo) % mo);
     return 0;
 }
