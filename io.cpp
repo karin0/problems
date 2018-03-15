@@ -13,7 +13,7 @@ struct IO {
     inline char gc() {
         if (s == t)
             t = (s = a) + fread(a, 1, L, stdin);
-        return *s++;
+        return *s++; // return s == t ? -1 : *s++;
     }
     void gs(char *st) {
         static char c;
@@ -67,8 +67,8 @@ struct IO {
         if (nl)
             pc('\n');
     }
-    inline void flush() {
-        fwrite(b, 1, p - b, stdout);
+    inline void flush() const {
+        fwrite(b, 1, p - b, stdout); // p = b;
     }
 } io;
 
