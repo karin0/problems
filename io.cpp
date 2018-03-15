@@ -13,7 +13,7 @@ struct IO {
     inline char gc() {
         if (s == t)
             t = (s = a) + fread(a, 1, L, stdin);
-        return s == t ? -1 : *s++;
+        return *s++;
     }
     void gs(char *st) {
         static char c;
@@ -45,7 +45,7 @@ struct IO {
         *p++ = c;
     }
     template<class T>
-    void print(T x) {
+    void print(T x, const bool nl = true) {
         static char c[30], *q;
         static T y;
         if (x == 0)
@@ -58,10 +58,14 @@ struct IO {
             while (q != c)
                 pc(*--q);
         }
+        if (nl)
+            pc('\n');
     }
-    void puts(const char *st) {
+    void ps(const char *st, const bool nl = true) {
         while (*st)
             pc(*st++);
+        if (nl)
+            pc('\n');
     }
     inline void flush() {
         fwrite(b, 1, p - b, stdout);
@@ -73,7 +77,6 @@ int main() {
     a = io;
     i = io;
     io.print(a + i);
-    io.pc('\n');
 
     io.flush(); // ***
     return 0;
