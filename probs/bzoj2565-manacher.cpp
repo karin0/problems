@@ -21,7 +21,6 @@ struct IO {
         *st++ = c;
         for (c = gc(); isgraph(c); c = gc())
             *st++ = c;
-        *st++ = 0;
     }
     template <class T>
     operator T() {
@@ -36,7 +35,9 @@ struct IO {
         x = c - '0';
         for (c = gc(); isdigit(c); c = gc())
             x = x * 10 + (c - '0');
-        return neg ? -x : x;
+        if (neg)
+            x = -x;
+        return x;
     }
     inline void pc(const char c) {
         if (p == b + L)
@@ -71,11 +72,49 @@ struct IO {
     }
 } io;
 
+const int N = 100003;
+char s[N << 1]; // ***
+int n, r[N << 1];
+void manacher() { // require that s[] is processed
+    static int i, rt, pos;
+    for (i = rt = pos = 0; i < n; ++i) {
+        int &ri = r[i];
+        for (ri = rt > i ? std::min(r[2 * pos - i], rt - i) : 1; s[i + ri] == s[i - ri]; ++r[i]);
+        if (i + ri > rt)
+            rt = i + ri, pos = i;
+    }
+    /* re (i, 0, n)
+        printf("%d: %c, %d\n", i, s[i], r[i]); */
+}
+inline void upd(int &x, const int v) {
+    x = std::max(x, v);
+}
+
 int main() {
-    static int a, i;
-    a = io;
-    i = io;
-    io.print(a + i);
+    static int i, ml[N << 1], mr[N << 1], d, ans;
+    static char os[N], *p, *q = s;
+    io.gs(os);
+    *q++ = '#';
+    for (p = os; *p; ++p) {
+        *q++ = *p;
+        *q++ = '#';
+    }
+    n = q - s;
+    manacher();
+    re (i, 0, n) {
+        d = r[i] - 1;
+        if (i - d >= 0)
+            upd(mr[i - d], d);
+        if (i + d < n)
+            upd(ml[i + d], d);
+    }
+    for (i = 2; i < n; i += 2)
+        upd(mr[i], mr[i - 2] - 2);
+    for (i = n - 3; i >= 0; i -= 2)
+        upd(ml[i], ml[i + 2] - 2);
+    for (i = 0; i < n; i += 2)
+        upd(ans, ml[i] + mr[i]);
+    io.print(ans);
 
     io.flush(); // ***
     return 0;

@@ -1,6 +1,7 @@
 #include <cstdio>
 #include <cctype>
 #include <algorithm>
+#include <vector>
 #define rep(__i,__s,__t) for((__i)=(__s);(__i)<=(__t);++(__i))
 #define re(__i,__s,__t) for((__i)=(__s);(__i)<(__t);++(__i))
 #define per(__i,__s,__t) for((__i)=(__s);(__i)>=(__t);--(__i))
@@ -21,7 +22,6 @@ struct IO {
         *st++ = c;
         for (c = gc(); isgraph(c); c = gc())
             *st++ = c;
-        *st++ = 0;
     }
     template <class T>
     operator T() {
@@ -36,7 +36,9 @@ struct IO {
         x = c - '0';
         for (c = gc(); isdigit(c); c = gc())
             x = x * 10 + (c - '0');
-        return neg ? -x : x;
+        if (neg)
+            x = -x;
+        return x;
     }
     inline void pc(const char c) {
         if (p == b + L)
@@ -71,12 +73,43 @@ struct IO {
     }
 } io;
 
+typedef long long ll;
+const int N = 100003, p = 100003;
+ll inv[N], f[N], ans;
+std::vector<int> divs[N];
 int main() {
-    static int a, i;
-    a = io;
-    i = io;
-    io.print(a + i);
-
+    static int n, k, x, i, j;
+    static bool a[N];
+    n = io;
+    k = io;
+    rep (i, 1, n)
+        a[i] = (int)io;
+    rep (i, 1, n)
+        for (j = i; j <= n; j += i)
+            divs[j].push_back(i);
+    per (i, n, 1) if (a[i]) {
+        for (std::vector<int>::iterator it = divs[i].begin(); it != divs[i].end(); ++it)
+            a[*it] ^= 1;
+        ++x;
+    }
+    if (k < x) {
+        inv[1] = 1;
+        rep (i, 2, n)
+            inv[i] = (p - p / i) * inv[p % i] % p;
+        f[n] = 1;
+        pe (i, n - 1, k)
+            f[i] = (n + (n - i) * f[i + 1]) % p * inv[i] % p;
+        ans = k;
+        rep (i, k + 1, x) {
+            ans += f[i];
+            if (ans >= p)
+                ans -= p;
+        }
+    } else
+        ans = x;
+    rep (i, 2, n)
+        ans = ans * i % p;
+    io.print(ans);
     io.flush(); // ***
     return 0;
 }

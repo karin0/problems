@@ -21,7 +21,6 @@ struct IO {
         *st++ = c;
         for (c = gc(); isgraph(c); c = gc())
             *st++ = c;
-        *st++ = 0;
     }
     template <class T>
     operator T() {
@@ -36,7 +35,9 @@ struct IO {
         x = c - '0';
         for (c = gc(); isdigit(c); c = gc())
             x = x * 10 + (c - '0');
-        return neg ? -x : x;
+        if (neg)
+            x = -x;
+        return x;
     }
     inline void pc(const char c) {
         if (p == b + L)
@@ -72,7 +73,7 @@ struct IO {
 } io;
 
 int main() {
-    static int a, i;
+    static int a, i, p;
     a = io;
     i = io;
     io.print(a + i);

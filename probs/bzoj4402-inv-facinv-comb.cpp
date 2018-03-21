@@ -21,7 +21,6 @@ struct IO {
         *st++ = c;
         for (c = gc(); isgraph(c); c = gc())
             *st++ = c;
-        *st++ = 0;
     }
     template <class T>
     operator T() {
@@ -36,7 +35,9 @@ struct IO {
         x = c - '0';
         for (c = gc(); isdigit(c); c = gc())
             x = x * 10 + (c - '0');
-        return neg ? -x : x;
+        if (neg)
+            x = -x;
+        return x;
     }
     inline void pc(const char c) {
         if (p == b + L)
@@ -71,12 +72,60 @@ struct IO {
     }
 } io;
 
-int main() {
-    static int a, i;
-    a = io;
-    i = io;
-    io.print(a + i);
+typedef long long ll;
+const int N = 3000004, p = 1000000007;
+ll fac[N], facinv[N];
+ll pow(ll n, int k) {
+    static ll res;
+    for (res = 1; k; n = n * n % p, k >>= 1)
+        if (k & 1)
+            res = res * n % p;
+    return res;
+}
+void init(const int n) {
+    static int i;
+    fac[0] = 1;
+    rep (i, 1, n)
+        fac[i] = fac[i - 1] * i % p;
+    facinv[n] = pow(fac[n], p - 2);
+    per (i, n - 1, 0)
+        facinv[i] = facinv[i + 1] * (i + 1) % p;
+}
+inline int f(const int n, const int k) { // comb(n + k, k) 
+    if (n < 0)
+        return 0;
+    if (n == 0)
+        return 1;
+    return fac[n + k] * facinv[k] % p * facinv[n] % p;
+}
+inline void upd(int &x, const int v) {
+    x += v;
+    if (x >= p)
+        x -= p;
+}
+int calc(const int n, int m) {
+    static int i, res, r, t;
+    if (n == 0 || m == 0)
+        return 0;
+    res = 1;
+    rep (i, 2, m) {
+        t = n - i;
+        r = f(t >> 1, i - 1);
+        upd(res, r);
+        if (t & 1)
+            upd(res, r);
+        else
+            upd(res, f((t - 1) >> 1, i - 1));
+    }
+    return res;
+}
 
+int main() {
+    static int n, m;
+    n = io;
+    m = std::min(n, (int)io);
+    init((n >> 1) + m);
+    io.print(calc(n, m));
     io.flush(); // ***
     return 0;
 }

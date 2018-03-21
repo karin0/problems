@@ -26,6 +26,7 @@ int pop(int x) { // 下标 >= x - k + 1
 int main() {
     static int i, j, *fgi, *fli;
     scanf("%d%d%d", &n, &m, &k);
+
     for (i = 1; i <= n; ++i) {
         src = a[i];
         for (j = 1; j <= m; ++j)
