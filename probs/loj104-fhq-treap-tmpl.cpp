@@ -89,7 +89,7 @@ struct Node {
         return ch[0] ? ch[0]->siz : 0;
     }
 } pool[N], *curr = pool;
-Node *merge(Node * const p, Node * const q) { // max key in p <= min key in q
+Node *merge(Node *const p, Node *const q) { // max key in p <= min key in q
     if (!p)
         return q;
     if (!q)
@@ -104,7 +104,7 @@ Node *merge(Node * const p, Node * const q) { // max key in p <= min key in q
         return q;
     }
 }
-void split(Node * const o, const int x, Node *&p, Node *&q) {
+void split(Node *const o, const int x, Node *&p, Node *&q) {
     if (!o) {
         p = q = NULL;
         return;
@@ -129,7 +129,7 @@ struct Treap {
         split(root, x, p, r);
         split(p, x - 1, p, q);
         root = merge(merge(p, merge(q->ch[0], q->ch[1])), r);
-    }
+    
     inline int pred(const int x) {
         split(root, x - 1, p, q);
         for (o = p; o->ch[1]; o = o->ch[1]);

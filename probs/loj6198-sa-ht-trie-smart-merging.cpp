@@ -1,5 +1,4 @@
 #include <cstdio>
-#include <cstring>
 #include <cctype>
 #include <algorithm>
 #define rep(__i,__s,__t) for((__i)=(__s);(__i)<=(__t);++(__i))
@@ -71,14 +70,15 @@ struct IO {
         fwrite(b, 1, p - b, stdout); // p = b;
     }
 } io;
-const int N = 100005;
+
+const int N = 100003, W = 17;
 namespace sa {
     int rk[N], sa[N], ht[N];
     void calc_sa(char *s, int n, int m = 128) {
         static int fir[N], sec[N], tmp[N], cnt[N], i, l;
         static bool uni;
+        s[n] = 0;
         ++n;
-        s[n - 1] = 0;
         std::fill(cnt, cnt + m, 0);
         re (i, 0, n)
             ++cnt[s[i]];
@@ -125,24 +125,116 @@ namespace sa {
             ht[rk[i]] = k;
         }
     }
+    inline void init(char *s, const int n) {
+        calc_sa(s, n);
+        calc_ht(s, n);
+    }
 }
+inline bool bit(const int x, const int k) {
+    return (x >> k) & 1;
+}
+struct Trie {
+    Trie *ch[2];
+    void *operator new (size_t) {
+        static Trie pool[N * 20], *curr = pool;
+        return curr++;
+    }
+    /*
+    inline void maintain() {
+        siz = (ch[0] ? ch[0]->siz : 0) + (ch[1] ? ch[1]->siz : 0) + 1;
+    }*/
+    void insert(const int x, const int k = W - 1) {
+        if (k < 0)
+            return;
+        int b = bit(x, k);
+        if (!ch[b])
+            ch[b] = new Trie;
+        ch[b]->insert(x, k - 1);
+        // maintain();
+    }
+    int query(const int x) {
+        static Trie *o;
+        static int k, b, res;
+        o = this;
+        res = 0;
+        for (k = W - 1; k >= 0; --k) {
+            b = bit(x, k);
+            if (o->ch[b ^ 1])
+                o = o->ch[b ^ 1], res = (res << 1) | 1;
+            else
+                o = o->ch[b], res <<= 1;
+        }
+        return res;
+    }
+} *trie[N];
+Trie *merge(Trie *u, Trie *v) {
+    if (!u)
+        return v;
+    if (!v)
+        return u;
+    /*
+    if (u->siz < v->siz)
+        std::swap(u, v);*/
+    u->ch[0] = merge(u->ch[0], v->ch[0]);
+    u->ch[1] = merge(u->ch[1], v->ch[1]);
+    // u->maintain();
+    return u;
+}
+namespace uf {
+    int fa[N];
+    void init(const int n) {
+        static int i;
+        rep (i, 0, n)
+            fa[i] = i;
+    }
+    int find(const int x) {
+        return fa[x] == x ? x : fa[x] = find(fa[x]);
+    }
+    inline void link(const int x, const int y) { // x <- y
+        fa[y] = x;
+    }
+}
+int n, w[N], suf[N], ht[N], lb[N], rb[N], ww[N];
 char s[N];
-int n;
+inline bool cmp(const int i, const int j) {
+    return ht[i] > ht[j];
+}
+int merge(int u, int v) {
+    static int res, i;
+    if (u == v)
+        return -n;
+    if (rb[u] - lb[u] < rb[v] - lb[v]) // u <- v
+        std::swap(u, v);
+    res = 0;
+    rep (i, lb[v], rb[v])
+        res = std::max(res, trie[u]->query(ww[i]));
+    // rep (i, lb[v], rb[v])
+    //    trie[u]->insert(w[sa::sa[i]]);
+    trie[u] = merge(trie[u], trie[v]);
+    lb[u] = std::min(lb[u], lb[v]);
+    rb[u] = std::max(rb[u], rb[v]);
+    uf::link(u, v);
+    return res;
+}
 int main() {
-    static int i;
+    static int i, ans;
+    n = io;
     io.gs(s);
-    n = strlen(s);
-    sa::calc_sa(s, n);
-    sa::calc_ht(s, n);
-    for (i = 1; i <= n; ++i)
-        io.print(sa::sa[i] + 1, false), io.pc(i == n ? '\n' : ' ');
-    for (i = 2; i <= n; ++i)
-        io.print(sa::ht[i], false), io.pc(i == n ? '\n' : ' ');
-    
-    for (i = 0; i <= n; ++i)
-        printf("str[%d] = %c, sa[%d] = %d, rk[%d] = %d, ht[%d] = %d\n", i, s[i], i, sa::sa[i], i, sa::rk[i], i, sa::ht[i]); 
-   
-    io.flush();
+    sa::init(s, n);
+    uf::init(n);
+    re (i, 0, n)
+        w[i] = io;
+    re (i, 1, n) {
+        lb[i] = rb[i] = i;
+        ht[i] = sa::ht[i + 1];
+        suf[i] = i;
+        trie[i] = new Trie;
+        trie[i]->insert(ww[i] = w[sa::sa[i]]);
+    }
+    std::sort(suf + 1, suf + n, cmp);
+    re (i, 1, n)
+        ans = std::max(ans, ht[suf[i]] + merge(uf::find(suf[i]), uf::find(suf[i] + 1))); // printf("suf[%d] = %d, ht[suf[%d]] = %d\n", i,suf[i],i,ht[suf[i]]);
+    io.print(ans);
+    io.flush(); // ***
     return 0;
 }
-

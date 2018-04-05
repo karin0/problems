@@ -57,13 +57,12 @@ struct IO {
     }
 } io;
 
-const int N = 150007, M = 200007;
 typedef long long ll;
+const int N = 150007, M = 200007;
 int n;
 struct Node {
     Node *fa, *hch, *top;
-    int dfn, siz;
-    ll dep, x, w;
+    int dfn, siz, dep, x, w;
     struct Edge *e;
 } g[N], *ns[N], *rdfn[N], *rt;
 struct Edge {
@@ -71,7 +70,7 @@ struct Edge {
     int w;
     Edge *e;
     Edge() {}
-    Edge(Node *const _u, Node *const _v, const ll _w) : v(_v), w(_w), e(_u->e) {
+    Edge(Node *const _u, Node *const _v, const int _w) : v(_v), w(_w), e(_u->e) {
         _u->e = this;
     }
     void *operator new (size_t) {
@@ -100,12 +99,13 @@ void dfs2(Node *const u, Node *const t) {
     if (u->hch)
         dfs2(u->hch, t);
     for (Edge *e = u->e; e; e = e->e)
-        if (!e->v->dfn && e->v != u->hch)
+        if (!e->v->dfn)
             dfs2(e->v, e->v);
 }
-ll x[N];
-ll sw[N], sd[N];
-inline ll csum(const ll a[], const int l, const int r) {
+int x[N], sw[N];
+ll sd[N];
+template <class T>
+inline T csum(const T a[], const int l, const int r) {
     return a[r] - a[l - 1];
 }
 struct SegT {
@@ -113,7 +113,7 @@ struct SegT {
     ll sum, tag;
     SegT() {}
     SegT(SegT *const _lc, SegT *const _rc) : lc(_lc), rc(_rc), sum(_lc->sum + _rc->sum) {}
-    SegT(SegT *const _lc, SegT *const _rc, const int s, const int t) : lc(_lc), rc(_rc), sum(s), tag(t) {}
+    SegT(SegT *const _lc, SegT *const _rc, const ll s, const int t) : lc(_lc), rc(_rc), sum(s), tag(t) {} // *********************** ll here!
     void *operator new (size_t) {
         static SegT pool[(N + M) * 43], *curr = pool;
         return curr++;
@@ -122,12 +122,12 @@ struct SegT {
         if (ql <= l && r <= qr)
             return new SegT(lc, rc, sum + csum(sw, l, r), tag + 1);
         int mid = (l + r) >> 1;
-        SegT *p = new SegT(*this);
+        SegT *p = new SegT(lc, rc, 0, tag);
         if (ql <= mid)
             p->lc = lc->update(ql, qr, l, mid);
         if (qr > mid)
             p->rc = rc->update(ql, qr, mid + 1, r);
-        p->sum = p->lc->sum + p->rc->sum + p->tag * csum(sw, l, r); // ************ calc this later
+        p->sum = p->lc->sum + p->rc->sum + tag * csum(sw, l, r); // ************ calc this later
         return p;
     }
     ll query(const int ql, const int qr, const int l = 1, const int r = n, ll t = 0) const {
@@ -164,7 +164,9 @@ ll query(const int l, const int r, const Node *u) {
     while (u) {
         ql = u->top->dfn;
         qr = u->dfn;
-        res += q->query(ql, qr) - p->query(ql, qr);
+        res += q->query(ql, qr);
+        if (p != nil)
+            res -= p->query(ql, qr);
         u = u->top->fa;
     }
     /* if (u != rt) {
@@ -183,7 +185,7 @@ void init() {
     static int i;
     nil = new SegT;
     nil->lc = nil->rc = nil;
-    rt = &g[1];
+    rt = &g[2];
     // rt->dep = 0;
     dfs1(rt);
     dfs2(rt, rt);
@@ -198,38 +200,40 @@ void init() {
     }
 }
 
-ll calc(const Node *const u, int l, int r) {
+inline ll calc(const Node *const u, int l, int r) {
     l = std::lower_bound(x + 1, x + n + 1, l) - x;
     r = std::upper_bound(x + 1, x + n + 1, r) - x - 1;
     return (ll)u->dep * (r - l + 1) + csum(sd, l, r) - 2ll * query(l, r, u);
 }
 int main() {
-    static int m, i;
-    static ll mx;
-    scanf("%d%d%lld", &n, &m, &mx);
+    static int m, i, mx;
+    n = io;
+    m = io;
+    mx = io;
     rep (i, 1, n) {
-        scanf("%lld", &g[i].x);
+        g[i].x = io;
         ns[i] = &g[i];
     }
     re (i, 1, n) {
-        static int u, v;
-        static ll w;
-        scanf("%d%d%lld", &u, &v, &w);
+        static int u, v, w;
+        u = io;
+        v = io;
+        w = io;
         new Edge(&g[u], &g[v], w);
         new Edge(&g[v], &g[u], w);
     }
     init();
     while (m--) {
-        static ll la, a, b;
+        static ll la;
         static int u, l, r;
-        scanf("%d%lld%lld", &u, &a, &b);
-        l = (a + la) % mx;
-        r = (b + la) % mx;
+        u = io;
+        l = ((ll)io + la) % mx;
+        r = ((ll)io + la) % mx;
         if (l > r)
             std::swap(l, r);
-        la = calc(&g[u], l, r);
-        printf("%lld\n", la);
+        io.print(la = calc(&g[u], l, r));
     }
 
+    io.flush(); // ***
     return 0;
 }

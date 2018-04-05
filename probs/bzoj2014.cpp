@@ -13,7 +13,7 @@ struct IO {
     inline char gc() {
         if (s == t)
             t = (s = a) + fread(a, 1, L, stdin);
-        return s == t ? -1 : *s++;
+        return *s++; // return s == t ? -1 : *s++;
     }
     void gs(char *st) {
         static char c;
@@ -21,6 +21,7 @@ struct IO {
         *st++ = c;
         for (c = gc(); isgraph(c); c = gc())
             *st++ = c;
+        *st++ = 0;
     }
     template <class T>
     operator T() {
@@ -35,9 +36,7 @@ struct IO {
         x = c - '0';
         for (c = gc(); isdigit(c); c = gc())
             x = x * 10 + (c - '0');
-        if (neg)
-            x = -x;
-        return x;
+        return neg ? -x : x;
     }
     inline void pc(const char c) {
         if (p == b + L)
@@ -45,7 +44,7 @@ struct IO {
         *p++ = c;
     }
     template<class T>
-    void print(T x) {
+    void print(T x, const bool nl = true) {
         static char c[30], *q;
         static T y;
         if (x == 0)
@@ -58,22 +57,27 @@ struct IO {
             while (q != c)
                 pc(*--q);
         }
+        if (nl)
+            pc('\n');
     }
-    void puts(const char *st) {
+    void ps(const char *st, const bool nl = true) {
         while (*st)
             pc(*st++);
+        if (nl)
+            pc('\n');
     }
-    inline void flush() {
-        fwrite(b, 1, p - b, stdout);
+    inline void flush() const {
+        fwrite(b, 1, p - b, stdout); // p = b;
     }
 } io;
+typedef long long ll;
 
+struct Ir
 int main() {
-    static int a, i;
-    a = io;
-    i = io;
-    io.print(a + i);
-    io.pc('\n');
+    static i;q
+        nt n, i;
+    static ll b;
+    rep ()
 
     io.flush(); // ***
     return 0;
