@@ -71,14 +71,17 @@ struct IO {
         fwrite(b, 1, p - b, stdout); // p = b;
     }
 } io;
-const int N = 100005;
-namespace sa {
-    int rk[N], sa[N], ht[N];
-    void calc_sa(char *s, int n, int m = 128) {
-        static int fir[N], sec[N], tmp[N], cnt[N], i, l;
+
+typedef long long ll;
+const int N = 30005;
+int lg[N];
+struct SA {
+    int rk[N], sa[N], ht[N], st[20][N];
+    void build(char *s, int n, int m = 128) {
+        static int fir[N], sec[N], tmp[N], cnt[N], i, j, k, l;
         static bool uni;
+        s[n] = 0;
         ++n;
-        s[n - 1] = 0;
         std::fill(cnt, cnt + m, 0);
         re (i, 0, n)
             ++cnt[s[i]];
@@ -115,33 +118,83 @@ namespace sa {
             if (uni)
                 break;
         }
-    }
-    void calc_ht(char *s, const int n) {
-        static int i, j, k;
-        for (k = 0, i = 0; i < n - 1; ++i) {
+        --n;
+
+        for (k = 0, i = 0; i < n; ++i) {
             if (k)
                 --k;
             for (j = sa[rk[i] - 1]; s[i + k] == s[j + k]; ++k);
-            ht[rk[i]] = k;
+            st[0][rk[i]] = k;
         }
+
+        for (j = 1; (1 << j) <= n; ++j)
+            for (i = 2; i + (1 << j) - 1 <= n; ++i)
+                st[j][i] = std::min(st[j - 1][i], st[j - 1][i + (1 << (j - 1))]);
     }
+    int lcp(const int i, const int j) {
+        static int l, r, k;
+        l = rk[i];
+        r = rk[j];
+        if (l > r)
+            std::swap(l, r);
+        ++l;
+        k = lg[r - l + 1];
+        return std::min(st[k][l], st[k][r - (1 << k) + 1]);
+    }
+} sa, rsa;
+char s[N], rs[N];
+int n, f[N << 1], g[N << 1];
+inline int lcp(const int i, const int j) {
+    return sa.lcp(i, j);
 }
-char s[N];
-int n;
+inline int lcs(const int i, const int j) {
+    return rsa.lcp(n - i - 1, n - j - 1);
+}
 int main() {
-    static int i;
-    io.gs(s);
-    n = strlen(s);
-    sa::calc_sa(s, n);
-    sa::calc_ht(s, n);
-    for (i = 1; i <= n; ++i)
-        io.print(sa::sa[i] + 1, false), io.pc(i == n ? '\n' : ' ');
-    for (i = 2; i <= n; ++i)
-        io.print(sa::ht[i], false), io.pc(i == n ? '\n' : ' ');
-    
-    for (i = 0; i <= n; ++i)
-        printf("str[%d] = %c, sa[%d] = %d, rk[%d] = %d, ht[%d] = %d\n", i, s[i], i, sa::sa[i], i, sa::rk[i], i, sa::ht[i]); 
-   
+    static int ks, i, j, l, x, y, on = 1, t;
+    static ll ans;
+    ks = io;
+    if (!ks)
+        return 0;
+    for (; ; --ks) {
+        io.gs(s);
+        for (i = 0; rs[i] = s[i]; ++i);
+        n = i;
+        std::reverse(rs, rs + n);
+        sa.build(s, n);
+        rsa.build(rs, n);
+        if (n > on) {
+            rep (i, on + 1, n)
+                lg[i] = lg[i >> 1] + 1;
+            on = n;
+        }
+        t = n >> 1;
+        for (l = 1; l <= t; ++l) {
+            for (i = 0, j = l; j < n; i += l, j += l) if (s[i] == s[j]) {
+                x = std::max(j - lcs(i, j), i);
+                y = std::min(i + lcp(i, j), j);
+                if (y - x > 0) {
+                    ++f[x + l];
+                    --f[y + l];
+                    ++g[x - l + 1];
+                    --g[y - l + 1];
+                }
+            }
+        }
+        re (i, 1, n) {
+            f[i] += f[i - 1];
+            g[i] += g[i - 1];
+        }
+        re (i, 1, n - 1)
+            ans += (ll)f[i] * g[i + 1];
+        io.print(ans);
+        if (ks == 1)
+            break;
+        ans = 0;
+        std::fill(f, f + n + n + 1, 0);
+        std::fill(g, g + n + n + 1, 0);
+    }
     io.flush();
     return 0;
 }
+
