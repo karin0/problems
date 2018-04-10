@@ -118,7 +118,7 @@ namespace sa {
     }
     void calc_ht(char *s, const int n) {
         static int i, j, k;
-        for (k = 0, i = 0; i < n - 1; ++i) {
+        for (k = 0, i = 0; i < n; ++i) {
             if (k)
                 --k;
             for (j = sa[rk[i] - 1]; s[i + k] == s[j + k]; ++k);
@@ -139,8 +139,8 @@ int main() {
     for (i = 2; i <= n; ++i)
         io.print(sa::ht[i], false), io.pc(i == n ? '\n' : ' ');
     
-    for (i = 0; i <= n; ++i)
-        printf("str[%d] = %c, sa[%d] = %d, rk[%d] = %d, ht[%d] = %d\n", i, s[i], i, sa::sa[i], i, sa::rk[i], i, sa::ht[i]); 
+    // for (i = 0; i <= n; ++i)
+    //    printf("str[%d] = %c, sa[%d] = %d, rk[%d] = %d, ht[%d] = %d\n", i, s[i], i, sa::sa[i], i, sa::rk[i], i, sa::ht[i]); 
    
     io.flush();
     return 0;
