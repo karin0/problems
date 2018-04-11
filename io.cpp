@@ -13,7 +13,7 @@ struct IO {
     inline char gc() {
         if (s == t)
             t = (s = a) + fread(a, 1, L, stdin);
-        return *s++; // return s == t ? -1 : *s++;
+        return *s++; // return s == t ? EOF : *s++;
     }
     void gs(char *st) {
         static char c;
@@ -77,6 +77,6 @@ int main() {
     i = io;
     io.print(a + i);
 
-    io.flush(); // ***
+    io.flush();
     return 0;
 }
