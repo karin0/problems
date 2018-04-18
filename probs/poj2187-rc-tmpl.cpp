@@ -33,13 +33,13 @@ int build_convex(int n) {
     std::sort(po, po + n);
     m = 0;
     re (i, 0, n) {
-        while (m > 1 && cross(vec(co[m - 2], co[m - 1]), vec(co[m - 2], po[i])) <= 0)
+        while (m > 1 && cross(vec(co[m - 2], co[m - 1]), vec(co[m - 2], po[i])) <= 0) // ???
             --m;
         co[m++] = po[i];
     }
     k = m;
     per (i, n - 1, 0) {
-        while (m > k && cross(vec(co[m - 2], co[m - 1]), vec(co[m - 2], po[i])) <= 0)
+        while (m > k && cross(vec(co[m - 2], co[m - 1]), vec(co[m - 2], po[i])) <= 0) // ???
             --m;
         co[m++] = po[i];
     }
