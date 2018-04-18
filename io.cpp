@@ -40,7 +40,7 @@ struct IO {
     }
     inline void pc(const char c) {
         if (p == b + L)
-            fwrite(b, 1, L, stdout), p = b;
+            fwrite(p = b, 1, L, stdout);
         *p++ = c;
     }
     template<class T>
