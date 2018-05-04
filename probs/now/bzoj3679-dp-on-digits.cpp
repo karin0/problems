@@ -75,30 +75,32 @@ struct IO {
 typedef long long ll;
 int k, a[19], pow3[20], pow5[14], pow7[12];
 ll f[19][30][19][13][11][2][2];
-ll dp(int w, int x, int c2, int c3, int c5, int c7, bool pre0, bool lim) {
+ll dp(int w, int c2, int c3, int c5, int c7, bool pre0, bool lim) {
     if (c2 >= 30 || c3 >= 19 || c5 >= 13 || c7 >= 11)
         return 0;
     ll &ans = f[w][c2][c3][c5][c7][pre0][lim];
     if (ans >= 0)
-        return 
-    /*printf("w = %d, x = %d, c2 = %d, c3 = %d, c5 = %d, c7 = %d, pre0 = %d, lim = %d,   ans = ", w,x,c2,c3,c5,c7,(int)pre0,(int)lim),
+        return /*
+    printf("w = %d, x = %d, c2 = %d, c3 = %d, c5 = %d, c7 = %d, pre0 = %d, lim = %d,   ans = ", w,x,c2,c3,c5,c7,(int)pre0,(int)lim),
             
             printf("%lld (old) \n", ans),*/ ans;
+    if ((1ll << c2) > k)
+        return ans = 0;
     ll prod = (1ll << c2) * (ll)pow3[c3] * pow5[c5] * pow7[c7];
     if (prod > k || prod == 0)
         return 
-    /*  printf("w = %d, x = %d, c2 = %d, c3 = %d, c5 = %d, c7 = %d, pre0 = %d, lim = %d,   ans = ", w,x,c2,c3,c5,c7,(int)pre0,(int)lim),
-            
-            printf("0 !! \n"),*/  ans = 0;
-    if (w == 0)
-        return 
-            
     /*printf("w = %d, x = %d, c2 = %d, c3 = %d, c5 = %d, c7 = %d, pre0 = %d, lim = %d,   ans = ", w,x,c2,c3,c5,c7,(int)pre0,(int)lim),
-            printf("%d !! \n", pre0 ? 0 : 1), */ ans = pre0 ? 0 : 1;
+            
+            printf("0 !! \n"), */ ans = 0;
+    if (w == 0)
+        return /*
+            
+    printf("w = %d, x = %d, c2 = %d, c3 = %d, c5 = %d, c7 = %d, pre0 = %d, lim = %d,   ans = ", w,x,c2,c3,c5,c7,(int)pre0,(int)lim),
+            printf("1 !! \n"),*/ ans = (pre0 ? 0 : 1);
     ans = 0;
     int i, nc2, nc3, nc5, nc7, ub;
     if (pre0)
-        ans += dp(w - 1, 0, 0, 0, 0, 0, true, lim && a[w - 1] == 0);
+        ans += dp(w - 1, 0, 0, 0, 0, true, lim && a[w - 1] == 0);
     if (lim) {
         ub = a[w - 1];
         rep (i, 1, ub) {
@@ -116,7 +118,7 @@ ll dp(int w, int x, int c2, int c3, int c5, int c7, bool pre0, bool lim) {
                 case 8: nc2 = c2 + 3; break;
                 case 9: nc3 = c3 + 2; break;
             }
-            ans += dp(w - 1, i, nc2, nc3, nc5, nc7, false, i == ub);
+            ans += dp(w - 1, nc2, nc3, nc5, nc7, false, i == ub);
         }
     } else {
         rep (i, 1, 9) {
@@ -134,16 +136,16 @@ ll dp(int w, int x, int c2, int c3, int c5, int c7, bool pre0, bool lim) {
                 case 8: nc2 = c2 + 3; break;
                 case 9: nc3 = c3 + 2; break;
             }
-            ans += dp(w - 1, i, nc2, nc3, nc5, nc7, false, false);
+            ans += dp(w - 1, nc2, nc3, nc5, nc7, false, false);
         }
     }
-    return 
-    /*printf("w = %d, x = %d, c2 = %d, c3 = %d, c5 = %d, c7 = %d, pre0 = %d, lim = %d,   ans = ", w,x,c2,c3,c5,c7,(int)pre0,(int)lim),
+    return ans;
+    //printf("w = %d, x = %d, c2 = %d, c3 = %d, c5 = %d, c7 = %d, pre0 = %d, lim = %d,   ans = ", w,x,c2,c3,c5,c7,(int)pre0,(int)lim),
         
-        printf("%lld daze.\n", ans),*/ ans;
+    //    printf("%lld daze.\n", ans), ans;
 }
 ll calc(ll x) {
-    //printf("\n Calcing %lld\n \n", x);
+    // printf("\n Calcing %lld\n \n", x);
     static int n, i, c2, c3, c5, c7;
     static ll ans;
     if (x == 0)
@@ -152,7 +154,7 @@ ll calc(ll x) {
     for (n = 0; x; x /= 10)
         a[n++] = x % 10;
     --n;
-    ans = dp(n, 0, 0, 0, 0, 0, true, a[n] == 0);
+    ans = dp(n, 0, 0, 0, 0, true, a[n] == 0);
     rep (i, 1, a[n]) {
         c2 = c3 = c5 = c7 = 0;
         switch (i) {
@@ -165,16 +167,14 @@ ll calc(ll x) {
             case 8: c2 = 3; break;
             case 9: c3 = 2; break;
         }
-        ans += dp(n, i, c2, c3, c5, c7, false, i == a[n]);
+        ans += dp(n, c2, c3, c5, c7, false, i == a[n]);
     }
-    //printf("CALC %lld = %lld\n", x, ans);
+    // printf("CALC %lld = %lld\n", x, ans);
     return ans;
 }
 int main() {
     static ll l, r, t;
     static int i;
-    freopen("t.in", "r", stdin);
-    freopen("t.out", "w", stdout);
     k = io;
     pow3[0] = 1;
     for (i = 1; ; ++i) {
@@ -198,7 +198,8 @@ int main() {
         pow7[i] = t;
     }
     l = io;
-    io.print(calc(l));
+    r = io;
+    io.print(calc(r - 1) - calc(l - 1));
     //calc(10);
 
     io.flush();
