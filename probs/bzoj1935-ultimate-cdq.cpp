@@ -37,7 +37,6 @@ void cdq(Query *l, Query *r) {
         return;
     Query *mid = l + (r - l) / 2;
     cdq(l, mid);
-    cdq(mid + 1, r);
     for (Query *q = t, *p1 = l, *p2 = mid + 1; q <= t + (r - l); ++q) {
         if ((p1 <= mid && p1->x <= p2->x) || p2 > r) {
             *q = *(p1++);
@@ -54,6 +53,7 @@ void cdq(Query *l, Query *r) {
         if (!q->ans)
             bit.clear(q->y);
     }
+    cdq(mid + 1, r);
 }
 void read(int &x) {
     static char c;

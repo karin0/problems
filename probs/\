@@ -1,0 +1,158 @@
+#include <cstdio>
+#include <cctype>
+#include <cmath>
+#include <algorithm>
+#define rep(__i,__s,__t) for((__i)=(__s);(__i)<=(__t);++(__i))
+#define re(__i,__s,__t) for((__i)=(__s);(__i)<(__t);++(__i))
+#define per(__i,__s,__t) for((__i)=(__s);(__i)>=(__t);--(__i))
+#define pe(__i,__s,__t) for((__i)=(__s);(__i)>(__t);--(__i))
+
+struct IO {
+    static const int L = 1000000;
+    char a[L], b[L], *s, *t, *p;
+    IO() : p(b) {}
+    inline char gc() {
+        if (s == t)
+            t = (s = a) + fread(a, 1, L, stdin);
+        return *s++; // return s == t ? EOF : *s++;
+    }
+    void gs(char *st) {
+        static char c;
+        for (c = gc(); !isgraph(c); c = gc());
+        *st++ = c;
+        for (c = gc(); isgraph(c); c = gc())
+            *st++ = c;
+        *st++ = 0;
+    }
+    template <class T>
+    operator T() {
+        static T x;
+        static char c;
+        static bool neg;
+        for (c = gc(); c != '-' && !isdigit(c); c = gc());
+        if (c == '-')
+            neg = true, c = gc();
+        else
+            neg = false;
+        x = c - '0';
+        for (c = gc(); isdigit(c); c = gc())
+            x = x * 10 + (c - '0');
+        return neg ? -x : x;
+    }
+    inline void pc(const char c) {
+        if (p == b + L)
+            fwrite(p = b, 1, L, stdout);
+        *p++ = c;
+    }
+    template<class T>
+    void print(T x, const bool nl = true) {
+        static char c[30], *q;
+        static T y;
+        if (x == 0)
+            pc('0');
+        else {
+            if (x < 0)
+                pc('-'), x = -x;
+            for (q = c; x; x = y)
+                y = x / 10, *q++ = x - y * 10 + '0';
+            while (q != c)
+                pc(*--q);
+        }
+        if (nl)
+            pc('\n');
+    }
+    void ps(const char *st, const bool nl = true) {
+        while (*st)
+            pc(*st++);
+        if (nl)
+            pc('\n');
+    }
+    inline void flush() const {
+        fwrite(b, 1, p - b, stdout); // p = b;
+    }
+} io;
+
+const int X = 100003, N = 200003, M = 100003, mx = 100000, w = 16;
+struct SegT *nil;
+struct SegT {
+    SegT *lc, *rc;
+    int cnt;
+    SegT() {}
+    SegT(SegT *_lc, SegT *_rc, int _c) : lc(_lc), rc(_rc), cnt(_c) {}
+    SegT *insert(const int x, const int l = 0, const int r = mx) const {
+        if (l == r)
+            return new SegT(nil, nil, cnt + 1);
+        int mid = (l + r) >> 1;
+        if (x <= mid)
+            return new SegT(lc->insert(x, l, mid), rc, cnt + 1);
+        else
+            return new SegT(lc, rc->insert(x, mid + 1, r), cnt + 1);
+    }
+    void *operator new (size_t) {
+        static SegT pool[N * 20], *curr = pool;
+        return curr++;
+    }
+} *segt[N];
+int qres;
+void query(SegT *p, SegT *q, int ql, int qr, int l, int r) { // At q - p
+    if (ql <= l && r <= qr) {
+        qres += q->cnt - p->cnt;
+        return;
+    }
+    int mid = (l + r) >> 1;
+    if (ql <= mid)
+        query(p->lc, q->lc, ql, qr, l, mid);
+    if (qr > mid)
+        query(p->rc, q->rc, ql, qr, mid + 1, r);
+}
+bool query(int l, int r, int ql, int qr) {
+    ql = std::max(ql, 0);
+    qr = std::min(qr, mx);
+    if (ql > qr)
+        return false;
+    qres = 0;
+    query(segt[l - 1], segt[r], ql, qr, 0, mx);
+    return qres;
+}
+bool bit(const int x, const int k) {
+    return (x >> k) & 1;
+}
+void set(int &x, const int k) {
+    x |= 1 << k;
+}
+int solve(int x, int b, int l, int r) {  // max (x xor (a_i + b))
+    static int i, res, csn;
+    res = csn = 0;
+    per (i, w, 0) {
+        if (bit(x, i)) { // x is 1 on i
+            if (query(l, r, csn - b, csn + (1 << i) - 1 - b))
+                set(res, i);
+            else
+                set(csn, i);
+        } else {
+            if (query(l, r, csn + (1 << i) - b, csn + ((1 << i) << 1)  - 1 - b))
+                set(res, i), set(csn, i);
+        }
+    }
+    return res;
+}
+int main() {
+    nil = new SegT;
+    nil->lc = nil->rc = nil;
+
+    static int n, m, x, b, l, i;
+    n = io;
+    m = io;
+    segt[0] = nil;
+    rep (i, 1, n)
+        segt[i] = segt[i - 1]->insert((int)io);
+    while (m--) {
+        x = io;
+        b = io;
+        l = io;
+        io.print(solve(x, b, l, io));
+    }
+
+    io.flush();
+    return 0;
+}

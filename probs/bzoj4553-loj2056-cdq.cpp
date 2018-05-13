@@ -71,50 +71,78 @@ struct IO {
     }
 } io;
 
-const int N = 1000003;
-int n;
-struct Node {
-    int etn, dep, fsum, fcnt, fmn, fmx;
-    struct Edge *e;
-    struct VEdge *ve;
-} g[N];
-struct Edge {
-    Node *v;
-    Edge *e;
-    Edge() {}
-    Edge(Node *_u, Node *_v) : v(_v), e(_u->e) {
-        _u->e = this;
+const int N = 100005;
+inline void chmin(int &x, const int v) {
+    x = std::min(x, v);
+}
+inline void chmax(int &x, const int v) {
+    x = std::max(x, v);
+}
+namespace bit {
+    int n, c[N];
+    inline int lowbit(const int x) {
+        return x & -x;
     }
-    void *operator new () {
-        static Edge pool[N], *curr = pool;
-        return curr++;
+    int query(int i) {
+        static int res;
+        for (res = 0; i > 0; i -= lowbit(i))
+            chmax(res, c[i]);
+        return res;
     }
-};
-struct VEdge {
-    Node *v;
-    VEdge *e;
-    int w;
-} pool[N], *curr = pool;
-namespace vtr {
+    void update(int i, const int x) {
+        for (; i <= n; i += lowbit(i))
+            chmax(c[i], x);
+    }
+    void clear(int i) {
+        for (; i <= n && c[i]; i += lowbit(i)) // ?
+            c[i] = 0;
+    }
+}
+int n, a[N], mn[N], mx[N], ans[N];
+struct Query {
+    int x, y, z;
+    inline bool operator < (const Query &rhs) const {
+        return (y < rhs.y) || (y == rhs.y && x < rhs.x);  // *****
+    }
+} tmp[N];
+void cdq(const int l, const int r) {
+    if (l == r)
+        return;
+    int mid = (l + r) >> 1, i, cnt = 0;
+    cdq(l, mid);
+    for (i = l; i <= mid; ++i)
+        tmp[++cnt] = (Query){i, mx[i], a[i]};
+    for (; i <= r; ++i)
+        tmp[++cnt] = (Query){i, a[i], mn[i]};
+    std::sort(tmp + 1, tmp + cnt + 1);
+    for (i = 1; i <= cnt; ++i) {
+        const Query &q = tmp[i];
+        if (q.x <= mid)
+            bit::update(q.z, ans[q.x]);
+        else
+            chmax(ans[q.x], bit::query(q.z) + 1);   // ******** !
+    }
+    for (i = l; i <= mid; ++i)
+        bit::clear(a[i]);
+    cdq(mid + 1, r);
 }
 int main() {
-    static int m, i, k, u, v;
-    static Node *a[N];
+    static int i, m, x, y;
     n = io;
-    re (i, 1, n) {
-        u = io;
-        v = io;
-        new Edge(&g[u], &g[v]);
-        new Edge(&g[v], &g[u]);
-    }
     m = io;
-    while (m--) {
-        k = io;
-        rep (i, 1, k)
-            a[i] = &g[(int)io];
-        vtree::build();
-        //
+    rep (i, 1, n) {
+        chmax(bit::n, mn[i] = mx[i] = a[i] = io);
+        ans[i] = 1;
     }
+    rep (i, 1, m) {
+        x = io;
+        y = io;
+        chmin(mn[x], y);
+        chmax(mx[x], y);
+    }
+    // f[i] = max{ f[j] + 1 | j < i, mx[j] <= a[i], a[j] <= mn[i] }
+    cdq(1, n);
+    io.print(*std::max_element(ans + 1, ans + n + 1));
 
     io.flush();
     return 0;

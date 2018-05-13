@@ -71,41 +71,35 @@ struct IO {
     }
 } io;
 
-const int N = 502;
-inline void chmax(int& x, const int v) { // *****　&
-    x = std::max(x, v);
-}
-int n, m, a[N], b[N], f[N][N], prev[N][N];
+int n, k, a[100005], b[300], len[300];
 int main() {
-    static int ks, i, j, ans, ai, t, pos;
-    ks = io;
-    while (ks--) {
-        n = io;
-        rep (i, 1, n)
-            a[i] = io;
-        m = io;
-        rep (i, 1, m)
-            b[i] = io;
-        ans = 0;
-        rep (i, 1, n) {
-            ai = a[i];
-            t = 0;
-            pos = 0;
-            rep (j, 1, m) {
-                int &fij = f[i][j];
-                if (ai == b[j])
-                    fij = t + 1, prev[j] = pos;
-                else
-                    fij = f[i - 1][j];
-                chmax(ans, fij);
-                if (b[j] < ai && fij > t)
-                    t = fij, pos = j;
-                // fprintf("f[%d][%d] = %d\n", i,j,fij);
+    static int i, j, l, u, x;
+    n = io;
+    k = io;
+    rep (i, 1, n)
+        a[i] = io;
+    rep (i, 0, 255)
+        b[i] = -1;
+    rep (i, 1, n) {
+        x = a[i];
+        if (b[x] == -1) {
+            l = std::max(0, x - k + 1);
+            while (b[l] != -1) {
+                u = b[l];
+                if (x - u + 1 <= k) {
+                    l = u;
+                    break;
+                }
+                ++l;
             }
+            // printf("i = %d, l = %d\n", i, l);
+            rep (j, l, x)
+                b[j] = l;
+            len[l] = x - l + 1;
         }
-        io.print(ans);
-        if (ks)
-            io.pc('\n');
+        io.print(b[x], false);
+        io.pc(i == n ? '\n' : ' ');
+        continue;
     }
 
     io.flush();
