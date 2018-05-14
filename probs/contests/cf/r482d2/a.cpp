@@ -1,11 +1,15 @@
 #include <cstdio>
 #include <cctype>
+#include <cmath>
 #include <algorithm>
 #define rep(__i,__s,__t) for((__i)=(__s);(__i)<=(__t);++(__i))
 #define re(__i,__s,__t) for((__i)=(__s);(__i)<(__t);++(__i))
 #define per(__i,__s,__t) for((__i)=(__s);(__i)>=(__t);--(__i))
 #define pe(__i,__s,__t) for((__i)=(__s);(__i)>(__t);--(__i))
 
+treasurehunt
+threefriends
+hiCodeforces
 struct IO {
     static const int L = 1000000;
     char a[L], b[L], *s, *t, *p;
@@ -72,7 +76,17 @@ struct IO {
 } io;
 
 int main() {
-    static int i, x;
+    static int i;
+    static long long x;
+    x = (long long)io + 1;
+    if (x == 1)
+        io.print(0);
+    else {
+        if (x % 2 == 0) {
+            io.print(x / 2);
+        } else
+            io.print(x);
+    }
 
     io.flush();
     return 0;
