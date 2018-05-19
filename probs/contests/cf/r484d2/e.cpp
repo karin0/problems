@@ -4,13 +4,9 @@
 #define per(__i,__s,__t) for((__i)=(__s);(__i)>=(__t);--(__i))
 #define pe(__i,__s,__t) for((__i)=(__s);(__i)>(__t);--(__i))
 #ifdef AKARI
-    #define ccc(x) std::cerr << #x " = " << x << "  "
-    #define cccc(x) std::cerr << #x " = " << x << std::endl
-    #define ccccc(x) std::cerr << x << std::endl
+    #define SAY(x) std::cerr << #x " = " << x << std::endl
 #else
-    #define ccc(x) 0
-    #define cccc(x) 0
-    #define ccccc(x) 0
+    #define SAY(x) 0
 #endif
 
 struct IO {
@@ -77,9 +73,74 @@ struct IO {
         fwrite(b, 1, p - b, stdout); // p = b;
     }
 } io;
-
+using std::abs;
+typedef long long ll;
+int g;
+void extgcd(int a, int b, int &x, int &y) {
+    b ? (extgcd(b, a % b, y, x), y -= x * (a / b)) : (g = a, x = 1, y = 0);
+}
+int gcd(int a, int b) {
+    return b ? gcd(b, a % b) : a;
+}
+void ans(int x = -1, int y = -1) {
+    if (x == -1 || y == -1) {
+        io.ps("-1");
+    } else {
+        io.print(x, ' ');
+        io.print(y);
+    }
+}
+int n, m, X0, Y0, vx, vy;
+void anss(int p, int q) {
+    ans((p & 1) * n, (q & 1) * m);
+}
 int main() {
-    static int i, x;
+    static int k, b, p, q;
+    n = io;
+    m = io;
+    X0 = io;
+    Y0 = io;
+    vx = io;
+    vy = io;
+    if (vx == 0) {
+        if (X0 == 0 || X0 == n)
+            ans(X0, vy == 1 ? m : 0);
+        else
+            ans();
+    } else if (vy == 0) {
+        if (Y0 == 0 || Y0 == m)
+            ans(vx == 1 ? n : 0, Y0);
+        else
+            ans();
+    } else {
+        //puts("damn");
+        k = vy / vx;
+        b = Y0 - k * X0;
+        extgcd(m, n, q, p);
+        if (abs(b) % g != 0) {
+            ans(); // puts("no sol");
+        } else {
+            b /= g;
+            m /= g;
+            n /= g;
+            q = ((q % n) + n) % n;
+            p = (1 - q * m) / n;
+            q *= g;
+            p *= g;
+            anss(abs(p), abs(q));
+            /*
+            if (k == 1) {
+                if (n == 1)
+                    ans(n, 0);
+                else if (m == 1)
+                    ans(0, m);
+                else
+                    ans();
+            } else {
+                exgcd(m, n, q, p);
+            }*/
+        }
+    }
 
     io.flush();
     return 0;

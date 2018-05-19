@@ -4,13 +4,9 @@
 #define per(__i,__s,__t) for((__i)=(__s);(__i)>=(__t);--(__i))
 #define pe(__i,__s,__t) for((__i)=(__s);(__i)>(__t);--(__i))
 #ifdef AKARI
-    #define ccc(x) std::cerr << #x " = " << x << "  "
-    #define cccc(x) std::cerr << #x " = " << x << std::endl
-    #define ccccc(x) std::cerr << x << std::endl
+    #define SAY(x) std::cerr << #x " = " << x << std::endl
 #else
-    #define ccc(x) 0
-    #define cccc(x) 0
-    #define ccccc(x) 0
+    #define SAY(x) 0
 #endif
 
 struct IO {
@@ -78,8 +74,25 @@ struct IO {
     }
 } io;
 
+const int N = 5001;
+int n, f[N][N];
+
 int main() {
-    static int i, x;
+    static int m, i, j, l;
+    n = io;
+    rep (i, 1, n)
+        f[i][i] = io;
+    rep (l, 2, n)
+        for (i = 1; (j = i + l - 1) <= n; ++i)
+            f[i][j] = f[i][j - 1] ^ f[i + 1][j];  // important property!
+    rep (l, 2, n)
+        for (i = 1; (j = i + l - 1) <= n; ++i)
+            f[i][j] = std::max(f[i][j], std::max(f[i][j - 1], f[i + 1][j]));
+    m = io;
+    while (m--) {
+        i = io;
+        io.print(f[i][(int)io]);
+    }
 
     io.flush();
     return 0;

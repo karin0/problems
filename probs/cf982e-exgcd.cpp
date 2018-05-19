@@ -4,13 +4,9 @@
 #define per(__i,__s,__t) for((__i)=(__s);(__i)>=(__t);--(__i))
 #define pe(__i,__s,__t) for((__i)=(__s);(__i)>(__t);--(__i))
 #ifdef AKARI
-    #define ccc(x) std::cerr << #x " = " << x << "  "
-    #define cccc(x) std::cerr << #x " = " << x << std::endl
-    #define ccccc(x) std::cerr << x << std::endl
+    #define SAY(x) std::cerr << #x " = " << x << std::endl
 #else
-    #define ccc(x) 0
-    #define cccc(x) 0
-    #define ccccc(x) 0
+    #define SAY(x) 0
 #endif
 
 struct IO {
@@ -77,10 +73,78 @@ struct IO {
         fwrite(b, 1, p - b, stdout); // p = b;
     }
 } io;
-
+using std::abs;
+typedef long long ll;
+ll g;
+void exgcd(ll a, ll b, ll &x, ll &y) {
+    b ? (exgcd(b, a % b, y, x), y -= x * (a / b)) : (g = a, x = 1, y = 0);
+}
+ll gcd(ll a, ll b) {
+    return b ? gcd(b, a % b) : a;
+}
+void ans(ll x = -1, ll y = -1) {
+    if (x == -1 || y == -1) {
+        io.ps("-1");
+    } else {
+        io.print(x, ' ');
+        io.print(y);
+    }
+    io.flush();
+    exit(0);
+}
+ll n, m, X0, Y0, vx, vy;
 int main() {
-    static int i, x;
-
+    static ll p, q, a, b, A, B, rh, n1, m1;
+    n = io;
+    m = io;
+    X0 = io;
+    Y0 = io;
+    vx = io;
+    vy = io;
+    if (vx == 0) {
+        if (X0 == 0 || X0 == n)
+            ans(X0, vy == 1 ? m : 0);
+        ans();
+    }
+    if (vy == 0) {
+        if (Y0 == 0 || Y0 == m)
+            ans(vx == 1 ? n : 0, Y0);
+        ans();
+    }
+    p = vx == 1 ? n - X0 : X0;
+    q = vy == 1 ? m - Y0 : Y0;
+    rh = q - p;
+    if (rh == 0) {
+        a = 0, b = 0;
+        if (vx == 1)
+            ++a;
+        if (vy == 1)
+            ++b;   // ******** this also need to be done here.
+        ans((a & 1ll) * n, (b & 1ll) * m);
+    }
+    exgcd(n, m, A, B); // A = a, B = -b >= 0
+    if (abs(rh) % g != 0)
+        ans();
+    n1 = n / g;
+    m1 = m / g;
+    a = A * (rh / g);
+    b = -B * (rh / g);
+    a = (a % m1 + m1) % m1;   // ***** use m1 = m / gcd(n, m) to construct general solutions
+    b = (a * n - rh) / m;
+	if (b < 0) {
+        SAY(a);
+        SAY(b);
+        SAY("that is bad");
+		b = (b % n1 + n1) % n1;
+		a = (b * m + rh) / n;
+	}
+	SAY(a); SAY(b); SAY(rh); SAY(p); SAY(q); SAY(p + a * n);
+    SAY(q + b * m); SAY("SOLVED");
+    if (vx == 1)
+        ++a;
+    if (vy == 1)
+        ++b;
+    ans((a & 1ll) * n, (b & 1ll) * m);
     io.flush();
     return 0;
 }

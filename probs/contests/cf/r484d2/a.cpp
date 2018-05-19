@@ -4,13 +4,9 @@
 #define per(__i,__s,__t) for((__i)=(__s);(__i)>=(__t);--(__i))
 #define pe(__i,__s,__t) for((__i)=(__s);(__i)>(__t);--(__i))
 #ifdef AKARI
-    #define ccc(x) std::cerr << #x " = " << x << "  "
-    #define cccc(x) std::cerr << #x " = " << x << std::endl
-    #define ccccc(x) std::cerr << x << std::endl
+    #define SAY(x) std::cerr << #x " = " << x << std::endl
 #else
-    #define ccc(x) 0
-    #define cccc(x) 0
-    #define ccccc(x) 0
+    #define SAY(x) 0
 #endif
 
 struct IO {
@@ -78,8 +74,42 @@ struct IO {
     }
 } io;
 
+int n, c0, ans;
+char s[1005];
 int main() {
-    static int i, x;
+    static int i;
+    n = io;
+    io.gs(s + 1);
+    c0 = s[1] == '0';
+    ans = c0;
+    if (n == 1 && c0) {
+            io.ps("No");
+            io.flush();
+            return 0;
+    }
+    if (n >= 2 && s[1] == '0' && s[2] == '0') {
+            io.ps("No");
+            io.flush();
+            return 0;
+    }
+    if (n >= 2 && s[n] == '0' && s[n - 1] == '0') {
+            io.ps("No");
+            io.flush();
+            return 0;
+    }
+    rep (i, 2, n) {
+        if (s[i] == '1' && s[i - 1] == '1') {
+            io.ps("No");
+            io.flush();
+            return 0;
+        }
+        if (s[i] == '0')
+            ++c0;
+        else
+            c0 = 0;
+        ans = std::max(ans, c0);
+    }
+    io.ps(ans <= 2 ? "Yes" : "No");
 
     io.flush();
     return 0;

@@ -1,17 +1,11 @@
-#include <bits/stdc++.h>
+#include <cstdio>
+#include <cctype>
+#include <algorithm>
+#include <cmath>
 #define rep(__i,__s,__t) for((__i)=(__s);(__i)<=(__t);++(__i))
 #define re(__i,__s,__t) for((__i)=(__s);(__i)<(__t);++(__i))
 #define per(__i,__s,__t) for((__i)=(__s);(__i)>=(__t);--(__i))
 #define pe(__i,__s,__t) for((__i)=(__s);(__i)>(__t);--(__i))
-#ifdef AKARI
-    #define ccc(x) std::cerr << #x " = " << x << "  "
-    #define cccc(x) std::cerr << #x " = " << x << std::endl
-    #define ccccc(x) std::cerr << x << std::endl
-#else
-    #define ccc(x) 0
-    #define cccc(x) 0
-    #define ccccc(x) 0
-#endif
 
 struct IO {
     static const int L = 1000000;
@@ -51,7 +45,7 @@ struct IO {
         *p++ = c;
     }
     template<class T>
-    void print(T x, const char end = '\n') {
+    void print(T x, const bool nl = true) {
         static char c[30], *q;
         static T y;
         if (x == 0)
@@ -64,22 +58,63 @@ struct IO {
             while (q != c)
                 pc(*--q);
         }
-        if (end)
-            pc(end);
+        if (nl)
+            pc('\n');
     }
-    void ps(const char *st, const char end = '\n') {
+    void ps(const char *st, const bool nl = true) {
         while (*st)
             pc(*st++);
-        if (end)
-            pc(end);
+        if (nl)
+            pc('\n');
     }
     inline void flush() const {
         fwrite(b, 1, p - b, stdout); // p = b;
     }
 } io;
 
+const int N = 100003;
+int n, siz[N];
+bool rm[N];
+struct Edge {
+    int v;
+    Edge *e;
+} *g[N], pool[N + N], *curr = pool;
+void arc(int u, int v) {
+    g[u] = new (curr++) Edge{v, g[u]};
+    g[v] = new (curr++) Edge{u, g[v]};
+}
+int cnt;
+void dfs1(int u) {
+    siz[u] = 1;
+    for (Edge *e = g[u]; e; e = e->e) if (!siz[e->v]) {
+        dfs1(e->v);
+        siz[u] += siz[e->v];
+    }
+}
+void dfs2(int u, int fa) {
+    if (rm[u])
+        return;
+    ++cnt;
+    for (Edge *e = g[u]; e; e = e->e) if (e->v != fa) {
+        dfs2(e->v, u);
+    }
+}
 int main() {
-    static int i, x;
+    static int i, ans;
+    n = io;
+    re (i, 1, n)
+        arc(io, io);
+    dfs1(1);
+    rep (i, 2, n)
+        if ((siz[i] & 1) == 0)
+            rm[i] = true, ++ans;
+    if (ans == 0) {
+        io.print((n & 1) ? -1 : 0);
+        io.flush();
+        return 0;
+    }
+    dfs2(1, 0);
+    io.print((cnt & 1) ? -1 : ans);
 
     io.flush();
     return 0;

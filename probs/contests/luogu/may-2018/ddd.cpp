@@ -78,8 +78,25 @@ struct IO {
     }
 } io;
 
+int n, m, r[500005], f[500005];
 int main() {
-    static int i, x;
+    static int i, x, y, c;
+    n = io;
+    m = n + n;
+    rep (i, 1, n) {
+        x = io;
+        y = io;
+        r[x] = y;
+        r[y] = x;
+    };
+    rep (i, 2, m) {
+        if (r[i] < i) {
+            if (c - f[r[i]] == 0)
+                ++c;
+        }
+        f[i] = c;
+    }
+    io.print(c - 1);
 
     io.flush();
     return 0;

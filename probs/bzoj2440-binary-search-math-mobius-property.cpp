@@ -4,13 +4,9 @@
 #define per(__i,__s,__t) for((__i)=(__s);(__i)>=(__t);--(__i))
 #define pe(__i,__s,__t) for((__i)=(__s);(__i)>(__t);--(__i))
 #ifdef AKARI
-    #define ccc(x) std::cerr << #x " = " << x << "  "
-    #define cccc(x) std::cerr << #x " = " << x << std::endl
-    #define ccccc(x) std::cerr << x << std::endl
+    #define SAY(x) std::cerr << #x " = " << x << std::endl
 #else
-    #define ccc(x) 0
-    #define cccc(x) 0
-    #define ccccc(x) 0
+    #define SAY(x) 0
 #endif
 
 struct IO {
@@ -78,8 +74,51 @@ struct IO {
     }
 } io;
 
+typedef long long ll;
+const int Q = 40558;
+int pcnt, pri[Q], mu[Q];
+bool np[Q];
+void sieve() {
+    static int i, j;
+    static ll t;
+    static const int n = 40557;
+    mu[1] = 1;
+    rep (i, 2, n) {
+        if (!np[i]) {
+            pri[pcnt++] = i;
+            mu[i] = -1;
+        }
+        for (j = 0; j < pcnt && (t = (ll)i * pri[j]) <= n; ++j) {
+            np[t] = true;
+            if (i % pri[j] == 0) {
+                mu[t] = 0;
+                break;
+            }
+            mu[t] = -mu[i];
+        }
+    }
+}
+int calc(const int n) {
+    static int i, t, res;
+    for (res = 0, i = 1; (t = i * i) <= n; ++i)
+        res += mu[i] * (n / t);
+    return res;
+}
+int solve(const int n) {  // Find min x such that calc(x) = n
+    static int l, r, x;
+    l = 0, r = 1644934081;
+    while (r - l > 1) {
+        x = l + ((r - l) >> 1);
+        (calc(x) < n ? l : r) = x;
+    }
+    return r;
+}
 int main() {
-    static int i, x;
+    static int ks;
+    ks = io;
+    sieve();
+    while (ks--)
+        io.print(solve(io));
 
     io.flush();
     return 0;

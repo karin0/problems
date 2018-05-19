@@ -1,17 +1,10 @@
-#include <bits/stdc++.h>
+#include <cstdio>
+#include <cctype>
+#include <algorithm>
 #define rep(__i,__s,__t) for((__i)=(__s);(__i)<=(__t);++(__i))
 #define re(__i,__s,__t) for((__i)=(__s);(__i)<(__t);++(__i))
 #define per(__i,__s,__t) for((__i)=(__s);(__i)>=(__t);--(__i))
 #define pe(__i,__s,__t) for((__i)=(__s);(__i)>(__t);--(__i))
-#ifdef AKARI
-    #define ccc(x) std::cerr << #x " = " << x << "  "
-    #define cccc(x) std::cerr << #x " = " << x << std::endl
-    #define ccccc(x) std::cerr << x << std::endl
-#else
-    #define ccc(x) 0
-    #define cccc(x) 0
-    #define ccccc(x) 0
-#endif
 
 struct IO {
     static const int L = 1000000;
@@ -51,7 +44,7 @@ struct IO {
         *p++ = c;
     }
     template<class T>
-    void print(T x, const char end = '\n') {
+    void print(T x, const bool nl = true) {
         static char c[30], *q;
         static T y;
         if (x == 0)
@@ -64,22 +57,31 @@ struct IO {
             while (q != c)
                 pc(*--q);
         }
-        if (end)
-            pc(end);
+        if (nl)
+            pc('\n');
     }
-    void ps(const char *st, const char end = '\n') {
+    void ps(const char *st, const bool nl = true) {
         while (*st)
             pc(*st++);
-        if (end)
-            pc(end);
+        if (nl)
+            pc('\n');
     }
     inline void flush() const {
         fwrite(b, 1, p - b, stdout); // p = b;
     }
 } io;
 
+int n, a[1005];
 int main() {
     static int i, x;
+    n = io;
+    rep (i, 1, n)
+        a[i] = io;
+    std::sort(a + 1, a + n + 1);
+    if (n & 1)
+        io.print(a[n / 2 + 1]);
+    else
+        io.print(a[n / 2]);
 
     io.flush();
     return 0;

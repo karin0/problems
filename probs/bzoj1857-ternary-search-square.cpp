@@ -4,13 +4,9 @@
 #define per(__i,__s,__t) for((__i)=(__s);(__i)>=(__t);--(__i))
 #define pe(__i,__s,__t) for((__i)=(__s);(__i)>(__t);--(__i))
 #ifdef AKARI
-    #define ccc(x) std::cerr << #x " = " << x << "  "
-    #define cccc(x) std::cerr << #x " = " << x << std::endl
-    #define ccccc(x) std::cerr << x << std::endl
+    #define SAY(x) std::cerr << #x " = " << x << std::endl
 #else
-    #define ccc(x) 0
-    #define cccc(x) 0
-    #define ccccc(x) 0
+    #define SAY(x) 0
 #endif
 
 struct IO {
@@ -77,10 +73,78 @@ struct IO {
         fwrite(b, 1, p - b, stdout); // p = b;
     }
 } io;
+const double eps = 1e-7;
 
+int dcmp(const double x) {
+    return fabs(x) <= eps ? 0 : (x > 0 ? 1 : -1);
+}
+struct Vec {
+    double x, y;
+    Vec() {}
+    Vec(const double _x, const double _y) : x(_x), y(_y) {}
+    Vec(const Vec &p, const Vec &q) : x(q.x - p.x), y(q.y - p.y) {}
+    void rd() {
+        x = static_cast<int>(io);
+        y = static_cast<int>(io);
+    }
+    double norm() {
+        return x * x + y * y;
+    }
+    Vec operator * (const double a) {
+        return Vec(a * x, a * y);
+    }
+    Vec operator / (const double a) {
+        return Vec(x / a, y / a);
+    }
+    Vec operator + (const Vec &a) {
+        return Vec(a.x + x, a.y + y);
+    }
+} a, b, c, d;
+double dist(const Vec &p, const Vec &q) {
+    return sqrt(Vec(p, q).norm());
+}
+int v0, v1, v2;
+double l1, l2;
+double calc2(const double d1, const double d2) {
+    return dist(dcmp(l1) == 0 ? a : (a + (Vec(a, b) * d1) / l1), dcmp(l2) == 0 ? d : (d + (Vec(d, c) * d2) / l2)) / v0 + d1 / v1 + d2 / v2;
+}
+double calc1(const double d1) {
+    static double l, r, rx, x, t;
+    l = 0;
+    r = l2;
+    while (r - l > eps) {
+        t = (r - l) / 3;
+        x = l + t;
+        rx = r - t;
+        if (calc2(d1, x) < calc2(d1, rx))
+            r = rx;
+        else
+            l = x;
+    }
+    return calc2(d1, (l + r) / 2);
+}
 int main() {
-    static int i, x;
+    static double l, r, rx, x, t;
+    a.rd();
+    b.rd();
+    c.rd();
+    d.rd();
+    v1 = io;
+    v2 = io;
+    v0 = io;
+    r = l1 = dist(a, b);
+    l2 = dist(c, d);
+    l = 0;
+    while (r - l > eps) {
+        t = (r - l) / 3;
+        x = l + t;
+        rx = r - t;
+        if (calc1(x) < calc1(rx))
+            r = rx;
+        else
+            l = x;
+    }
+    printf("%.2f\n", calc1((l + r) / 2));
 
-    io.flush();
     return 0;
 }

@@ -78,8 +78,15 @@ struct IO {
     }
 } io;
 
+typedef long long ll;
+int n;
+ll s;
 int main() {
-    static int i, x;
+    static int i;
+    n = io;
+    rep (i, 1, n)
+        s += (ll)io;
+    io.ps((s & 1) ? "Alice" : "Bob");
 
     io.flush();
     return 0;

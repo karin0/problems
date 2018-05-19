@@ -1,17 +1,10 @@
-#include <bits/stdc++.h>
+#include <cstdio>
+#include <cctype>
+#include <algorithm>
 #define rep(__i,__s,__t) for((__i)=(__s);(__i)<=(__t);++(__i))
 #define re(__i,__s,__t) for((__i)=(__s);(__i)<(__t);++(__i))
 #define per(__i,__s,__t) for((__i)=(__s);(__i)>=(__t);--(__i))
 #define pe(__i,__s,__t) for((__i)=(__s);(__i)>(__t);--(__i))
-#ifdef AKARI
-    #define ccc(x) std::cerr << #x " = " << x << "  "
-    #define cccc(x) std::cerr << #x " = " << x << std::endl
-    #define ccccc(x) std::cerr << x << std::endl
-#else
-    #define ccc(x) 0
-    #define cccc(x) 0
-    #define ccccc(x) 0
-#endif
 
 struct IO {
     static const int L = 1000000;
@@ -51,7 +44,7 @@ struct IO {
         *p++ = c;
     }
     template<class T>
-    void print(T x, const char end = '\n') {
+    void print(T x, const bool nl = true) {
         static char c[30], *q;
         static T y;
         if (x == 0)
@@ -64,22 +57,82 @@ struct IO {
             while (q != c)
                 pc(*--q);
         }
-        if (end)
-            pc(end);
+        if (nl)
+            pc('\n');
     }
-    void ps(const char *st, const char end = '\n') {
+    void ps(const char *st, const bool nl = true) {
         while (*st)
             pc(*st++);
-        if (end)
-            pc(end);
+        if (nl)
+            pc('\n');
     }
     inline void flush() const {
         fwrite(b, 1, p - b, stdout); // p = b;
     }
 } io;
 
+typedef long long ll;
+const int w = 50;
+template <class T>
+inline bool bit(const T x, const int k) {
+    return (x >> k) & 1;
+}
+namespace basis {
+    ll b[w + 3], v[w + 3];
+    int vcnt, i;
+    bool zero;
+    void insert(ll x) {
+        static int j;
+        // printf("Ins %lld\n", x);
+        for (i = w; i >= 0; --i) {
+            if (!x)
+                return;
+            if (!bit(x, i))
+                continue;
+            if (b[i])
+                x ^= b[i];
+            else {
+                for (j = 0; j < i; ++j)
+                    if (bit(x, j))
+                        x ^= b[j];
+                for (j = i + 1; j <= w; ++j)
+                    if (bit(b[j], i))
+                        b[j] ^= x;
+                b[i] = x;
+                return;
+            }
+        }
+    }
+    void init(const int n) {
+        rep (i, 0, w) if (b[i])
+            v[vcnt++] = b[i];
+        zero = n > vcnt;
+    }
+    ll query(ll k) {
+        static ll res;
+        if (zero) {
+            if (k == 1)
+                return 0;
+            --k;
+        }
+        if (k >= (1ll << vcnt))   // ****
+            return -1;
+        for (res = 0, i = 0; i < vcnt; ++i) if (bit(k, i))
+            res ^= v[i];
+        return res;
+    }
+}
 int main() {
-    static int i, x;
+    static int n, i, m;
+    n = io;
+    // printf("n = %d\n", n);
+    rep (i, 1, n)
+        basis::insert((ll)io);
+    basis::init(n);
+    m = io;
+    // printf("m = %d\n", m);
+    rep (i, 1, m)
+        io.print(basis::query((ll)io));
 
     io.flush();
     return 0;

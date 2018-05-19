@@ -4,13 +4,9 @@
 #define per(__i,__s,__t) for((__i)=(__s);(__i)>=(__t);--(__i))
 #define pe(__i,__s,__t) for((__i)=(__s);(__i)>(__t);--(__i))
 #ifdef AKARI
-    #define ccc(x) std::cerr << #x " = " << x << "  "
-    #define cccc(x) std::cerr << #x " = " << x << std::endl
-    #define ccccc(x) std::cerr << x << std::endl
+    #define SAY(x) std::cerr << #x " = " << x << std::endl
 #else
-    #define ccc(x) 0
-    #define cccc(x) 0
-    #define ccccc(x) 0
+    #define SAY(x) 0
 #endif
 
 struct IO {
@@ -78,8 +74,40 @@ struct IO {
     }
 } io;
 
+const int N = 200003;
+int n; // w[N], f[N], rf[N];
+std::queue<int> a0;
+std::stack<int> a1;
+std::pair<int, int> ha[N];
+char s[N + N];
 int main() {
-    static int i, x;
+    static int m, i, x;
+    n = io;
+    rep (i, 1, n)
+        ha[i] = std::make_pair((int)io, i);
+    std::sort(ha + 1, ha + n + 1);
+    rep (i, 1, n) {
+        a0.push(ha[i].second);
+        /*
+        f[ha[i].second] = i;
+        rf[i] = ha[i].second;
+        a0.push(i);*/
+    }
+    io.gs(s + 1);
+    m = n + n;
+    rep (i, 1, m) {
+        if (s[i] == '0') {
+            x = a0.front();
+            a0.pop();
+            io.print(x, i == m ? '\n' : ' ');
+            a1.push(x);
+        } else {
+            x = a1.top();
+            a1.pop();
+            io.print(x, i == m ? '\n' : ' ');
+        }
+    }
+
 
     io.flush();
     return 0;

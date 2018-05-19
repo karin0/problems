@@ -76,25 +76,30 @@ set sts=4
 au FocusLost * silent! wa
 au InsertLeave * silent! wa
 
+let mapleader=','
 nmap ; :
 nmap <SPACE> :nohl <CR>
-nmap , :w <CR>
-vmap / <LEADER>c<SPACE>gv
+nmap ' :w <CR>
+vmap / <leader>c<SPACE>gv
 vnoremap < <gv
 vnoremap > >gv
+vnoremap <leader>y "+ygv
+vnoremap <leader>p "+pgv
 " nmap . <ESC>:%s/。/．/g<CR><ESC>:%s/-- more --/--more--/g<CR>
-autocmd FileType c,cpp imap {<CR> {<CR>}<LEFT><CR><UP><TAB>
+autocmd FileType c,cc,cpp imap {<CR> {<CR>}<LEFT><CR><UP><TAB>
 
 
 set encoding=utf8
 nmap <F3> :vsp term://zsh <CR>
-autocmd FileType c,cpp nmap <F4> :vsp term://g++ % -O2 -g -std=c++11 -Wall -Wshadow -o ./a.ao <CR>
-autocmd FileType c,cpp nmap <F5> :vsp term://g++ % -O2 -std=c++11 -Wall -Wshadow -o ./a.ao&&./a.ao <CR>
-autocmd FileType c,cpp nmap <c-F4> :vsp term://g++ % -O2 -g -Wall -Wshadow -o ./a.ao <CR>
-autocmd FileType c,cpp nmap <c-F5> :vsp term://g++ % -O2 -Wall -Wshadow -o ./a.ao&&./a.ao <CR>
-nmap <F6> :vsp term://ipython -i % <CR>
-autocmd FileType c,cpp nmap <F7> :vsp term://g++ % -g -std=c++11 -Wall -Wshadow -o ./a.ao&&gdb a.ao <CR>
-autocmd FileType c,cpp nmap <c-F7> :vsp term://g++ % -g -Wall -Wshadow -o ./a.ao&&gdb a.ao <CR>
+autocmd FileType cpp nmap <F4> :vsp term://g++ % -O2 -DAKARI -std=c++11 -Wall -Wshadow -o ./a.ao <CR>
+autocmd FileType cpp nmap <F5> :vsp term://g++ % -O2 -DAKARI -std=c++11 -Wall -Wshadow -o ./a.ao&&./a.ao <CR>
+autocmd FileType cpp nmap <c-F4> :vsp term://g++ % -O2 -DAKARI -Wall -Wshadow -o ./a.ao <CR>
+autocmd FileType cpp nmap <c-F5> :vsp term://g++ % -O2 -DAKARI -Wall -Wshadow -o ./a.ao&&./a.ao <CR>
+autocmd FileType python  nmap <F5> :vsp term://ipython % <CR>
+autocmd FileType python  nmap <F7> :vsp term://ipython % -i <CR>
+nmap <F6> :vsp term://ipython -i ~/cfgs/vf6.py <CR>
+autocmd FileType cpp nmap <F7> :vsp term://g++ % -g -DAKARI -std=c++11 -Wall -Wshadow -o ./a.ao&&gdb a.ao <CR>
+autocmd FileType cpp nmap <c-F7> :vsp term://g++ % -g -DAKARI -Wall -Wshadow -o ./a.ao&&gdb a.ao <CR>
 nmap <F8> ggVG"+y
 
 syntax enable
@@ -114,3 +119,4 @@ source ~/.vimrc_background
 endif
 
 hi Normal ctermbg=NONE
+hi Comment ctermfg=6
