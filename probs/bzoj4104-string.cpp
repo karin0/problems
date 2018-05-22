@@ -17,9 +17,6 @@ struct IO {
     static const int L = 1000000;
     char a[L], b[L], *s, *t, *p;
     IO() : p(b) {}
-    ~IO() {
-        flush();
-    }
     char gc() {
         if (s == t)
             t = (s = a) + fread(a, 1, L, stdin);
@@ -81,8 +78,24 @@ struct IO {
     }
 } io;
 
+const int N = 200003;
+int n, a[N];
+std::pair<int, int> b[N];
 int main() {
     static int i, x;
+    n = io;
+    i = io;
+    rep (i, 1, n + 1) {
+        b[i] = std::make_pair(a[i] = io, i);
+        if (a[i] == 0)
+            x = i;
+    }
+    std::sort(b + 1, b + n + 2);
+    rep (i, 1, n) {
+        x = b[x].second;
+        io.print(a[x], i == n ? '\n' : ' ');
+    }
 
+    io.flush();
     return 0;
 }

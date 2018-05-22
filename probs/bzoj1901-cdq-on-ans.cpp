@@ -81,8 +81,100 @@ struct IO {
     }
 } io;
 
+const int N = 10002, M = 10002;
+struct Oper {
+    int l, r, x, *ans;
+} q;
+int n, td[2][M * 3], cd[2];
+namespace bit {
+    int c[N];
+    void add(int i, int x) {
+        for (; i <= n; i += i & -i)
+            c[i] += x;
+    }
+    int query(int i) {
+        static int res;
+        for (res = 0; i; i -= i & -i)
+            res += c[i];
+        return res;
+    }
+}
+void cdq(std::queue<Oper> &a, int l, int r) {
+    if (a.empty() || l >= r)
+        return;
+    if (l + 1 == r) {
+        while (!a.empty()) {
+            q = a.front();
+            a.pop();
+            if (q.ans)
+                *q.ans = l;
+        }
+        return;
+    }
+    int mid = l + ((r - l) >> 1), t, rt;
+    std::queue<Oper> a1, a2;
+    while (!a.empty()) {
+        q = a.front();
+        a.pop();
+        if (q.ans) {
+            t = bit::query(q.r) - bit::query(q.l - 1);
+            if (t + 1 <= q.x)  // ***
+                q.x -= t, a2.push(q);
+            else
+                a1.push(q); 
+        } else {
+            t = (rt = q.r) ? -1 : 1;
+            if (q.x < mid) {
+                bit::add(q.l, t);
+                td[rt][++cd[rt]] = q.l;
+                a1.push(q);
+            } else
+                a2.push(q);
+        }
+    }
+    rep (t, 1, cd[0])
+        bit::add(td[0][t], -1);
+    rep (t, 1, cd[1])
+        bit::add(td[1][t], 1);
+    cd[0] = cd[1] = 0;
+    cdq(a1, l, mid);
+    cdq(a2, mid, r);
+}
 int main() {
-    static int i, x;
+    static int m, mx, i, seq[N], ans[M], qc;
+    std::queue<Oper> a;
+    n = io;
+    m = io;
+    rep (i, 1, n) {
+        q.l = i;
+        q.r = 0;
+        q.x = seq[i] = io;
+        mx = std::max(mx, q.x);
+        a.push(q);
+    }
+    rep (i, 1, m) {
+        static char opt[5];
+        io.gs(opt);
+        if (opt[0] == 'C') {
+            q.l = io;
+            q.r = 1;
+            q.x = seq[q.l];
+            a.push(q);
+            q.r = 0;
+            q.x = seq[q.l] = io;
+            mx = std::max(mx, q.x);
+            a.push(q);
+        } else {
+            q.l = io;
+            q.r = io;
+            q.x = io;
+            q.ans = &ans[++qc];
+            a.push(q);
+        }
+    }
+    cdq(a, 0, mx + 3);
+    rep (i, 1, qc)
+        io.print(ans[i]);
 
     return 0;
 }
