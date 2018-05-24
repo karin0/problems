@@ -79,8 +79,84 @@ struct IO {
     }
 } io;
 
+const int U = 10000001, mo = 1000000007, inv6 = 166666668;
+int mck(ll x) {
+    return x >= mo ? x - mo : x;
+}
+int mck2(ll x) {
+    if (x < 0)
+        return x + mo;
+    return x >= mo ? x - mo : x;
+}
+int pri[U], pcnt, mu[U];
+bool np[U];
+void sieve(const int n) {
+    static int i, j;
+    static ll v;
+    mu[1] = 1;
+    rep (i, 2, n) {
+        if (!np[i]) {
+            pri[++pcnt] = i;
+            mu[i] = -1;
+        }
+        for (j = 1; j <= pcnt && (v = (ll)i * pri[j]) <= n; ++j) {
+            np[v] = false;
+            if (i % pri[j] == 0) {
+                mu[v] = 0;
+                break;
+            }
+            mu[v] = -mu[i];
+        }
+    }
+    rep (i, 2, n)
+        mu[i] += mu[i - 1];
+}
+ll qpow(ll a, ll n) {
+    static ll res;
+    for (res = 1; n; n >>= 1, a = a * a % mo)
+        if (n & 1)
+            res = res * a % mo;
+    return res;
+}
+ll inv(ll x) {
+    return qpow(x % mo, mo - 2);
+}
+ll m;
+ll f(const ll n) {
+    return mck2((m - 1) * ((n & 1) ? -1 : 1) + qpow(m - 1, n));
+}
+ll cres;
+void calc(ll n, ll d, ll phi) {
+    
+}
+int solve(ll n, int a) {
+    static int i, ni;
+    static ll m, c2, x, t;
+    for (i = 1; i <= a; i = ni + 1) {
+        x = a / i;
+        ni = a / x;
+        t = x * x % mo * (mu[ni] - mu[i - 1]) % mo;
+        c2 = mck(c2 + t);
+        m = mck(m + t * x % mo);
+    }
+    m = mck(m + (c2 * 3 + 2) % mo);
+    m = m * inv6 % mo;
+    x = calc(n);
+    if (n % mo)
+        return x * inv(n) % mo;
+    return x * inv(n / mo) / mo % mo;
+    
+}
 int main() {
-    static int i, x;
+    static int ks, i;
+    static ll n;
+    sieve(10000000);
+    ks = io;
+    // cccc(qpow(6, mo - 2));
+    while (ks--) {
+        n = io;
+        io.print(solve(n, io));
+    }
 
     return 0;
 }
