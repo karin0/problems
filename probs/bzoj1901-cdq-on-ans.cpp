@@ -112,6 +112,7 @@ void cdq(std::queue<Oper> &a, int l, int r) {
         return;
     }
     int mid = l + ((r - l) >> 1), t, rt;
+    cd[0] = cd[1] = 0;
     std::queue<Oper> a1, a2;
     while (!a.empty()) {
         q = a.front();
@@ -132,11 +133,13 @@ void cdq(std::queue<Oper> &a, int l, int r) {
                 a2.push(q);
         }
     }
+    /* int i;
+    rep (i, 1, n)
+        bit::c[i] = 0; */
     rep (t, 1, cd[0])
         bit::add(td[0][t], -1);
     rep (t, 1, cd[1])
         bit::add(td[1][t], 1);
-    cd[0] = cd[1] = 0;
     cdq(a1, l, mid);
     cdq(a2, mid, r);
 }
@@ -149,6 +152,7 @@ int main() {
         q.l = i;
         q.r = 0;
         q.x = seq[i] = io;
+        // q.ans = NULL; // ******
         mx = std::max(mx, q.x);
         a.push(q);
     }
@@ -159,6 +163,7 @@ int main() {
             q.l = io;
             q.r = 1;
             q.x = seq[q.l];
+            q.ans = NULL;  // *******
             a.push(q);
             q.r = 0;
             q.x = seq[q.l] = io;
@@ -172,7 +177,7 @@ int main() {
             a.push(q);
         }
     }
-    cdq(a, 0, mx + 3);
+    cdq(a, 0, mx + 1);
     rep (i, 1, qc)
         io.print(ans[i]);
 
