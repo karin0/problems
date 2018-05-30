@@ -78,8 +78,8 @@ au InsertLeave * silent! wa
 
 let mapleader=','
 nmap ; :
-nmap <SPACE> :nohl <CR>
-nmap ' :w <CR>
+nmap <SPACE> :w <CR>
+nmap ' :nohl <CR>
 vmap / <leader>c<SPACE>gv
 vnoremap < <gv
 vnoremap > >gv
