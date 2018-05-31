@@ -28,7 +28,7 @@ int mck(const int x) {
 int mck2(const int x) {
     return x < 0 ? x + mo : x;
 }
-namespace ntt {
+namespace ntt {   // this is bad one
     ll w[N], wi[N], ni;
     int n, rev[N];
     void init(const int _n) {
@@ -45,7 +45,7 @@ namespace ntt {
             rev[i] = (rev[i >> 1] >> 1) | ((i & 1) << (k - 1));
         }
     }
-    void dft(int *a) {
+    void dft(int *a, ll *w = ntt::w) {
         static int i, l, m, t, x, *p;
         re (i, 0, n)
             if (i < rev[i])
@@ -63,9 +63,7 @@ namespace ntt {
     }
     void idft(int *a) {
         static int i;
-        std::swap(w, wi);
-        dft(a);
-        std::swap(w, wi);
+        dft(a, wi);
         re (i, 0, n)
             a[i] = a[i] * ni % mo;
     }

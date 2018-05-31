@@ -4,8 +4,8 @@
 #define per(__i,__s,__t) for((__i)=(__s);(__i)>=(__t);--(__i))
 #define pe(__i,__s,__t) for((__i)=(__s);(__i)>(__t);--(__i))
 #ifdef AKARI
-    #define ccc(x) std::cerr << #x " = " << x << "  "
-    #define ccf(x) std::cerr << #x " = " << x << std::endl
+    #define ccc(x) std::cerr << #x " = " << (x) << "  "
+    #define ccf(x) std::cerr << #x " = " << (x) << std::endl
     #define cccc(...) fprintf(stderr, __VA_ARGS__)
 #else
     #define ccc(x) 0

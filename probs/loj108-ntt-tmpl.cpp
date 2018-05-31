@@ -101,7 +101,7 @@ int mck(const int x) {
 int mck2(const int x) {
     return x < 0 ? x + mo : x;
 }
-void dft(int *a, const int n) {
+void dft(int *a, const int n, ll *w = ::w) {
     int i, l, m, t;
     for (i = 0; i < n; ++i)
         if (i < rev[i])
@@ -118,9 +118,7 @@ void dft(int *a, const int n) {
     }
 }
 void idft(int *a, const int n) {
-    std::swap(w, winv);
-    dft(a, n);
-    std::swap(w, winv);
+    dft(a, n, winv);
     ll ninv = qpow(n, mo - 2);
     for (int i = 0; i < n; ++i)
         a[i] = a[i] * ninv % mo;
