@@ -28,7 +28,7 @@ int mck(const int x) {
 int mck2(const int x) {
     return x < 0 ? x + mo : x;
 }
-namespace ntt {   // this is bad one
+namespace ntt {
     ll w[N], wi[N], ni;
     int n, rev[N];
     void init(const int _n) {
