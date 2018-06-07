@@ -214,6 +214,7 @@ void calc(const int *a, const int n, const int k, int *res) { // l = expand(t + 
     }
     res[0] = n;
 }
+
 int main() {
     static int i, n, m, l, t, u, k, a[N], b[N], a1[N], b1[N], nmi;
     /*
