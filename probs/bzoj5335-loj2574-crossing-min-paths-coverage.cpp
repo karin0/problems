@@ -30,6 +30,7 @@ namespace g {
         Edge(Node *_v, Edge *_e, int _c) : v(_v), e(_e), c(_c) {}
     } pool[N * N * 2], *curr = pool;
     void arc(Node *u, Node *v, int c) {
+        cccc("Arcing %ld to %ld\n",u-g,v-g);
         u->e = new (curr++) Edge(v, u->e, c);
         v->e = new (curr++) Edge(u, v->e, 0);
         (u->e->r = v->e)->r = u->e;
@@ -45,7 +46,7 @@ namespace g {
         while (!q.empty()) {
             u = q.front();
             q.pop();
-            for (e = u->e; e; e = e->e) if (e->c && (v = e->v)->d == 0) {
+            for (e = u->e; e; e = e->e) if (e->c > 0 && (v = e->v)->d == 0) {
                 v->d = u->d + 1;
                 if (v == t)
                     return true;
@@ -58,7 +59,7 @@ namespace g {
         if (u == t || l == 0)
             return l;
         int f, res = 0;
-        for (Edge *&e = u->c; e; e = e->e) if (e->c && e->v->d == u->d + 1 && (f = dfs(e->v, std::min(l, e->c))) > 0) {
+        for (Edge *&e = u->c; e; e = e->e) if (e->c > 0 && e->v->d == u->d + 1 && (f = dfs(e->v, std::min(l, e->c))) > 0) {
             e->c -= f;
             e->r->c += f;
             l -= f;
@@ -68,10 +69,10 @@ namespace g {
         }
         return res;
     }
-    int res;
-    void dinic() {
-        while (bfs())
-            res += dfs(s, inf);
+    int dinic() {
+        static int res;
+        for (res = 0; bfs(); res += dfs(s, inf));
+        return res;
     }
     void reset() {
         static Node *u;
@@ -80,46 +81,58 @@ namespace g {
             u->e = NULL;
     }
 }
+int n, m, w[N];
 void arc(int u, int v) {
-    g::arc(&g::g[u], &g::g[v], 1);
+    g::arc(&g::g[u], &g::g[n + v], 1);
 }
-int ind[N], w[N];
-std::vector<int> og[N];
-void dfs(const int u) {
-    for (std::vector<int>::iterator it = g[u].begin(); it != g[u].end; ++it) {
-        
-    }
-}
+std::bitset<N> d[N];
 bool check(const int x) {
-    static int i;
+    static int i, j, cnt;
+    ccc(x);
+    g::reset();
     rep (i, 1, n)
-        if (ind[i] == 0)
-            dfs(i);
-    
+        g::arc(g::s, &g::g[i], 1), g::arc(&g::g[n + i], g::t, 1);
+    cnt = 0;
+    rep (i, 1, n) if (w[i] < x) {
+        ++cnt;
+        rep (j, 1, n)
+            if (i != j && w[j] < x && d[i].test(j))
+                arc(i, j), ccc(i), ccf(j);
+    }
+    return cnt - g::dinic() <= m;
 }
 int main() {
-    static int n, m, i, x, rha[N], *end, l = 1, r;
+    static int i, j, x, rha[N], *end, l = 1, r;
     m = (int)io + 1;
     n = io;
+    g::n = n * 2 + 2;
+    g::t = g::g + g::n;
+    g::s = g::t - 1;
     rep (i, 1, n) {
         rha[i] = w[i] = io;
         x = io;
-        while (x--) {
-            r = io;
-            ++ind[r];
-            og[i].push_back(r);
-        }
+        d[i].set(i);
+        while (x--)
+            d[i].set(io);
     }
+    rep (i, 1, n)
+        rep (j, 1, n)
+            if (d[j].test(i))
+                d[j] |= d[i];
     std::sort(rha + 1, rha + n + 1);
     end = std::unique(rha + 1, rha + n + 1);
-    r = end - rha - 1;
+    r = end - rha + 1;
     rep (i, 1, n)
         w[i] = std::lower_bound(rha + 1, end, w[i]) - rha;
     while (r - l > 1) {
         x = (l + r) >> 1;
         (check(x) ? l : r) = x;
     }
-    io.print(rha[l]);
+    ccc(l); ccf(r);
+    if (l >= end - rha)
+        io.ps("AK");
+    else
+        io.print(rha[l]);
 
     return 0;
 }
