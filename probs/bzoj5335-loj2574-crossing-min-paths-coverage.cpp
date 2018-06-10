@@ -30,7 +30,7 @@ namespace g {
         Edge(Node *_v, Edge *_e, int _c) : v(_v), e(_e), c(_c) {}
     } pool[N * N * 2], *curr = pool;
     void arc(Node *u, Node *v, int c) {
-        cccc("Arcing %ld to %ld\n",u-g,v-g);
+        // cccc("Arcing %ld to %ld\n",u-g,v-g);
         u->e = new (curr++) Edge(v, u->e, c);
         v->e = new (curr++) Edge(u, v->e, 0);
         (u->e->r = v->e)->r = u->e;
@@ -88,16 +88,15 @@ void arc(int u, int v) {
 std::bitset<N> d[N];
 bool check(const int x) {
     static int i, j, cnt;
-    ccc(x);
+    // ccc(x);
     g::reset();
-    rep (i, 1, n)
-        g::arc(g::s, &g::g[i], 1), g::arc(&g::g[n + i], g::t, 1);
     cnt = 0;
     rep (i, 1, n) if (w[i] < x) {
         ++cnt;
+        g::arc(g::s, &g::g[i], 1), g::arc(&g::g[n + i], g::t, 1);
         rep (j, 1, n)
             if (i != j && w[j] < x && d[i].test(j))
-                arc(i, j), ccc(i), ccf(j);
+                arc(i, j); // ccc(i), ccf(j);
     }
     return cnt - g::dinic() <= m;
 }
@@ -128,7 +127,7 @@ int main() {
         x = (l + r) >> 1;
         (check(x) ? l : r) = x;
     }
-    ccc(l); ccf(r);
+    // ccc(l); ccf(r);
     if (l >= end - rha)
         io.ps("AK");
     else
