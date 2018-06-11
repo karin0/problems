@@ -16,8 +16,21 @@ struct IO{static const int L=1000000;char a[L],b[L],*s,*t,*p,c;IO():p(b){}~IO(){
 typedef long long ll;
 
 int main() {
-    static int i, x;
-
+    static int i, n;
+    static char a[200], r[3];
+    io.gs(a + 1);
+    n = strlen(a + 1);
+    re (i, 2, n) {
+        r[0] = a[i - 1];
+        r[1] = a[i];
+        r[2] = a[i + 1];
+        std::sort(r, r + 3);
+        if (r[0] == 'A' && r[1] == 'B' && r[2] == 'C') {
+            io.ps("Yes");
+            return 0;
+        }
+    }
+    io.ps("No");
     return 0;
 }
 

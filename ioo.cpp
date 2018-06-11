@@ -8,9 +8,9 @@
     #define ccf(x) std::cerr << #x " = " << (x) << std::endl
     #define cccc(...) fprintf(stderr, __VA_ARGS__)
 #else
-    #define ccc(x) 0
-    #define ccf(x) 0
-    #define cccc(...) 0
+    #define ccc(x)
+    #define ccf(x)
+    #define cccc(...)
 #endif
 struct IO {
     static const int L = 1000000;

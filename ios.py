@@ -18,4 +18,13 @@ with open('ioo.cpp', 'r') as f:
     s = f.read()
 l = s.find('struct IO');
 r = s.find('} io;') + 5;
-print(s[:l] + strip(s[l:r]) + s[r:])
+t = s[:l] + strip(s[l:r]) + s[r:]
+while True:
+    p = t.find('/*')
+    if p == -1:
+        break
+    else:
+        q = t.find('*/')
+        t = t[:p] + t[q + 2:]
+
+print(t)
