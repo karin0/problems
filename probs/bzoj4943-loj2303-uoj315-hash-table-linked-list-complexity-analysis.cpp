@@ -25,13 +25,21 @@ struct Node {
     int cnt;
     Node() {}
     Node(Node *_n, ull _v) : nxt(_n), ha(_v), cnt(1) {}
+    Node(ull _v) : nxt(NULL), ha(_v), cnt(1) {}
 } *ht[hmo], pool[N * K + K * K * 500], *curr = pool;
-void ins(const ull ha) {
+/*void ins(const ull ha) {
     Node *&h = ht[ha % hmo];
     for (Node *o = h; o; o = o->nxt)
         if (o->ha == ha)
             return (void)(++o->cnt);
-    h = new (curr++) Node(h, ha);  // rule #20
+    h = new (curr++) Node(h, ha);
+} */
+void ins(const ull ha) {
+    Node **o = &ht[ha % hmo];
+    for (; *o; o = &(*o)->nxt)
+        if ((*o)->ha == ha)
+            return (void)(++(*o)->cnt);
+    *o = new (curr++) Node(ha);
 }
 void del(const ull ha) {
     for (Node *o = ht[ha % hmo]; o; o = o->nxt)
