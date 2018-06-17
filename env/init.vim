@@ -142,17 +142,17 @@ endif
 " set clipboard+=unnamedplus
 " colorscheme desert
 
-if filereadable(expand("~/.vimrc_background"))
-    let base16colorspace=256
-source ~/.vimrc_background
-endif
+" if filereadable(expand("~/.vimrc_background"))
+    " let base16colorspace=256
+" source ~/.vimrc_background
+" endif
 
 hi Normal guibg=NONE ctermbg=NONE
 hi Comment ctermfg=6
 
-" set background=dark " for the dark version
+set background=dark " for the dark version
 " set background=light " for the light version
-" colorscheme one
+colorscheme one
 
-" nmap <F9> :call one#highlight('Normal', '', 'none', 'none')<CR> 
-" call feedkeys("\<F9>")
+nmap <F9> :call one#highlight('Normal', '', 'none', 'none')<CR> 
+call feedkeys("\<F9>")

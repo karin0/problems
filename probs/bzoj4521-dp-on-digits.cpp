@@ -5,7 +5,7 @@
 typedef long long ll;
 const ll MIN = 10000000000;
 ll f[11][11][10][2][2][2][2];
-int a[11], pow2[];
+int a[11];
 ll dp(int w, int lim, int last, bool eqn, bool tri, bool q4, bool q8) {
     ll &ans = f[w][lim][last][eqn][tri][q4][q8];
     if (ans != -1)

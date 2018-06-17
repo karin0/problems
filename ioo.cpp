@@ -8,12 +8,16 @@
     #define ccf(x) std::cerr << #x " = " << (x) << std::endl
     #define cccc(...) fprintf(stderr, __VA_ARGS__)
 #else
-    #define ccc(x)
-    #define ccf(x)
-    #define cccc(...)
+    #define ccc(x) 0
+    #define ccf(x) 0
+    #define cccc(...) 0
 #endif
+typedef long long ll;
+typedef const int cint;
+typedef const long long cll;
+typedef const char cchar;
 struct IO {
-    static const int L = 1000000;
+    static cint L = 1000000;
     char a[L], b[L], *s, *t, *p, c;
     IO() : p(b) {}
     ~IO() {
@@ -22,7 +26,7 @@ struct IO {
     char gc() {
         if (s == t)
             t = (s = a) + fread(a, 1, L, stdin);
-        return *s++; /* return s == t ? EOF : *s++; */
+        return s == t ? EOF : *s++;
     }
     void gs(char *st) {
         for (c = gc(); !isgraph(c); c = gc());
@@ -43,13 +47,13 @@ struct IO {
             x = x * 10 + (c - '0');
         return neg ? -x : x;
     }
-    void pc(const char ch) {
+    void pc(cchar ch) {
         if (p == b + L)
             fwrite(p = b, 1, L, stdout);
         *p++ = ch;
     }
     template<class T>
-    void print(T x, const char end = '\n') {
+    void print(T x, cchar end = '\n') {
         static char cs[30], *q;
         static T y;
         if (x == 0)
@@ -65,17 +69,20 @@ struct IO {
         if (end)
             pc(end);
     }
-    void ps(const char *st, const char end = '\n') {
+    void ps(cchar *st, cchar end = '\n') {
         while (*st)
             pc(*st++);
         if (end)
             pc(end);
     }
+    void pd(cint x) {
+        pc('0' + x);
+        pc('\n');
+    }
 } io;
-typedef long long ll;
 
 int main() {
-    static int i, x;
+    static int i;
 
     return 0;
 }
