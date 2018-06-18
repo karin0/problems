@@ -3,6 +3,7 @@
 #define re(__i,__s,__t) for((__i)=(__s);(__i)<(__t);++(__i))
 #define per(__i,__s,__t) for((__i)=(__s);(__i)>=(__t);--(__i))
 #define pe(__i,__s,__t) for((__i)=(__s);(__i)>(__t);--(__i))
+#define forn(__e,__u) for(Edge *__e=__u->e;__e;__e=__e->e)
 #ifdef AKARI
     #define ccc(x) std::cerr << #x " = " << (x) << "  "
     #define ccf(x) std::cerr << #x " = " << (x) << std::endl

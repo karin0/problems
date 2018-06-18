@@ -70,7 +70,7 @@ void dfs1(Node *u, Node *f) {
             u->ms = std::max(u->ms, e->v->siz);
         }
 }
-Node *center(Node *u) i;{
+Node *center(Node *u) {
     cnt = 0;
     dfs1(u, NULL);
     Node *res = u;
