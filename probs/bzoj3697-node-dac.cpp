@@ -19,7 +19,7 @@ typedef const long long cll;
 typedef const char cchar;
 struct IO{static cint L=1000000;char a[L],b[L],*s,*t,*p,c;IO():p(b){}~IO(){fwrite(b,1,p-b,stdout);}char gc(){if(s==t)t=(s=a)+fread(a,1,L,stdin);return s==t?EOF:*s++;}void gs(char*st){for(c=gc();!isgraph(c);c=gc());*st++=c;for(c=gc();isgraph(c);c=gc())*st++=c;*st++=0;}template<class T>operator T(){static T x;static bool neg;for(c=gc();c!='-'&&!isdigit(c);c=gc());if((neg=c=='-'))c=gc();x=c-'0';for(c=gc();isdigit(c);c=gc())x=x*10+(c-'0');return neg?-x:x;}void pc(cchar ch){if(p==b+L)fwrite(p=b,1,L,stdout);*p++=ch;}template<class T>void print(T x,cchar end='\n'){static char cs[30],*q;static T y;if(x==0)pc('0');else{if(x<0)pc('-'),x=-x;for(q=cs;x;x=y)y=x/10,*q++=x-y*10+'0';while(q!=cs)pc(*--q);}if(end)pc(end);}void ps(cchar*st,cchar end='\n'){while(*st)pc(*st++);if(end)pc(end);}void pd(cint x){pc('0'+x);pc('\n');}}io;
 
-const int N = 200002, K = 1000002, inf = 0x3f3f3f3f;
+const int N = 100002;
 void chmin(int &x, const int v) {
     x = std::min(x, v);
 }
@@ -27,7 +27,7 @@ void chmax(int &x, const int v) {
     x = std::max(x, v);
 }
 struct Node {
-    bool done;
+    bool done, flag;
     int dep, sum, siz, ms;
     struct Edge *e;
 } g[N];
@@ -40,7 +40,7 @@ struct Edge {
         _u->e = this;
     }
 } pool[N * 2], *curr = pool;
-int n, k, ans = inf, tim, f[K];
+int n, k, ans, tim;
 Node *seq[N];
 void dfs0(Node *u, Node *fa) {
     seq[++tim] = u;
@@ -50,16 +50,6 @@ void dfs0(Node *u, Node *fa) {
         dfs0(e->v, u);
         u->siz += e->v->siz;
         chmax(u->ms, e->v->siz);
-    }
-}
-void dfs1(Node *u, Node *fa) {
-    seq[++tim] = u;
-    if (f[k - u->sum] < inf)
-        chmin(ans, u->dep + f[k - u->sum]);
-    pern (e, u) if (!e->v->done && e->v != fa && (ll)u->sum + e->w <= k) {
-        e->v->dep = u->dep + 1;
-        e->v->sum = u->sum + e->w;
-        dfs1(e->v, u);
     }
 }
 Node *center(Node *u) {
@@ -72,6 +62,23 @@ Node *center(Node *u) {
     rep (i, 2, tim) if ((t = std::max(seq[i]->ms, u->siz - seq[i]->siz)) < rv)
         rv = t, res = seq[i];
     return res;
+}
+template <class T, const int mini, const int maxi>
+struct array {
+    T a[maxi - mini + 1];
+    T *operator () () {
+        return a + mini;
+    }
+};
+array<int, -N, N> vis[2];
+void dfs1(Node *u, Node *fa) {
+    seq[++tim] = u;
+    pern (e, u) if (!e->v->done && e->v != fa && (ll)u->sum + e->w <= k) {
+        e->v->dep = u->dep + 1;
+        e->v->sum = u->sum + e->w;
+        dfs1(e->v, u);
+    }
+    assert(u <= fa);
 }
 void calc(Node *u) {
     static int i, ot;

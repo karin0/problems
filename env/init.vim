@@ -91,8 +91,8 @@ set ts=4
 set sts=4
 " set cursorline
 
-au FocusLost * silent! wa
-au InsertLeave * silent! wa
+" au FocusLost * silent! wa
+" au InsertLeave * silent! wa
 
 let mapleader=','
 nmap ; :

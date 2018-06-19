@@ -19,55 +19,32 @@ typedef const long long cll;
 typedef const char cchar;
 struct IO{static cint L=1000000;char a[L],b[L],*s,*t,*p,c;IO():p(b){}~IO(){fwrite(b,1,p-b,stdout);}char gc(){if(s==t)t=(s=a)+fread(a,1,L,stdin);return s==t?EOF:*s++;}void gs(char*st){for(c=gc();!isgraph(c);c=gc());*st++=c;for(c=gc();isgraph(c);c=gc())*st++=c;*st++=0;}template<class T>operator T(){static T x;static bool neg;for(c=gc();c!='-'&&!isdigit(c);c=gc());if((neg=c=='-'))c=gc();x=c-'0';for(c=gc();isdigit(c);c=gc())x=x*10+(c-'0');return neg?-x:x;}void pc(cchar ch){if(p==b+L)fwrite(p=b,1,L,stdout);*p++=ch;}template<class T>void print(T x,cchar end='\n'){static char cs[30],*q;static T y;if(x==0)pc('0');else{if(x<0)pc('-'),x=-x;for(q=cs;x;x=y)y=x/10,*q++=x-y*10+'0';while(q!=cs)pc(*--q);}if(end)pc(end);}void ps(cchar*st,cchar end='\n'){while(*st)pc(*st++);if(end)pc(end);}void pd(cint x){pc('0'+x);pc('\n');}}io;
 
-const int N = 200003;
-ll a[N], ss[N], k, ans;
-int n, nxt[N];
-ll sum(int l, int r) {
-    return ss[l] - ss[r + 1];
+int gcd(int a, int b) {
+    return b ? gcd(b, a % b) : a;
 }
+int l, r, x, y, t;
 int main() {
-    static int i, llp;
-    n = io; k = io;
-    rep (i, 1, n) {
-        a[i] = io;
-        if (a[i] > 1) {
-            nxt[llp] = i;
-            llp = i;
-        }
+    static int i, j, ol;
+    static ll ans;
+    ol = io; r = io; x = io; y = io;
+    if (y % x != 0)
+        return io.ps("0"), 0;
+    l = ol / x;
+    if (l * x < ol)
+        ++l; // **** ceil it or fst
+    r /= x;
+    y /= x;
+    // ccc(l), ccc(r), ccf(y);
+    for (i = std::max(l, 1); i <= r && i * i < y; ++i) if (y % i == 0) { // *** use max here instead of changing l, or fst
+        j = y / i;
+        if (j < l || j > r)
+            continue;
+        if (gcd(i, j) == 1)
+            ++ans;
     }
-    llp = 0;
-    per (i, n, 1) {
-        if (a[i] == 1)
-            nxt[i] = llp;
-        else 
-            llp = i;
-    }
-    ss[n + 1] = 0;
-    per (i, n, 1)
-        ss[i] = ss[i + 1] + a[i];
-
-    static ll p, s, lim, lp;
-    static int j, lj;
-    rep (i, 1, n) {
-        p = 1;
-        j = a[i] == 1 ? nxt[i] : i;
-        lim = k * ss[i];
-        lj = a[i] == 1 ? i : 0;
-        for (; j; j = nxt[j]) {
-            if (p > lim / a[j])
-                break;
-            lp = p;
-            p = p * a[j];
-            s = sum(i, j);
-            if (p == k * s)
-                ++ans;
-            if (lj && j - lj > 1) {
-                if (sum(i, lj) <= lp && lp < s)
-                    ++ans;
-            }
-            lj = j;
-        }
-    }
+    ans *= 2;
+    if (y == 1 && l <= 1 && 1 <= r) // *** check range here, or fst
+        ++ans;
     io.print(ans);
 
     return 0;

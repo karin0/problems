@@ -1,6 +1,6 @@
 #include <cstdio>
 #include <algorithm>
-#define MAXN 200010
+#define MAXN 20001
 #define LEAST -2147483640
 using std::lower_bound;
 int st_val[MAXN], st_ind[MAXN];
@@ -16,8 +16,6 @@ void insert(int x) {
 int query(int l) {
     return -(st_val[lower_bound(st_ind + 1, st_ind + top + 1, cnt - l + 1) - st_ind]);
 }
-
-
 int main() {
     int q;
     scanf("%d%d", &q, &mod);
