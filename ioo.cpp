@@ -1,17 +1,20 @@
 #include <bits/stdc++.h>
-#define rep(__i,__s,__t) for((__i)=(__s);(__i)<=(__t);++(__i))
-#define re(__i,__s,__t) for((__i)=(__s);(__i)<(__t);++(__i))
-#define per(__i,__s,__t) for((__i)=(__s);(__i)>=(__t);--(__i))
-#define pe(__i,__s,__t) for((__i)=(__s);(__i)>(__t);--(__i))
-#define koishi(__e,__u) for(Edge *__e=__u->e;__e;__e=__e->e)
+#define rep(i_,s_,t_) for((i_)=(s_);(i_)<=(t_);++(i_))
+#define re(i_,s_,t_) for((i_)=(s_);(i_)<(t_);++(i_))
+#define per(i_,s_,t_) for((i_)=(s_);(i_)>=(t_);--(i_))
+#define pe(i_,s_,t_) for((i_)=(s_);(i_)>(t_);--(i_))
+#define koishi(e_,u_) for(Edge *e_=(u)_->e;e_;e_=e_->e)
 #ifdef AKARI
-    #define ccc(x) std::cerr << #x " = " << (x) << "  "
-    #define ccf(x) std::cerr << #x " = " << (x) << std::endl
-    #define cccc(...) fprintf(stderr, __VA_ARGS__)
+    void c_() { std::cerr << "\033[39;0m" << std::endl; }
+    template<typename T, typename... Args>
+    void c_(T a, Args... args) { std::cerr << a << ", "; c_(args...); }
+    #define ccc(args...) std::cerr << "\033[32;1m" << #args << "  =  ", c_(args)
+    #define ccd(args...) std::cerr << "\033[32;1m", c_(args)
+    #define ccf(args...) fprintf(stderr, args)
 #else
-    #define ccc(x) 0
-    #define ccf(x) 0
-    #define cccc(...) 0
+    #define ccc(...) 0
+    #define ccd(...) 0
+    #define ccf(...) 0
 #endif
 typedef long long ll;
 typedef const int cint;
@@ -19,62 +22,70 @@ typedef const long long cll;
 typedef const char cchar;
 struct IO {
     static cint L = 1000000;
-    char a[L], b[L], *s, *t, *p, c;
-    IO() : p(b) {}
+    char a[L], b[L], *s, *t, *z, c;
+    IO() : z(b) {}
     ~IO() {
-        fwrite(b, 1, p - b, stdout); /* p = b; */
+        fl();
     }
     char gc() {
         if (s == t)
             t = (s = a) + fread(a, 1, L, stdin);
         return s == t ? EOF : *s++;
     }
-    void gs(char *st) {
-        for (c = gc(); !isgraph(c); c = gc());
-        *st++ = c;
-        for (c = gc(); isgraph(c); c = gc())
-            *st++ = c;
-        *st++ = 0;
-    }
     template <class T>
     operator T() {
         static T x;
-        static bool neg;
+        static bool f;
         for (c = gc(); c != '-' && !isdigit(c); c = gc());
-        if ((neg = c == '-'))
+        if ((f = c == '-'))
             c = gc();
         x = c - '0';
         for (c = gc(); isdigit(c); c = gc())
             x = x * 10 + (c - '0');
-        return neg ? -x : x;
+        return f ? -x : x;
     }
-    void pc(cchar ch) {
-        if (p == b + L)
-            fwrite(p = b, 1, L, stdout);
-        *p++ = ch;
+    void gs(char *q) {
+        for (c = gc(); !isgraph(c); c = gc());
+        *q++ = c;
+        for (c = gc(); isgraph(c); c = gc())
+            *q++ = c;
+        *q++ = 0;
+    }
+    char gg() {
+        for (c = gc(); !isgraph(c); c = gc());
+        return c;
+    }
+    void pc(cchar q) {
+        if (z == b + L)
+            fwrite(z = b, 1, L, stdout);
+        *z++ = q;
+    }
+    void fl() {
+        fwrite(b, 1, z - b, stdout);
+        z = b;
     }
     template<class T>
-    void print(T x, cchar end = '\n') {
-        static char cs[30], *q;
+    void operator () (T x, cchar e = '\n') {
+        static char r[30], *q;
         static T y;
         if (x == 0)
             pc('0');
         else {
             if (x < 0)
                 pc('-'), x = -x;
-            for (q = cs; x; x = y)
+            for (q = r; x; x = y)
                 y = x / 10, *q++ = x - y * 10 + '0';
-            while (q != cs)
+            while (q != r)
                 pc(*--q);
         }
-        if (end)
-            pc(end);
+        if (e)
+            pc(e);
     }
-    void ps(cchar *st, cchar end = '\n') {
-        while (*st)
-            pc(*st++);
-        if (end)
-            pc(end);
+    void ps(cchar *q, cchar e = '\n') {
+        while (*q)
+            pc(*q++);
+        if (e)
+            pc(e);
     }
     void pd(cint x) {
         pc('0' + x);
@@ -82,8 +93,11 @@ struct IO {
     }
 } io;
 
+const int N = 0;
+
 int main() {
     static int i;
 
     return 0;
 }
+

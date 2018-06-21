@@ -76,7 +76,7 @@ set t_vb=
 set termguicolors
 
 set autoread
-set autowrite
+" set autowrite
 
 set ignorecase
 set hlsearch
@@ -147,12 +147,21 @@ endif
 " source ~/.vimrc_background
 " endif
 
-hi Normal guibg=NONE ctermbg=NONE
-hi Comment ctermfg=6
+" hi Normal guibg=NONE ctermbg=NONE
+" hi Comment ctermfg=6
 
 set background=dark " for the dark version
 " set background=light " for the light version
 colorscheme one
 
-nmap <F9> :call one#highlight('Normal', '', 'none', 'none')<CR> 
+" let mycol='485c39'
+nmap <F9> :call one#highlight('Normal', '', 'none', 'none')<CR>
+            " \ :call one#highlight('vimComment', mycol, 'none', 'none')<CR>
+            " \ :call one#highlight('vimLineComment', mycol, 'none', 'none')<CR>
+            " \ :call one#highlight('LineNr', 'ffffff', 'none', 'none')<CR>
 call feedkeys("\<F9>")
+
+" Output the current syntax group
+" nnoremap <f10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
+" \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
+" \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<cr>

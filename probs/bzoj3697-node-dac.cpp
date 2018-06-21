@@ -34,7 +34,7 @@ struct Edge {
         _u->e = this;
     }
 } pool[N * 2], *curr = pool;
-int n, tim, sseq[N];
+int n, tim, smn, smx;
 ll ans;
 void dfs0(Node *u, Node *fa) {
     seq[++tim] = u;
@@ -68,10 +68,11 @@ class RA {
 RA<bool, -N, N> vis;
 RA<int, -N, N> of[2], f[2];
 void dfs1(Node *u, Node *fa) {
-    sseq[++tim] = u->sum;
     bool flag = vis[u->sum];
     ++f[flag][u->sum];
     vis[u->sum] = true;
+    smx = std::max(smx, u->sum);
+    smn = std::min(smn, u->sum);
     pern (e, u) if (!e->v->done && e->v != fa) {
         e->v->dep = u->dep + 1;
         e->v->sum = u->sum + e->w;
@@ -80,35 +81,29 @@ void dfs1(Node *u, Node *fa) {
     vis[u->sum] = flag;
 }
 void calc(Node *u) {
-    static int i;
+    static int i, gmn, gmx;
     tim = 0;
     of[0][0] = 1;
+    gmn = n; gmx = -n;
     pern (e, u) if (!e->v->done) {
         e->v->dep = 1;
         e->v->sum = e->w;
-        int ot = tim;
+        smn = n;
+        smx = -n;
         dfs1(e->v, NULL);
+        gmx = std::max(gmx, smx);
+        gmn = std::min(gmn, smn);
         ans += (ll)(of[0][0] - 1) * f[0][0];  // ****
-        rep (i, ot + 1, tim) {
-            int x = sseq[i];
-            if (vis[x])
-                continue;
-            vis[x] = true;
-            ans += (ll)f[0][x] * of[1][-x] + (ll)f[1][x] * (of[0][-x] + of[1][-x]);
-        }
-        rep (i, ot + 1, tim)
-            vis[sseq[i]] = false;
-        rep (i, ot + 1, tim) {
-            int x = sseq[i];
-            if (f[0][x] || f[1][x]) {
-                of[0][x] += f[0][x];
-                of[1][x] += f[1][x];
-                f[0][x] = f[1][x] = 0;
-            }
+        rep (i, smn, smx)
+            ans += (ll)f[0][i] * of[1][-i] + (ll)f[1][i] * (of[0][-i] + of[1][-i]);
+        rep (i, smn, smx) {
+            of[0][i] += f[0][i];
+            of[1][i] += f[1][i];
+            f[0][i] = f[1][i] = 0;
         }
     }
-    rep (i, 1, tim)
-        of[0][sseq[i]] = of[1][sseq[i]] = 0;
+    rep (i, gmn, gmx)
+        of[0][i] = of[1][i] = 0;
 }
 void solve(Node *u) {
     u = center(u);
