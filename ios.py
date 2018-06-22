@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import sys
 def strip(s):
     a = [t.strip() for t in s.split('\n')]
     r = ''
@@ -14,7 +15,7 @@ def strip(s):
     return ''.join(a)
 
 # use raw string
-with open('ioo.cpp', 'r') as f:
+with open(sys.argv[1], 'r') as f:
     s = f.read()
 l = s.find('struct IO');
 r = s.find('} io;') + 5;

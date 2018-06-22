@@ -23,17 +23,6 @@ typedef const char cchar;
 struct IO{static cint L=1000000;char a[L],b[L],*s,*t,*z,c;IO():z(b){}~IO(){fl();}char gc(){if(s==t)t=(s=a)+fread(a,1,L,stdin);return s==t?EOF:*s++;}template<class T>operator T(){static T x;static bool f;for(c=gc();c!='-'&&!isdigit(c);c=gc());if((f=c=='-'))c=gc();x=c-'0';for(c=gc();isdigit(c);c=gc())x=x*10+(c-'0');return f?-x:x;}void gs(char*q){for(c=gc();!isgraph(c);c=gc());*q++=c;for(c=gc();isgraph(c);c=gc())*q++=c;*q++=0;}char gg(){for(c=gc();!isgraph(c);c=gc());return c;}void pc(cchar q){if(z==b+L)fwrite(z=b,1,L,stdout);*z++=q;}void fl(){fwrite(b,1,z-b,stdout);z=b;}template<class T>void operator()(T x,cchar e='\n'){static char r[30],*q;static T y;if(x==0)pc('0');else{if(x<0)pc('-'),x=-x;for(q=r;x;x=y)y=x/10,*q++=x-y*10+'0';while(q!=r)pc(*--q);}if(e)pc(e);}void ps(cchar*q,cchar e='\n'){while(*q)pc(*q++);if(e)pc(e);}void pd(cint x){pc('0'+x);pc('\n');}}io;
 
 const int N = 500007;
-/*template <class T, int S>
-struct Pool {
-    T pool[S], *curr, *rpool[S], **rcurr;
-    Pool() : curr(pool), rcurr(rpool) {}
-    T *operator () () {
-        return rcurr > rpool ? --rcurr : curr++;
-    }
-    void collect(T *p) {
-        rcurr++ = p;
-    }
-} pool; */
 using std::max;
 int max(const int a, const int b, const int c) { return max(max(a, b), c); }
 struct Node *rt;
@@ -56,10 +45,11 @@ struct Node {
         tflip = tcov = false;
         lc = rc = NULL; // new 出来的
     }
-    ~Node() {
+    /* ~Node() {
         if (lc) delete lc;
         if (rc) delete rc;
-    }
+    } */
+    void collect();
     bool rel() const { return fa && this == fa->ch[1]; }
     static void link(Node *o, Node *f, const bool r) {
         if (o) o->fa = f;
@@ -167,11 +157,23 @@ struct RangeSelector {
     }
 } range;
 int a[N];
+template <class T, int S>
+struct Pool {
+    T pool[S], *curr, *rpool[S], **rcurr;
+    Pool() : curr(pool), rcurr(rpool) {}
+    T *operator () () {
+        return rcurr > rpool ? *(--rcurr) : curr++;
+    }
+    void collect(T *p) {
+        *(rcurr++) = p;
+    }
+};
+Pool<Node, N> pool;
 Node *build(const int l, const int r, Node *f) {
     if (l > r)
         return NULL;
     int mid = (l + r) >> 1;
-    Node *o = new Node(a[mid], f);
+    Node *o = new (pool()) Node(a[mid], f);
     if (l != r) {
         o->ch[0] = build(l, mid - 1, o);
         o->ch[1] = build(mid + 1, r, o);
@@ -193,10 +195,15 @@ void insert(const int i, const int n) {
     o->maintain();
     range.maintain();
 }
+void Node::collect() {
+    if (lc) lc->collect();
+    if (rc) rc->collect();
+    pool.collect(this);
+}
 void remove(const int l, const int r) {
     Node *&o = range(l, r);
     // ccc(o->sum, o->x, rt->siz);
-    delete o;
+    o->collect();
     o = NULL;
     range.maintain();
     // ccc(rt->siz);

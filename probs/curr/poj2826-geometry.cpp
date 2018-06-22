@@ -113,7 +113,7 @@ int main() {
     while (ks--) {
         a.rd();
         b.rd();
-        printf("%.2f\n", solve(a, b));
+        printf("%.5f\n", solve(a, b));
     }
 
     return 0;
