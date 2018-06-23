@@ -20,7 +20,6 @@ typedef long long ll;
 typedef const int cint;
 typedef const long long cll;
 typedef const char cchar;
-#define desu << '\n'
 struct IO {
     static cint L = 1000000;
     char a[L], b[L], r[30], *s, *t, *z, *j, c;
@@ -32,28 +31,24 @@ struct IO {
         return s == t ? EOF : *s++;
     }
     template <class T>
-    IO &operator >> (T &x) {
+    operator T() {
         for (c = gc(); c != '-' && !isdigit(c); c = gc());
         if ((f = c == '-')) c = gc();
-        x = c - '0';
+        T x = c - '0';
         for (c = gc(); isdigit(c); c = gc())
             x = x * 10 + (c - '0');
-        if (f) x = -x;
-        return *this;
+        return f ? -x : x;
     }
-    IO &operator >> (char *q) {
+    void gs(char *q) {
         for (c = gc(); !isgraph(c); c = gc());
         *q++ = c;
         for (c = gc(); isgraph(c); *q++ = c, c = gc());
         *q++ = 0;
-        return *this;
     }
-    IO &operator >> (char &q) {
-        for (q = gc(); !isgraph(q); q = gc());
-        return *this;
+    char gg() {
+        for (c = gc(); !isgraph(c); c = gc());
+        return c;
     }
-    template <class T>
-    operator T () { T x; *this >> x; return x; }
     void pc(cchar q) {
         if (z == b + L) fwrite(z = b, 1, L, stdout);
         *z++ = q;
@@ -63,24 +58,19 @@ struct IO {
         z = b;
     }
     template<class T>
-    IO &operator << (T x) {
+    void operator () (T x, cchar e = '\n') {
         if (x == 0) pc('0');
         else {
             if (x < 0) pc('-'), x = -x;
-            T y;
-            for (j = r; x; x = y)
+            T y; for (j = r; x; x = y)
                 y = x / 10, *j++ = x - y * 10 + '0';
             while (j != r) pc(*--j);
         }
-        return *this;
+        if (e) pc(e);
     }
-    IO &operator << (cchar *q) {
+    void ps(cchar *q, cchar e = '\n') {
         while (*q) pc(*q++);
-        return *this;
-    }
-    IO &operator << (cchar q) {
-        pc(q);
-        return *this;
+        if (e) pc(e);
     }
 } io;
 
