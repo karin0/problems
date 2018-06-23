@@ -47,21 +47,22 @@ int main() {
             continue;
         }
         if (!cnt) continue;
-        int dv = 0;
+        int dv = 0, t = ok - m;
         bool f = false;
         re (i, l, r) {
             if (a[i] & j) f = !f;
-            if (f && !flag[i]) ++dv;
+            if (f && !flag[i] && ++dv > t)
+                goto ex;
         }
-        if (ok - dv >= m) {
-            f = false;
-            re (i, l, r) {
-                if (a[i] & j) f = !f;
-                if (f) flag[i] = true;
-            }
-            ok -= dv;
-        } else
-            ans |= j;
+        f = false;
+        re (i, l, r) {
+            if (a[i] & j) f = !f;
+            if (f) flag[i] = true;
+        }
+        ok -= dv;
+        continue;
+ex:
+        ans |= j;
     }
     io << ans daze;
     // io << ok;
