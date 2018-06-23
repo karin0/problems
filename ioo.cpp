@@ -101,7 +101,7 @@ struct IO {
     IO &operator << (d<double> x) {
         if (x.x < 0) pc('-'), x.x = -x.x;
         int w = floor(x.x);
-        *this << (w = floor(x.x));
+        *this << w;
         pc('.');
         int e = (x.x - w) * pow(10, x.l + 1);
         if (e % 10 >= 5)
