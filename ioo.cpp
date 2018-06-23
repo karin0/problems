@@ -44,16 +44,16 @@ struct IO {
         if (f) x = -x;
         return *this;
     }
-    IO &operator >> (char *q) {
+    IO &operator >> (char *x) {
         char c = gc();
         for (; !isgraph(c); c = gc());
-        *q++ = c;
-        for (c = gc(); isgraph(c); *q++ = c, c = gc());
-        *q++ = 0;
+        *x++ = c;
+        for (c = gc(); isgraph(c); *x++ = c, c = gc());
+        *x++ = 0;
         return *this;
     }
-    IO &operator >> (char &q) {
-        for (q = gc(); !isgraph(q); q = gc());
+    IO &operator >> (char &x) {
+        for (x = gc(); !isgraph(x); x = gc());
         return *this;
     }
     template <class T>
