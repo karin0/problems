@@ -18,7 +18,7 @@ def strip(s):
 with open(sys.argv[1], 'r') as f:
     s = f.read()
 l = s.find('struct IO');
-r = s.find('} io;') + 5;
+r = s.rfind('};') + 2;
 t = s[:l] + strip(s[l:r]) + s[r:]
 while True:
     p = t.find('/*')
