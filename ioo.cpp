@@ -76,15 +76,15 @@ struct IO {
         fwrite(b, 1, z - b, stdout);
         z = b;
     }
-    template <class T, cint l>
+    template <class T>
     struct d {
         T x;
-        d(const T x_) : x(x_) {}
+        cint l;
+        d(const T x_, cint l_) : x(x_), l(l_) {}
+        operator T& () { return x; }
     };
-    template <class T, cint l>
-    static d<T, l> dio(const T x) { return d<T, l>(x); }
-    template <cint l>
-    static d<double, l> dio(const float x) { return d<double, l>(x); }
+    template <class T>
+    static d<T> dio(const T x, cint l) { return d<T>(x, l); }
     template <class T>
     IO &operator << (T x) {
         if (x == 0) pc('0');
@@ -97,34 +97,31 @@ struct IO {
         }
         return *this;
     }
-    template <class T, int l>
-    IO &operator << (d<T, l> x) {
-        if (x.x == 0) re (i, 0, l) pc('0');
+    template <class T>
+    IO &operator << (d<T> x) {
+        if (x == 0) re (i, 0, x.l) pc('0');
         else {
-            if (x.x < 0) pc('-'), x.x = -x.x;
-            T y; char *j = r; int l_ = l;
-            for (; x.x; x.x = y, --l_)
-                y = x.x / 10, *j++ = x.x - y * 10 + '0';
+            if (x < 0) pc('-'), x.x = -x;
+            T y; char *j = r; int l_ = x.l;
+            for (; x; x.x = y, --l_)
+                y = x / 10, *j++ = x - y * 10 + '0';
             for (; l_ > 0; pc('0'), --l_);
             while (j != r) pc(*--j);
         }
         return *this;
     }
-    template <cint l>
-    IO &operator << (d<double, l> x) {
-        if (std::isnan(x.x)) return *this << 'n' << 'a' << 'n';
-        if (std::isinf(x.x)) return *this << 'i' << 'n' << 'f';
-        if (x.x < 0) pc('-'), x.x = -x.x;
-        int w = floor(x.x);
+    IO &operator << (d<double> x) {
+        if (std::isnan(x)) return *this << 'n' << 'a' << 'n';
+        if (std::isinf(x)) return *this << 'i' << 'n' << 'f';
+        if (x < 0) pc('-'), x.x = -x;
+        int w = floor(x);
         *this << w;
         pc('.');
-        int e = (x.x - w) * p_[l];
-        if (e % 10 >= 5) e /= 10, ++e;
-        else e /= 10;
-        return *this << d<int, l>(e);
+        int e = (x - w) * p_[x.l], u = e / 10;
+        if (e - u * 10 >= 5) ++u;
+        return *this << d<int>(u, x.l);
     }
-    IO &operator << (const float x) { return *this << d<double, 6>(x); }
-    IO &operator << (const double x) { return *this << d<double, 6>(x); }
+    IO &operator << (const double x) { return *this << d<double>(x, 6); }
     IO &operator << (char *x) {
         while (*x) pc(*x++);
         return *this;
@@ -142,6 +139,7 @@ IO<1000000> io;
 const int N = 100003;
 
 int main() {
+    io << io.dio<double>(-0.36, 1);
 
     return 0;
 }
