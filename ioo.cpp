@@ -23,6 +23,7 @@ typedef const int cint;
 typedef const long long cll;
 typedef const char cchar;
 #define daze << '\n'
+const int p_[] = {10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000};
 template <cint L>
 struct IO {
     char a[L], b[L], r[30], *s, *t, *z, c;
@@ -75,15 +76,15 @@ struct IO {
         fwrite(b, 1, z - b, stdout);
         z = b;
     }
-    template <class T>
+    template <class T, cint l>
     struct d {
         T x;
-        int l;
-        d(const T x_, cint l_) : x(x_), l(l_) {}
+        d(const T x_) : x(x_) {}
     };
-    template <class T>
-    static d<T> dio(const T x, const int l) { return d<T>(x, l); }
-    static d<double> dio(const float x, const int l) { return d<double>(x, l); }
+    template <class T, cint l>
+    static d<T, l> dio(const T x) { return d<T, l>(x); }
+    template <cint l>
+    static d<double, l> dio(const float x) { return d<double, l>(x); }
     template <class T>
     IO &operator << (T x) {
         if (x == 0) pc('0');
@@ -96,39 +97,34 @@ struct IO {
         }
         return *this;
     }
-    template <class T>
-    IO &operator << (d<T> x) {
-        if (x.x == 0) while (x.l--) pc('0');
+    template <class T, int l>
+    IO &operator << (d<T, l> x) {
+        if (x.x == 0) re (i, 0, l) pc('0');
         else {
             if (x.x < 0) pc('-'), x.x = -x.x;
-            T y; char *j = r;
-            for (; x.x; x.x = y, --x.l)
+            T y; char *j = r; int l_ = l;
+            for (; x.x; x.x = y, --l_)
                 y = x.x / 10, *j++ = x.x - y * 10 + '0';
-            for (; x.l > 0; pc('0'), --x.l);
+            for (; l_ > 0; pc('0'), --l_);
             while (j != r) pc(*--j);
         }
         return *this;
     }
-    IO &operator << (d<double> x) {
+    template <cint l>
+    IO &operator << (d<double, l> x) {
         if (std::isnan(x.x)) return *this << 'n' << 'a' << 'n';
         if (std::isinf(x.x)) return *this << 'i' << 'n' << 'f';
         if (x.x < 0) pc('-'), x.x = -x.x;
         int w = floor(x.x);
         *this << w;
         pc('.');
-        int e = (x.x - w) * pow(10, x.l + 1);
-        if (e % 10 >= 5)
-            e /= 10, ++e;
-        else
-            e /= 10;
-        return *this << d<int>(e, x.l);
+        int e = (x.x - w) * p_[l];
+        if (e % 10 >= 5) e /= 10, ++e;
+        else e /= 10;
+        return *this << d<int, l>(e);
     }
-    IO &operator << (const float x) {
-        return *this << d<double>(x, 6);
-    }
-    IO &operator << (const double x) {
-        return *this << d<double>(x, 6);
-    }
+    IO &operator << (const float x) { return *this << d<double, 6>(x); }
+    IO &operator << (const double x) { return *this << d<double, 6>(x); }
     IO &operator << (char *x) {
         while (*x) pc(*x++);
         return *this;
@@ -137,14 +133,9 @@ struct IO {
         while (*x) pc(*x++);
         return *this;
     }
-    IO &operator << (cchar x) {
-        pc(x);
-        return *this;
-    }
+    IO &operator << (cchar x) { return pc(x), *this; }
     template <class T>
-    void operator () (T x) {
-        *this << x;
-    }
+    void operator () (T x) { *this << x; }
 };
 IO<1000000> io;
 

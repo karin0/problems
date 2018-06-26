@@ -1,4 +1,3 @@
-
 #include <bits/stdc++.h>
 #define rep(i_,s_,t_) for(int i_=(s_);i_<=(t_);++i_)
 #define re(i_,s_,t_) for(int i_=(s_);i_<(t_);++i_)
