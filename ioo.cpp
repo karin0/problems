@@ -139,7 +139,6 @@ IO<1000000> io;
 const int N = 100003;
 
 int main() {
-    io << io.dio<double>(-0.36, 1);
 
     return 0;
 }

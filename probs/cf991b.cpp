@@ -44,7 +44,7 @@ int main() {
         s += 5;
         ++cnt;
     }
-    io << "wxh tian xia di yi"
+    io << "wxh tian xia di yi";
     return 0;
 }
 
