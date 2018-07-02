@@ -16,7 +16,7 @@
     #define ccc(...) 0
     #define ccd(...) 0
     #define ccf(...) 0
-    #define drep(i_,s_,t_) if (false)
+    #define drep(...) if (false)
 #endif
 typedef long long ll;
 typedef const int cint;
@@ -111,8 +111,8 @@ struct IO {
         return *this;
     }
     IO &operator << (d<double> x) {
-        if (std::isnan(x)) return *this << 'n' << 'a' << 'n';
-        if (std::isinf(x)) return *this << 'i' << 'n' << 'f';
+        if (std::isnan(x)) return *this << "nan";
+        if (std::isinf(x)) return *this << "inf";
         if (x < 0) pc('-'), x.x = -x;
         int w = floor(x);
         *this << w;
