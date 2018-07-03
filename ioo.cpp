@@ -25,13 +25,13 @@ typedef const char cchar;
 #define oper operator
 #define daze << '\n'
 cint p_[] = {10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000};
-template <cint L>
+template <cint LI, cint LO>
 struct IO {
-    char a[L], b[L], r[30], *s, *t, *z, c;
+    char a[LI], b[LO], r[30], *s, *t, *z, c;
     IO() : z(b) {}
     ~IO() { if (z != b) fwrite(b, 1, z - b, stdout); }
     char gc() {
-        if (s == t) t = (s = a) + fread(a, 1, L, stdin);
+        if (s == t) t = (s = a) + fread(a, 1, LI, stdin);
         return s == t ? EOF : *s++;
     }
     template <class T>
@@ -70,7 +70,7 @@ struct IO {
     template <class T>
     oper T () { T x; *this >> x; return x; }
     void pc(cchar x) {
-        if (z == b + L) fwrite(z = b, 1, L, stdout);
+        if (z == b + LO) fwrite(z = b, 1, LO, stdout);
         *z++ = x;
     }
     void fl() {
@@ -135,7 +135,7 @@ struct IO {
     template <class T>
     void oper () (T x) { *this << x; }
 };
-IO<1000000> io;
+IO<1000000, 1000000> io;
 
 cint N = 100003;
 

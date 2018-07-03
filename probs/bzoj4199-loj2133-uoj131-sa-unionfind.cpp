@@ -38,7 +38,7 @@ void build(char *s, int n, cint m = CHAR_MAX + 1) {
     re (i, 1, m) cnt[i] += cnt[i - 1];
     re (i, 0, n) rk[i] = cnt[s[i]] - 1;
     bool uniq = false;
-    for (int l = 1; l < n && !uniq; l <<= 1) {
+    for (int l = 1; l < n && !uniq; l <<= 1) { // ********************
         re (i, 0, n) fir[i] = rk[i], sec[i] = i + l < n ? rk[i + l] : 0;
         clr(cnt, n);
         re (i, 0, n) ++cnt[sec[i]];
