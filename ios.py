@@ -17,7 +17,7 @@ def strip(s):
 # use raw string
 with open(sys.argv[1], 'r') as f:
     s = f.read()
-l = s.find('const int p_');
+l = s.find('cint p_');
 r = s.rfind('};') + 2;
 t = s[:l] + strip(s[l:r]) + s[r:]
 while True:

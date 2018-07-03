@@ -11,19 +11,20 @@
     #define ccc(args...) std::cerr << "\033[32;1m" << #args << "  =  ", c_(args)
     #define ccd(args...) std::cerr << "\033[32;1m", c_(args)
     #define ccf(args...) fprintf(stderr, args)
-    #define drep(i_,s_,t_) for(int (i_)=(s_);(i_)<=(t_);++(i_))
+    #define crep(i_,s_,t_) for(int i_=(s_);i_<=(t_);++i_)
 #else
     #define ccc(...) 0
     #define ccd(...) 0
     #define ccf(...) 0
-    #define drep(...) if (false)
+    #define crep(...) if (false)
 #endif
 typedef long long ll;
 typedef const int cint;
 typedef const long long cll;
 typedef const char cchar;
+#define oper operator
 #define daze << '\n'
-const int p_[] = {10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000};
+cint p_[] = {10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000};
 template <cint L>
 struct IO {
     char a[L], b[L], r[30], *s, *t, *z, c;
@@ -34,7 +35,7 @@ struct IO {
         return s == t ? EOF : *s++;
     }
     template <class T>
-    IO &operator >> (T &x) {
+    IO &oper >> (T &x) {
         for (c = gc(); c != '-' && !isdigit(c); c = gc());
         bool f = c == '-';
         if (f) c = gc();
@@ -44,18 +45,18 @@ struct IO {
         if (f) x = -x;
         return *this;
     }
-    IO &operator >> (char *x) {
+    IO &oper >> (char *x) {
         for (c = gc(); !isgraph(c); c = gc());
         *x++ = c;
         for (c = gc(); isgraph(c); *x++ = c, c = gc());
-        *x++ = 0;
+        *x = 0;
         return *this;
     }
-    IO &operator >> (char &x) {
+    IO &oper >> (char &x) {
         for (x = gc(); !isgraph(x); x = gc());
         return *this;
     }
-    IO &operator >> (double &x) {
+    IO &oper >> (double &x) {
         int p, y;
         *this >> p;
         if (c == '.') {
@@ -67,7 +68,7 @@ struct IO {
         return *this;
     }
     template <class T>
-    operator T () { T x; *this >> x; return x; }
+    oper T () { T x; *this >> x; return x; }
     void pc(cchar x) {
         if (z == b + L) fwrite(z = b, 1, L, stdout);
         *z++ = x;
@@ -79,14 +80,14 @@ struct IO {
     template <class T>
     struct d {
         T x;
-        cint l;
+        int l;
         d(const T x_, cint l_) : x(x_), l(l_) {}
-        operator T& () { return x; }
+        oper T& () { return x; }
     };
     template <class T>
-    static d<T> dio(const T x, cint l) { return d<T>(x, l); }
+    d<T> operator () (const T x, cint l) { return d<T>(x, l); }
     template <class T>
-    IO &operator << (T x) {
+    IO &oper << (T x) {
         if (x == 0) pc('0');
         else {
             if (x < 0) pc('-'), x = -x;
@@ -98,19 +99,19 @@ struct IO {
         return *this;
     }
     template <class T>
-    IO &operator << (d<T> x) {
+    IO &oper << (d<T> x) {
         if (x == 0) re (i, 0, x.l) pc('0');
         else {
             if (x < 0) pc('-'), x.x = -x;
-            T y; char *j = r; int l_ = x.l;
-            for (; x; x.x = y, --l_)
+            T y; char *j = r;
+            for (; x; x.x = y, --x.l)
                 y = x / 10, *j++ = x - y * 10 + '0';
-            for (; l_ > 0; pc('0'), --l_);
+            for (; x.l; pc('0'), --x.l);
             while (j != r) pc(*--j);
         }
         return *this;
     }
-    IO &operator << (d<double> x) {
+    IO &oper << (d<double> x) {
         if (std::isnan(x)) return *this << "nan";
         if (std::isinf(x)) return *this << "inf";
         if (x < 0) pc('-'), x.x = -x;
@@ -121,22 +122,22 @@ struct IO {
         if (e - u * 10 >= 5) ++u;
         return *this << d<int>(u, x.l);
     }
-    IO &operator << (const double x) { return *this << d<double>(x, 6); }
-    IO &operator << (char *x) {
+    IO &oper << (const double x) { return *this << d<double>(x, 6); }
+    IO &oper << (char *x) {
         while (*x) pc(*x++);
         return *this;
     }
-    IO &operator << (cchar *x) {
+    IO &oper << (cchar *x) {
         while (*x) pc(*x++);
         return *this;
     }
-    IO &operator << (cchar x) { return pc(x), *this; }
+    IO &oper << (cchar x) { return pc(x), *this; }
     template <class T>
-    void operator () (T x) { *this << x; }
+    void oper () (T x) { *this << x; }
 };
 IO<1000000> io;
 
-const int N = 100003;
+cint N = 100003;
 
 int main() {
 
