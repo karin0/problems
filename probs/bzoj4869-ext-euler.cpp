@@ -96,7 +96,7 @@ int n, c;
 int calc(int a, int e) {
     static int i;
     a = a < pmo[e] ? a : a % pmo[e] + pmo[e];
-    //if (a >= pmo[e])
+    // if (a >= pmo[e])
     //    a = a % pmo[e] + pmo[e];
     for (i = e - 1; i >= 0; --i) {
         a = pow(c, a, pmo[i]);

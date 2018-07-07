@@ -4,7 +4,8 @@
 
 const int N = 103;
 const double eps = 1e-8;
-bool gauss(double **a, int n) {
+double a[N][N];
+bool gauss(int n) {
     static int i, j, k, p;
     static double t;
     for (i = 0; i < n; ++i) {
@@ -28,12 +29,11 @@ bool gauss(double **a, int n) {
 }
 int main() {
     static int n, i, j, x;
-    static double a[N][N];
     scanf("%d", &n);
     for (i = 0; i < n; ++i)
         for (j = 0; j <= n; ++j)
             scanf("%d", &x), a[i][j] = x;
-    if (gauss(a, n))
+    if (gauss(n))
         for (i = 0; i < n; ++i)
             printf("%lf\n", a[i][n] / a[i][i]);
     else

@@ -3,7 +3,7 @@
 #define re(i_,s_,t_) for(int i_=(s_);i_<(t_);++i_)
 #define per(i_,s_,t_) for(int i_=(s_);i_>=(t_);--i_)
 #define pe(i_,s_,t_) for(int i_=(s_);i_>(t_);--i_)
-#define koishi(e_,u_) for(Edge *e_=(u)_->e;e_;e_=e_->e)
+#define go(e_,s_) for(Edge *e_=(s_);e_;e_=e_->e)
 #ifdef AKARI
     void c_() { std::cerr << "\033[39;0m" << std::endl; }
     template<typename T, typename... Args>
@@ -27,7 +27,7 @@ typedef const char cchar;
 cint p_[] = {10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000};
 template <cint LI, cint LO>
 struct IO {
-    char a[LI], b[LO], r[30], *s, *t, *z, c;
+    char a[LI], b[LO], r[20], *s, *t, *z, c;
     IO() : z(b) {}
     ~IO() { if (z != b) fwrite(b, 1, z - b, stdout); }
     char gc() {
@@ -57,11 +57,13 @@ struct IO {
         return *this;
     }
     IO &oper >> (double &x) {
-        int p, y;
+        int p;
         *this >> p;
         if (c == '.') {
-            *this >> y;
-            for (x = y; x > 1; x /= 10);
+            int y = 0, k = 0;
+            for (c = gc(); isdigit(c); c = gc())
+                y = y * 10 + (c - '0'), ++k;
+            x = (double)y / p_[k - 1];
             if (p < 0) x = p - x;
             else x += p;
         } else x = p;
@@ -112,8 +114,8 @@ struct IO {
         return *this;
     }
     IO &oper << (d<double> x) {
-        if (std::isnan(x)) return *this << "nan";
-        if (std::isinf(x)) return *this << "inf";
+        /* if (isnan(x)) return *this << "nan";
+        if (isinf(x)) return *this << "inf"; */
         if (x < 0) pc('-'), x.x = -x;
         int w = floor(x);
         *this << w;
@@ -140,6 +142,6 @@ IO<1000000, 1000000> io;
 cint N = 100003;
 
 int main() {
-
+    io << io(47379.026635 + 56409.278563, 6) daze;
     return 0;
 }
