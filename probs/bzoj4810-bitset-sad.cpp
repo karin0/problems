@@ -29,6 +29,60 @@ IO<1000000, 1000000> io;
 
 cint N = 100003;
 
-int main() {
+int n, m, a[N], bel[N];
+struct Query {
+    int op, l, r, x;
+    bool *ans;
+    bool operator < (const Query &rh) const {
+        return bel[l] < bel[rh.l] || (bel[l] == bel[rh.l] && r < rh.r);
+    }
+} qwq[N];
+bool ans[N];
+int l, r, cnt[N], mx;
+std::bitset<100001> s1, s2;
+void ins(cint x) {
+    if (++cnt[x] == 1) s1.set(x), s2.set(mx - x);
 }
+void del(cint x) {
+    if (--cnt[x] == 0) s1.reset(x), s2.reset(mx - x);
+}
+int main() {
+    io >> n >> m;
+    int sz = sqrt(3 * (double)n * n / m);
+    int c = 0;
+    rep (i, 1, n) {
+        io >> a[i];
+        mx = std::max(mx, a[i]);
+        if (++c > sz) bel[i] = bel[i - 1] + 1, c = 1;
+        else bel[i] = bel[i - 1];
+    }
+    rep (i, 1, m) {
+        Query &q = qwq[i];
+        io >> q.op >> q.l >> q.r >> q.x;
+        q.ans = &ans[i];
+        mx = std::max(mx, q.x);
+    }
+    std::sort(qwq + 1, qwq + m + 1);
+    l = r = 1;
+    ins(a[l = r = 1]);
+    rep (i, 1, m) {
+        const Query &q = qwq[i];
+        while (l < q.l) del(a[l++]);
+        while (l > q.l) ins(a[--l]);
+        while (r < q.r) ins(a[++r]);
+        while (r > q.r) del(a[r--]);
+        int x = q.x;
+        if (q.op == 1)
+            *q.ans = x == 0 || (s1 & s1 << x).any();
+        else if (q.op == 2)
+            *q.ans = (!(x & 1) && s1.test(x >> 1)) || (s1 & s2 >> (mx - x)).any();
+        else for (int d = 1; d * d <= x; ++d) if (x % d == 0 && s1.test(d) && s1.test(x / d)) {
+            *q.ans = true;
+            break;
+        }
+    }
+    rep (i, 1, m)
+        io << (ans[i] ? "yuno\n" : "yumi\n");
+}
+
 

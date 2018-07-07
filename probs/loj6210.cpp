@@ -29,6 +29,9 @@ IO<1000000, 1000000> io;
 
 cint N = 100003;
 
+int n;
 int main() {
+    io >> n;
 }
+
 

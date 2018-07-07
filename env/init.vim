@@ -13,7 +13,7 @@ Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'vim-scripts/fcitx.vim'
+" Plug 'vim-scripts/fcitx.vim'
 " Plug 'jiangmiao/auto-pairs'
 Plug 'vim-syntastic/syntastic'
 Plug 'chriskempson/base16-vim'
@@ -31,6 +31,8 @@ Plug 'KeitaNakamura/neodark.vim'
 Plug 'iCyMind/NeoSolarized'
 " colorscheme NeoSolarized
 Plug 'crusoexia/vim-monokai'
+" Plug 'xolox/vim-misc'
+" Plug 'xolox/vim-colorscheme-switcher'
 " colorscheme monokai
 " Plug 'morhetz/gruvbox'
 " colorscheme gruvbox
@@ -106,7 +108,6 @@ vnoremap <leader>p "+pgv
 " nmap . <ESC>:%s/。/．/g<CR><ESC>:%s/-- more --/--more--/g<CR>
 autocmd FileType c,cc,cpp imap {<CR> {<CR>}<LEFT><CR><UP><TAB>
 
-
 set encoding=utf8
 nmap <F3> :vsp term://zsh <CR>
 autocmd FileType cpp nmap <F4> :vsp term://g++ % -O2 -DAKARI -std=c++11 -Wall -Wshadow -o ./a.ao <CR>
@@ -119,6 +120,8 @@ nmap <F6> :vsp term://ipython -i ~/cfgs/vf6.py <CR>
 autocmd FileType cpp nmap <F7> :vsp term://g++ % -g -DAKARI -std=c++11 -Wall -Wshadow -o ./a.ao&&gdb a.ao <CR>
 autocmd FileType cpp nmap <c-F7> :vsp term://g++ % -g -DAKARI -Wall -Wshadow -o ./a.ao&&gdb a.ao <CR>
 nmap <F8> ggVG"+y
+
+map <F9> <ESC>:0read ~/works/oi/codes/io.cpp<CR>:31<CR>o
 
 autocmd BufWinEnter,WinEnter term://* startinsert
 autocmd BufLeave term://* stopinsert
@@ -155,13 +158,11 @@ set background=dark " for the dark version
 colorscheme one
 
 " let mycol='485c39'
-nmap <F9> :call one#highlight('Normal', '', 'none', 'none')<CR>
-            " \ :call one#highlight('vimComment', mycol, 'none', 'none')<CR>
-            " \ :call one#highlight('vimLineComment', mycol, 'none', 'none')<CR>
-            " \ :call one#highlight('LineNr', 'ffffff', 'none', 'none')<CR>
-call feedkeys("\<F9>")
+let mycol='6e6e6e'
+nmap <F10> :call one#highlight('Normal', '', 'none', 'none')<CR>
+"             \ :call one#highlight('vimComment', mycol, 'none', 'none')<CR>
+"             \ :call one#highlight('vimLineComment', mycol, 'none', 'none')<CR>
+"             \ :call one#highlight('LineNr', 'ffffff', 'none', 'none')<CR>
+call feedkeys("\<F10>")
 
-" Output the current syntax group
-" nnoremap <f10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
-" \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
-" \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<cr>
+nmap <F10> :set wrap!<CR>
