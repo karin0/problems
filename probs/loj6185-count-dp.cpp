@@ -1,4 +1,6 @@
-#include <bits/stdc++.h>
+#include <cstdio>
+#include <cctype>
+#include <iostream>
 #define rep(i_,s_,t_) for(int i_=(s_);i_<=(t_);++i_)
 #define re(i_,s_,t_) for(int i_=(s_);i_<(t_);++i_)
 #define per(i_,s_,t_) for(int i_=(s_);i_>=(t_);--i_)
@@ -25,97 +27,47 @@ typedef const char cchar;
 #define oper operator
 #define daze << '\n'
 cint p_[]={10,100,1000,10000,100000,1000000,10000000,100000000,1000000000};template<cint LI,cint LO>struct IO{char a[LI],b[LO],r[20],*s,*t,*z,c;IO():z(b){}~IO(){if(z!=b)fwrite(b,1,z-b,stdout);}char gc(){if(s==t)t=(s=a)+fread(a,1,LI,stdin);return s==t?EOF:*s++;}template<class T>IO&oper>>(T&x){for(c=gc();c!='-'&&!isdigit(c);c=gc());bool f=c=='-';if(f)c=gc();x=c-'0';for(c=gc();isdigit(c);c=gc())x=x*10+(c-'0');if(f)x=-x;return*this;}IO&oper>>(char*x){for(c=gc();!isgraph(c);c=gc());*x++=c;for(c=gc();isgraph(c);*x++=c,c=gc());*x=0;return*this;}IO&oper>>(char&x){for(x=gc();!isgraph(x);x=gc());return*this;}IO&oper>>(double&x){int p;*this>>p;if(c=='.'){int y=0,k=0;for(c=gc();isdigit(c);c=gc())y=y*10+(c-'0'),++k;x=(double)y/p_[k-1];if(p<0)x=p-x;else x+=p;}else x=p;return*this;}template<class T>oper T(){T x;*this>>x;return x;}void pc(cchar x){if(z==b+LO)fwrite(z=b,1,LO,stdout);*z++=x;}void fl(){fwrite(b,1,z-b,stdout);z=b;}template<class T>struct d{T x;int l;d(const T x_,cint l_):x(x_),l(l_){}oper T&(){return x;}};template<class T>d<T>operator()(const T x,cint l){return d<T>(x,l);}template<class T>IO&oper<<(T x){if(x==0)pc('0');else{if(x<0)pc('-'),x=-x;T y;char*j=r;for(;x;x=y)y=x/10,*j++=x-y*10+'0';while(j!=r)pc(*--j);}return*this;}template<class T>IO&oper<<(d<T>x){if(x==0)re(i,0,x.l)pc('0');else{if(x<0)pc('-'),x.x=-x;T y;char*j=r;for(;x;x.x=y,--x.l)y=x/10,*j++=x-y*10+'0';for(;x.l;pc('0'),--x.l);while(j!=r)pc(*--j);}return*this;}IO&oper<<(d<double>x){if(x<0)pc('-'),x.x=-x;int w=floor(x);*this<<w;pc('.');int e=(x-w)*p_[x.l],u=e/10;if(e-u*10>=5)++u;return*this<<d<int>(u,x.l);}IO&oper<<(const double x){return*this<<d<double>(x,6);}IO&oper<<(char*x){while(*x)pc(*x++);return*this;}IO&oper<<(cchar*x){while(*x)pc(*x++);return*this;}IO&oper<<(cchar x){return pc(x),*this;}template<class T>void oper()(T x){*this<<x;}};
-IO<1000000, 1000000> io;
+IO<11, 11> io;
 
-cint N = 500003;
+cint N = 5002, mo = 1000000007;
 
-struct Node {
-    struct Edge *e;
-    Node *top;
-    int x, d, f, g, s;
-} g[N];
-struct Edge {
-    Node *v;
-    Edge *e;
-    Edge() {}
-    Edge(Node *s, Node *t) : v(t), e(s->e) { s->e = this; }
-} pool[N * 2], *curr = pool;
-int a1 = 1, a2;
-void dfs1(Node *u, Node *fa) {
-    if (u->x == 1) {
-        Node *v;
-        go (e, u->e) if ((v = e->v) != fa) {
-            v->d = u->d + 1;
-            if (v->x == 1) {
-                v->top = u->top;
-                dfs1(v, u);
-                if (v->f >= u->f) u->s = u->f, u->f = v->f; // ****
-                else if (v->f > u->s) u->s = v->f;
-            } else dfs1(v, u);
-        }
-        // ccc(u-g ,u->f);
-        u->top->g = std::max(u->top->g, ++u->f + u->f);
-        a1 = std::max(a1, u->f + u->s);
-    } else if (u->x == 2) {
-        Node *v;
-        int fi = 0, se = 0;
-        go (e, u->e) if ((v = e->v) != fa) {
-            v->d = u->d + 1;
-            if (v->x == 1) {
-                dfs1(v, u);
-                if (v->f >= fi) se = fi, fi = v->f;
-                else if (v->f > se) se = v->f;
-            } else dfs1(v, u);
-        }
-        a2 = std::max(a2, fi + se + 1);
-    } else go (e, u->e) if (e->v != fa) {
-        e->v->d = u->d + 1;
-        dfs1(e->v, u);
-    }
+inline void cadd(int &x, cint v) {
+    if ((x += v) >= mo) x -= mo;
 }
-void dfs2(Node *u, Node *fa) {
-    if (u->x == 2 && fa && fa->x == 1) {
-        Node *v;
-        int fi = 0;
-        go (e, u->e) if ((v = e->v) != fa) {
-            dfs2(v, u);
-            if (v->x == 1)
-                fi = std::max(fi, v->f);
-        }
-        int x = fa->top->f, y = fa->d - fa->top->d + 1;
-        if (x == y && x != fa->top->s + 1) y += fa->top->s;
-        else y += x - 1;
-        if (a2 < 8415 && y + fi + 1 == 8415) {
-            ccc(u-g);
-        }
-        a2 = std::max(a2, y + fi + 1);
-    } else
-        go (e, u->e) if (e->v != fa) dfs2(e->v, u);
+int f[N][5], finv[5] = {1, 1, 500000004, 166666668, 41666667};
+ll c(int n, cint k) {
+    // if (n < k) return 0;
+    // if (n == k) return 1;
+    n += mo;
+    ll res = finv[k];
+    re (i, 0, k)
+        res = res * (n - i) % mo;
+    return res;
 }
 int main() {
+    // int n;
+    // scanf("%d", &n);
     int n = io;
-    re (i, 1, n) {
-        int u, v;
-        io >> u >> v;
-        new (curr++) Edge(&g[u], &g[v]);
-        new (curr++) Edge(&g[v], &g[u]);
+    cint m = 4;
+    f[1][0] = 1;
+    re (k, 1, n) {
+        int sum = 0;
+        re (l, 0, m)
+            cadd(sum, f[k][l]);
+        per (i, n, 1) {
+            int *fi = f[i];
+            rep (j, 1, m) {
+                int &fij = fi[j];
+                int t = i;
+                for (int l = 1; l <= j && (t -= k) >= 0; ++l)
+                    cadd(fij, f[t][j - l] * c(sum + l - 1, l) % mo);
+            }
+        }
+        // ;ccc(i, j, f[i][j]);
     }
-    int mi = 1e9;
-    rep (i, 1, n) {
-        Node &u = g[i];
-        io >> u.x;
-        if (u.x == 1) u.top = &u, mi = 1;
-        else if (u.x < mi) mi = u.x;
-    }
-    if (mi > 1) {
-        io << mi << "/1\n";
-        return 0;
-    }
-    dfs1(&g[1], NULL);
-    dfs2(&g[1], NULL);
-    // 1 / a1 <= 2 / a2
-    ccc(a1, a2);
-    if (a2 <= 2 * a1) io << "1/" << a1 daze;
-    else if (a2 & 1) io << "2/" << a2 daze;
-    else io << "1/" << (a2 >> 1) daze;
+    int ans = 0;
+    int *fn = f[n];
+    re (j, 0, m)
+        cadd(ans, fn[j]);
+    io << ans daze;
 }
