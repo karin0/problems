@@ -45,6 +45,13 @@ struct IO {
         if (f) x = -x;
         return *this;
     }
+    char *gs(char *x) {
+        for (c = gc(); !isgraph(c); c = gc());
+        *x++ = c;
+        for (c = gc(); isgraph(c); *x++ = c, c = gc());
+        *x = 0;
+        return x + 1;
+    }
     IO &oper >> (char *x) {
         for (c = gc(); !isgraph(c); c = gc());
         *x++ = c;
@@ -142,4 +149,5 @@ IO<1000000, 1000000> io;
 cint N = 100003;
 
 int main() {
+
 }
