@@ -73,8 +73,10 @@ struct Node {
         } else {
             ll &rr = ans[l];
             int tl = ra[l].l, tr = ra[l].r;
+            ccc(l);
             rep (i, tl, tr)
                 rr = std::max(rr, f[i]);
+            io << rr daze;
         }
         re (i, 0, m)
             f[i] = g[i];
@@ -134,7 +136,6 @@ int main() {
     re (i, 1, m)
         f[i] = -1;
     segt->dfs();
-    ccc(qc);
-    rep (i, 1, qc)
-        io << ans[i] daze;
+    //rep (i, 1, qc)
+    //    io << ans[i] daze;
 }
