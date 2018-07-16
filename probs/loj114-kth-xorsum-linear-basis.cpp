@@ -84,20 +84,12 @@ namespace basis {
     void insert(ll x) {
         static int j;
         // printf("Ins %lld\n", x);
-        for (i = w; i >= 0; --i) {
-            if (!x)
-                return;
-            if (!bit(x, i))
-                continue;
-            if (b[i])
-                x ^= b[i];
+        for (i = w; i >= 0 && x; --i) {
+            if (!bit(x, i)) continue;
+            if (b[i]) x ^= b[i];
             else {
-                for (j = 0; j < i; ++j)
-                    if (bit(x, j))
-                        x ^= b[j];
-                for (j = i + 1; j <= w; ++j)
-                    if (bit(b[j], i))
-                        b[j] ^= x;
+                for (j = 0; j < i; ++j) if (bit(x, j)) x ^= b[j];
+                for (j = i + 1; j <= w; ++j) if (bit(b[j], i)) b[j] ^= x;
                 b[i] = x;
                 return;
             }

@@ -189,22 +189,6 @@ namespace ns1 {
         ms = mck2(m - 1);
         nn = n;
         pfc = 0;
-        /*
-        for (i = 1; i <= pcnt && nn > 1; ++i) {
-            if (nn % (r = pri[i]) == 0) {
-                pf[++pfc] = r;
-                pc[pfc] = 1;
-                nn /= r;
-                while (nn % r == 0) {
-                    nn /= r;
-                    ++pc[pfc];
-                }
-            }
-        }
-        if (nn > 1) {
-            pf[++pfc] = nn;
-            pc[pfc] = 1;
-        }*/
         for (i = 1; i <= pcnt && nn > 1; ++i) {
             if (nn % (r = pri[i]) == 0) {
                 pf[++pfc] = r;
@@ -262,22 +246,6 @@ namespace ns2 {
         ms = mck2(m - 1);
         nn = n;
         pfc = 0;
-        /*
-        for (i = 2; i * i <= nn; ++i) {
-            if (nn % i == 0) {
-                pf[++pfc] = i;
-                pc[pfc] = 1;
-                nn /= i;
-                while (nn % i == 0) {
-                    nn /= i;
-                    ++pc[pfc];
-                }
-            }
-        }
-        if (nn > 1) {
-            pf[++pfc] = nn;
-            pc[pfc] = 1;
-        }*/
         for (i = 1; i <= pcnt && nn > 1; ++i) {
             if (nn % (r = pri[i]) == 0) {
                 pf[++pfc] = r;

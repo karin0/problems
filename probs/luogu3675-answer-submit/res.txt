@@ -1,0 +1,1 @@
+points 0.20 Your ans is 282723272, done 86 attempts, time used 101174.8451, -1174.8451 remained
