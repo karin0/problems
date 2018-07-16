@@ -121,8 +121,8 @@ struct IO {
         return *this;
     }
     IO &oper << (d<double> x) {
-        /* if (isnan(x)) return *this << "nan";
-        if (isinf(x)) return *this << "inf"; */
+        /* if (std::isnan(x)) return *this << "nan";
+        if (std::isinf(x)) return *this << "inf"; */
         if (x < 0) pc('-'), x.x = -x;
         int w = floor(x);
         *this << w;
