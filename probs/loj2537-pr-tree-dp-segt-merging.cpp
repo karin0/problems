@@ -131,7 +131,7 @@ int main() {
         else
             lea[++m] = &g[i];
     }
-    std::sort(lea + 1, lea + m + 1, [](const Node *lh, const Node *rh) {return lh->w < rh->w;});
+    std::sort(lea + 1, lea + m + 1, [](const Node *lh, const Node *rh) { return lh->w < rh->w; } );
     rep (i, 1, m) {
         rhash[i] = lea[i]->w % mo;
         lea[i]->w = i;
