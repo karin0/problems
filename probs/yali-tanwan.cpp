@@ -76,7 +76,6 @@ struct Node {
             ccc(l);
             rep (i, tl, tr)
                 rr = std::max(rr, f[i]);
-            io << rr daze;
         }
         re (i, 0, m)
             f[i] = g[i];
@@ -136,6 +135,6 @@ int main() {
     re (i, 1, m)
         f[i] = -1;
     segt->dfs();
-    //rep (i, 1, qc)
-    //    io << ans[i] daze;
+    rep (i, 1, qc)
+        io << ans[i] daze;
 }

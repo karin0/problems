@@ -91,11 +91,9 @@ struct VirtualTree {
             Node *l = hld.lca(u, sta[top]);
             while (top > 1 && sta[top - 1]->dep > l->dep)
                 varc(sta[top - 1], sta[top]), --top;
-            if (sta[top] != l)
-                varc(l, sta[top]);
+            if (sta[top] != l) varc(l, sta[top]);
             --top;
-            if (sta[top] != l)
-                sta[++top] = l;
+            if (sta[top] != l) sta[++top] = l;
             sta[++top] = u;
         }
         while (top > 1)

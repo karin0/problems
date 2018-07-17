@@ -50,7 +50,7 @@ struct IO {
         *x++ = c;
         for (c = gc(); isgraph(c); *x++ = c, c = gc());
         *x = 0;
-        return x;
+        return x + 1;
     }
     IO &oper >> (char *x) {
         for (c = gc(); !isgraph(c); c = gc());
@@ -61,6 +61,19 @@ struct IO {
     }
     IO &oper >> (char &x) {
         for (x = gc(); !isgraph(x); x = gc());
+        return *this;
+    }
+    IO &oper >> (double &x) {
+        int p;
+        *this >> p;
+        if (c == '.') {
+            int y = 0, k = 0;
+            for (c = gc(); isdigit(c); c = gc())
+                y = y * 10 + (c - '0'), ++k;
+            x = (double)y / p_[k - 1];
+            if (p < 0) x = p - x;
+            else x += p;
+        } else x = p;
         return *this;
     }
     template <class T>
@@ -74,6 +87,15 @@ struct IO {
         z = b;
     }
     template <class T>
+    struct d {
+        T x;
+        int l;
+        d(const T x_, cint l_) : x(x_), l(l_) {}
+        oper T& () { return x; }
+    };
+    template <class T>
+    d<T> operator () (const T x, cint l) { return d<T>(x, l); }
+    template <class T>
     IO &oper << (T x) {
         if (x == 0) pc('0');
         else {
@@ -85,6 +107,31 @@ struct IO {
         }
         return *this;
     }
+    template <class T>
+    IO &oper << (d<T> x) {
+        if (x == 0) re (i, 0, x.l) pc('0');
+        else {
+            if (x < 0) pc('-'), x.x = -x;
+            T y; char *j = r;
+            for (; x; x.x = y, --x.l)
+                y = x / 10, *j++ = x - y * 10 + '0';
+            for (; x.l; pc('0'), --x.l);
+            while (j != r) pc(*--j);
+        }
+        return *this;
+    }
+    IO &oper << (d<double> x) {
+        /* if (std::isnan(x)) return *this << "nan";
+        if (std::isinf(x)) return *this << "inf"; */
+        if (x < 0) pc('-'), x.x = -x;
+        int w = floor(x);
+        *this << w;
+        pc('.');
+        int e = (x - w) * p_[x.l], u = e / 10;
+        if (e - u * 10 >= 5) ++u;
+        return *this << d<int>(u, x.l);
+    }
+    IO &oper << (const double x) { return *this << d<double>(x, 6); }
     IO &oper << (char *x) {
         while (*x) pc(*x++);
         return *this;

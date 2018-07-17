@@ -100,19 +100,15 @@ int main() {
         std::sort(sa + 1, sa + h + 1, cmp2);
         rep (j, 1, h)
             rk[sa[j]] = j;
-        crep (j, 1, h)
-            ccc(j, sa[j], rk[j], ps[sa[j]].x, ps[sa[j]].y, ps[sa[j]].w, b[i].x, b[i].y);
         bit::clear();
         rep (j, 1, h) {
             const Point &p = ps[j];
-            ccc(j, rk[j], ps[j].x, ps[j].y, ps[j].w);
             if (p.w < 0)
                 f[i][-p.w] = bit::query(rk[j]);
             else
                 bit::add(rk[j], p.w);
         }
     }
-    crep (i, 1, n) crep (j, 1, n) ccc(i, j, f[i][j]);
     while (q--) {
         int k = io, ans = 0;
         int last = io;
