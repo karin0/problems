@@ -106,7 +106,7 @@ vnoremap > >gv
 vnoremap <leader>y "+ygv
 vnoremap <leader>p "+pgv
 " nmap . <ESC>:%s/。/．/g<CR><ESC>:%s/-- more --/--more--/g<CR>
-autocmd FileType c,cc,cpp imap {<CR> {<CR>}<LEFT><CR><UP><TAB>
+autocmd FileType c,cc,cpp inoremap {<CR> {<ESC>o}<ESC>O
 
 set encoding=utf8
 nmap <F3> :vsp term://zsh <CR>
@@ -153,8 +153,8 @@ endif
 " hi Normal guibg=NONE ctermbg=NONE
 " hi Comment ctermfg=6
 
-set background=dark " for the dark version
-" set background=light " for the light version
+" set background=dark " for the dark version
+set background=light " for the light version
 colorscheme one
 
 " let mycol='485c39'
