@@ -24,11 +24,82 @@ typedef const long long cll;
 typedef const char cchar;
 #define oper operator
 #define daze << '\n'
-cint p_[]={10,100,1000,10000,100000,1000000,10000000,100000000,1000000000};template<cint LI,cint LO>struct IO{char a[LI],b[LO],r[20],*s,*t,*z,c;IO():z(b){}~IO(){if(z!=b)fwrite(b,1,z-b,stdout);}char gc(){if(s==t)t=(s=a)+fread(a,1,LI,stdin);return s==t?EOF:*s++;}template<class T>IO&oper>>(T&x){for(c=gc();c!='-'&&!isdigit(c);c=gc());bool f=c=='-';if(f)c=gc();x=c-'0';for(c=gc();isdigit(c);c=gc())x=x*10+(c-'0');if(f)x=-x;return*this;}char*gs(char*x){for(c=gc();!isgraph(c);c=gc());*x++=c;for(c=gc();isgraph(c);*x++=c,c=gc());*x=0;return x+1;}IO&oper>>(char*x){for(c=gc();!isgraph(c);c=gc());*x++=c;for(c=gc();isgraph(c);*x++=c,c=gc());*x=0;return*this;}IO&oper>>(char&x){for(x=gc();!isgraph(x);x=gc());return*this;}template<class T>oper T(){T x;*this>>x;return x;}void pc(cchar x){if(z==b+LO)fwrite(z=b,1,LO,stdout);*z++=x;}void fl(){fwrite(b,1,z-b,stdout);z=b;}template<class T>IO&oper<<(T x){if(x==0)pc('0');else{if(x<0)pc('-'),x=-x;T y;char*j=r;for(;x;x=y)y=x/10,*j++=x-y*10+'0';while(j!=r)pc(*--j);}return*this;}IO&oper<<(char*x){while(*x)pc(*x++);return*this;}IO&oper<<(cchar*x){while(*x)pc(*x++);return*this;}IO&oper<<(cchar x){return pc(x),*this;}template<class T>void oper()(T x){*this<<x;}};
+
+template <cint LI, cint LO>
+struct IO {
+    char a[LI], b[LO], r[LO ? 20 : 0], *s, *t, *z, c;
+    std::streambuf *fbi, *fbo;
+    IO() : z(b) {
+        std::ios::sync_with_stdio(false);
+        if (LI) std::cin.tie(NULL), fbi = std::cin.rdbuf();
+        if (LO) std::cout.tie(NULL), fbo = std::cout.rdbuf();
+    }
+    ~IO() { if (LO) fbo->sputn(b, z - b); }
+    char gc() {
+        if (s == t) t = (s = a) + fbi->sgetn(a, LI);
+        return s == t ? EOF : *s++;
+    }
+    template <class T>
+    IO &oper >> (T &x) {
+        for (c = gc(); c != '-' && !isdigit(c); c = gc());
+        bool f = c == '-';
+        if (f) c = gc();
+        x = c - '0';
+        for (c = gc(); isdigit(c); c = gc())
+            x = x * 10 + (c - '0');
+        if (f) x = -x;
+        return *this;
+    }
+    char *gs(char *x) {
+        for (c = gc(); !isgraph(c); c = gc());
+        *x++ = c;
+        for (c = gc(); isgraph(c); *x++ = c, c = gc());
+        return *x = 0, x;
+    }
+    IO &oper >> (char *x) {
+        for (c = gc(); !isgraph(c); c = gc());
+        *x++ = c;
+        for (c = gc(); isgraph(c); *x++ = c, c = gc());
+        return *x = 0, *this;
+    }
+    IO &oper >> (char &x) {
+        for (x = gc(); !isgraph(x); x = gc());
+        return *this;
+    }
+    template <class T>
+    oper T () { T x; *this >> x; return x; }
+    void pc(cchar x) {
+        if (z == b + LO) fbo->sputn(z = b, LO);
+        *z++ = x;
+    }
+    void fl() {
+        fbo->sputn(b, z - b);
+        z = b;
+    }
+    template <class T>
+    IO &oper << (T x) {
+        if (x == 0) return pc('0'), *this;
+        if (x < 0) pc('-'), x = -x;
+        T y; char *j = r;
+        for (; x; x = y) y = x / 10, *j++ = x - y * 10 + '0';
+        while (j != r) pc(*--j);
+        return *this;
+    }
+    IO &oper << (char *x) {
+        while (*x) pc(*x++);
+        return *this;
+    }
+    IO &oper << (cchar *x) {
+        while (*x) pc(*x++);
+        return *this;
+    }
+    IO &oper << (cchar x) { return pc(x), *this; }
+    template <class T>
+    void oper () (const T x) { *this << x; }
+};
 IO<1000000, 1000000> io;
 
 cint N = 100003;
 
 int main() {
 }
-

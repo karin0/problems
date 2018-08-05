@@ -24,7 +24,7 @@ typedef const long long cll;
 typedef const char cchar;
 #define oper operator
 #define daze << '\n'
-cint p_[] = {10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000};
+
 template <cint LI, cint LO>
 struct IO {
     char a[LI], b[LO], r[20], *s, *t, *z, c;

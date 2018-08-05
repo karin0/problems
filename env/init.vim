@@ -153,8 +153,8 @@ endif
 " hi Normal guibg=NONE ctermbg=NONE
 " hi Comment ctermfg=6
 
-" set background=dark " for the dark version
-set background=light " for the light version
+set background=dark " for the dark version
+" set background=light " for the light version
 colorscheme one
 
 " let mycol='485c39'
