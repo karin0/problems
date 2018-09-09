@@ -75,6 +75,7 @@ set nu
 set ruler
 set t_vb=
 
+set wrap
 set termguicolors
 
 set autoread
@@ -121,7 +122,7 @@ autocmd FileType cpp nmap <F7> :vsp term://g++ % -g -DAKARI -std=c++11 -Wall -Ws
 autocmd FileType cpp nmap <c-F7> :vsp term://g++ % -g -DAKARI -Wall -Wshadow -o ./a.ao&&gdb a.ao <CR>
 nmap <F8> ggVG"+y
 
-map <F9> <ESC>:0read ~/works/oi/codes/io.cpp<CR>:31<CR>o
+map <F9> <ESC>:0read ~/works/oi/codes/io.cpp<CR>GddO
 
 autocmd BufWinEnter,WinEnter term://* startinsert
 autocmd BufLeave term://* stopinsert
@@ -143,26 +144,29 @@ endif
 "colorscheme base16-solarized-light
 " colorscheme hemisu
 " set clipboard+=unnamedplus
-" colorscheme desert
 
-" if filereadable(expand("~/.vimrc_background"))
-    " let base16colorspace=256
-" source ~/.vimrc_background
-" endif
-
-" hi Normal guibg=NONE ctermbg=NONE
-" hi Comment ctermfg=6
-
+colorscheme desert
 set background=dark " for the dark version
 " set background=light " for the light version
-colorscheme one
+" colorscheme one
 
 " let mycol='485c39'
-let mycol='6e6e6e'
-nmap <F10> :call one#highlight('Normal', '', 'none', 'none')<CR>
+" let mycol='6e6e6e'
+" nmap <F10> :call one#highlight('Normal', '', 'none', 'none')<CR>
 "             \ :call one#highlight('vimComment', mycol, 'none', 'none')<CR>
 "             \ :call one#highlight('vimLineComment', mycol, 'none', 'none')<CR>
 "             \ :call one#highlight('LineNr', 'ffffff', 'none', 'none')<CR>
-call feedkeys("\<F10>")
+" call feedkeys("\<F10>")
 
 nmap <F10> :set wrap!<CR>
+
+if filereadable(expand("~/.vimrc_background"))
+  let base16colorspace=256
+  source ~/.vimrc_background
+endif
+hi Normal guibg=NONE ctermbg=NONE
+hi Comment ctermfg=4 guifg=4
+hi vimComment ctermfg=4 guifg=4
+hi vimLineComment ctermfg=4 guifg=4
+
+set wrap

@@ -1,9 +1,9 @@
 #include <bits/stdc++.h>
-#define rep(i_,s_,t_) for(int i_=(s_);i_<=(t_);++i_)
-#define re(i_,s_,t_) for(int i_=(s_);i_<(t_);++i_)
-#define per(i_,s_,t_) for(int i_=(s_);i_>=(t_);--i_)
-#define pe(i_,s_,t_) for(int i_=(s_);i_>(t_);--i_)
-#define go(e_,s_) for(Edge *e_=(s_);e_;e_=e_->e)
+#define rep(i_, s_, t_) for (int i_ = (s_); i_ <= (t_); ++i_)
+#define re(i_, s_, t_) for (int i_ = (s_); i_ < (t_); ++i_)
+#define per(i_, s_, t_) for (int i_ = (s_); i_ >= (t_); --i_)
+#define pe(i_, s_, t_) for (int i_ = (s_); i_ > (t_); --i_)
+#define go(e_, s_) for (Edge *e_ = (s_); e_; e_ = e_->e)
 #ifdef AKARI
     void c_() { std::cerr << "\033[39;0m" << std::endl; }
     template<typename T, typename... Args>
@@ -11,7 +11,7 @@
     #define ccc(args...) std::cerr << "\033[32;1m" << #args << "  =  ", c_(args)
     #define ccd(args...) std::cerr << "\033[32;1m", c_(args)
     #define ccf(args...) fprintf(stderr, args)
-    #define crep(i_,s_,t_) for(int i_=(s_);i_<=(t_);++i_)
+    #define crep(i_, s_, t_) for (int i_ = (s_); i_ <= (t_); ++i_)
 #else
     #define ccc(...) 0
     #define ccd(...) 0
@@ -22,7 +22,6 @@ typedef long long ll;
 typedef const int cint;
 typedef const long long cll;
 typedef const char cchar;
-#define oper operator
 #define daze << '\n'
 
 template <cint LI, cint LO>
@@ -40,7 +39,7 @@ struct IO {
         return s == t ? EOF : *s++;
     }
     template <class T>
-    IO &oper >> (T &x) {
+    IO &operator >> (T &x) {
         for (c = gc(); c != '-' && !isdigit(c); c = gc());
         bool f = c == '-';
         if (f) c = gc();
@@ -56,18 +55,18 @@ struct IO {
         for (c = gc(); isgraph(c); *x++ = c, c = gc());
         return *x = 0, x;
     }
-    IO &oper >> (char *x) {
+    IO &operator >> (char *x) {
         for (c = gc(); !isgraph(c); c = gc());
         *x++ = c;
         for (c = gc(); isgraph(c); *x++ = c, c = gc());
         return *x = 0, *this;
     }
-    IO &oper >> (char &x) {
+    IO &operator >> (char &x) {
         for (x = gc(); !isgraph(x); x = gc());
         return *this;
     }
     template <class T>
-    oper T () { T x; *this >> x; return x; }
+    operator T () { T x; *this >> x; return x; }
     void pc(cchar x) {
         if (z == b + LO) fbo->sputn(z = b, LO);
         *z++ = x;
@@ -77,7 +76,7 @@ struct IO {
         z = b;
     }
     template <class T>
-    IO &oper << (T x) {
+    IO &operator << (T x) {
         if (x == 0) return pc('0'), *this;
         if (x < 0) pc('-'), x = -x;
         T y; char *j = r;
@@ -85,17 +84,17 @@ struct IO {
         while (j != r) pc(*--j);
         return *this;
     }
-    IO &oper << (char *x) {
+    IO &operator << (char *x) {
         while (*x) pc(*x++);
         return *this;
     }
-    IO &oper << (cchar *x) {
+    IO &operator << (cchar *x) {
         while (*x) pc(*x++);
         return *this;
     }
-    IO &oper << (cchar x) { return pc(x), *this; }
+    IO &operator << (cchar x) { return pc(x), *this; }
     template <class T>
-    void oper () (const T x) { *this << x; }
+    void operator () (const T x) { *this << x; }
 };
 IO<1000000, 1000000> io;
 

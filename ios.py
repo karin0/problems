@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 import sys
 def strip(s):
     a = [t.strip() for t in s.split('\n')]

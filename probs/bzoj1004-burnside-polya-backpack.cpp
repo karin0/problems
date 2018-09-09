@@ -2,7 +2,7 @@
 #include <algorithm>
 
 const int N = 63, C = 23;
-int n, c1,c2, c3, mo;
+int n, c1, c2, c3, mo;
 
 int calc(int p[]) { // 计算置换 p 的不动点数
     static bool vis[N];
