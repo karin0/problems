@@ -122,7 +122,7 @@ autocmd FileType cpp nmap <F7> :vsp term://g++ % -g -DAKARI -std=c++11 -Wall -Ws
 autocmd FileType cpp nmap <c-F7> :vsp term://g++ % -g -DAKARI -Wall -Wshadow -o ./a.ao&&gdb a.ao <CR>
 nmap <F8> ggVG"+y
 
-map <F9> <ESC>:0read ~/works/oi/codes/io.cpp<CR>GddO
+map <F9> <ESC>:0read ~/works/oi/codes/io.cpp<CR>G
 
 autocmd BufWinEnter,WinEnter term://* startinsert
 autocmd BufLeave term://* stopinsert
