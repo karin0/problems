@@ -6,7 +6,7 @@
 #define go(e_, s_) for (Edge *e_ = (s_); e_; e_ = e_->e)
 #ifdef AKARI
     void c_() { std::cerr << "\033[39;0m" << std::endl; }
-    template <typename T, typename... Args>
+    template<typename T, typename... Args>
     void c_(T a, Args... args) { std::cerr << a << ", "; c_(args...); }
     #define ccc(args...) std::cerr << "\033[32;1m" << #args << "  =  ", c_(args)
     #define ccd(args...) std::cerr << "\033[32;1m", c_(args)
@@ -26,7 +26,7 @@ typedef const char cchar;
 
 template <cint LI, cint LO>
 struct IO {
-    char a[LI], b[LO], r[std::max(LO, 20)], *s, *t, *z, c;
+    char a[LI], b[LO], r[LO], *s, *t, *z, c;
     std::streambuf *fbi, *fbo;
     IO() : z(b) {
         std::ios::sync_with_stdio(false);
@@ -42,7 +42,8 @@ struct IO {
     IO &operator >> (T &x) {
         for (c = gc(); c != '-' && !isdigit(c); c = gc());
         bool f = c == '-';
-        x = (f ? gc() : c) - '0';
+        if (f) c = gc();
+        x = c - '0';
         for (c = gc(); isdigit(c); c = gc())
             x = x * 10 + (c - '0');
         if (f) x = -x;
@@ -50,12 +51,14 @@ struct IO {
     }
     char *gs(char *x) {
         for (c = gc(); !isgraph(c); c = gc());
-        for (*x++ = c, c = gc(); isgraph(c); *x++ = c, c = gc());
+        *x++ = c;
+        for (c = gc(); isgraph(c); *x++ = c, c = gc());
         return *x = 0, x;
     }
     IO &operator >> (char *x) {
         for (c = gc(); !isgraph(c); c = gc());
-        for (*x++ = c, c = gc(); isgraph(c); *x++ = c, c = gc());
+        *x++ = c;
+        for (c = gc(); isgraph(c); *x++ = c, c = gc());
         return *x = 0, *this;
     }
     IO &operator >> (char &x) {
@@ -76,8 +79,8 @@ struct IO {
     IO &operator << (T x) {
         if (x == 0) return pc('0'), *this;
         if (x < 0) pc('-'), x = -x;
-        char *j = r;
-        for (T y; x; x = y) y = x / 10, *j++ = x - y * 10 + '0';
+        T y; char *j = r;
+        for (; x; x = y) y = x / 10, *j++ = x - y * 10 + '0';
         while (j != r) pc(*--j);
         return *this;
     }
@@ -93,7 +96,68 @@ struct IO {
 };
 IO<1000000, 1000000> io;
 
-cint N = 100003;
+cint N = 1000003;
 
+int n, a[N];
+struct Node {
+    int dl, dr;
+    struct Edge *e;
+} g[N];
+struct Edge {
+    Node *v;
+    Edge *e;
+    Edge(Node *s, Node *t) : v(t), e(s->e) {
+        s->e = this;
+    }
+    Edge() {}
+};
+void arc(Node *const u, Node *const v) {
+    static Edge pool[N * 2], *curr = pool;
+    new (curr++) Edge(u, v);
+    new (curr++) Edge(v, u);
+}
+void dfs(Node *const u, Node *const fa) {
+    static int tim;
+    u->dl = ++tim;
+    go (e, u->e) if (e->v != fa)
+        dfs(e->v, u);
+    u->dr = tim;
+}
+namespace bit {
+    ll c[N];
+    void add(int i, cint x) {
+        for (; i <= n; i += (i & -i))
+            c[i] += x;
+    }
+    ll query(int i) {
+        ll res = 0;
+        for (; i; i -= (i & -i))
+            res += c[i];
+        return res;
+    }
+    inline ll query(cint l, cint r) {
+        return query(r) - query(l - 1);
+    }
+}
 int main() {
+    int m, r;
+    io >> n >> m >> r;
+    rep (i, 1, n)
+        io >> a[i]; // ***
+    re (i, 1, n) {
+        int u, v;
+        io >> u >> v;
+        // ccc(u, v);
+        arc(&g[u], &g[v]);
+    }
+    dfs(&g[r], NULL);
+    rep (i, 1, n)
+        bit::add(g[i].dl, a[i]);
+    rep (i, 1, m) {
+        int op, u;
+        io >> op >> u;
+        // ccc(i, op, u);
+        if (op == 1) bit::add(g[u].dl, io);
+        else io << bit::query(g[u].dl, g[u].dr) daze;
+    }
 }

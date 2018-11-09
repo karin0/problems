@@ -11,7 +11,7 @@ struct Seg {
     Seg *lc, *rc;
 } *rt, pool[MAXN << 2];
 int cnt;
-Seg* newnode(int l, int r) {
+Seg* newnode() {
     return pool + (cnt++);
 }
 void build(Seg *o, int l, int r) {
