@@ -8,3 +8,4 @@
 *.ans
 *.tmp
 *.swp
+tmp/
