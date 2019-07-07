@@ -5,13 +5,7 @@
 #define pe(i_, s_, t_) for (int i_ = (s_); i_ > (t_); --i_)
 #define go(e_, s_) for (Edge *e_ = (s_); e_; e_ = e_->e)
 #ifdef AKARI
-void c_() { std::cerr << "\033[39;0m" << std::endl; }
-template <typename T, typename... Args>
-void c_(T a, Args... args) { std::cerr << a << ", "; c_(args...); }
-    #define ccc(args...) std::cerr << "\033[32;1m" << #args << "  =  ", c_(args)
-    #define ccd(args...) std::cerr << "\033[32;1m", c_(args)
-    #define ccf(args...) fprintf(stderr, args)
-    #define crep(i_, s_, t_) for (int i_ = (s_); i_ <= (t_); ++i_)
+    #include "karin0.hpp"
 #else
     #define ccc(...) 0
     #define ccd(...) 0
@@ -24,26 +18,26 @@ typedef const long long cll;
 typedef const char cchar;
 #define daze << '\n'
 
-template <cint LI, cint LO>
+template <cint I, cint O>
 struct IO {
 #ifdef AKARI
     char gc() { return getchar(); }
     void pc(cchar c) { putchar(c); }
 #else
-    char a[LI], b[LO], r[20], *s, *t, *z;
-    std::streambuf *fbi, *fbo;
+    char a[I], b[O], *s, *t, *z;
+    std::streambuf *i, *o;
     IO() : z(b) {
         std::ios::sync_with_stdio(false);
-        if (LI) std::cin.tie(NULL), fbi = std::cin.rdbuf();
-        if (LO) std::cout.tie(NULL), fbo = std::cout.rdbuf();
+        if (I) std::cin.tie(NULL), i = std::cin.rdbuf();
+        if (O) std::cout.tie(NULL), o = std::cout.rdbuf();
     }
-    ~IO() { if (LO) fbo->sputn(b, z - b); }
+    ~IO() { if (O) o->sputn(b, z - b); }
     char gc() {
-        if (s == t) t = (s = a) + fbi->sgetn(a, LI);
+        if (s == t) t = (s = a) + i->sgetn(a, I);
         return s == t ? EOF : *s++;
     }
     void pc(cchar x) {
-        if (z == b + LO) fbo->sputn(z = b, LO);
+        if (z == b + O) o->sputn(z = b, O);
         *z++ = x;
     }
 #endif
@@ -78,6 +72,7 @@ struct IO {
     operator T () { T x; *this >> x; return x; }
     template <class T>
     IO &operator << (T x) {
+        static char r[20];
         if (x == 0) return pc('0'), *this;
         if (x < 0) pc('-'), x = -x;
         char *j = r;
