@@ -26,7 +26,7 @@ typedef const char cchar;
 
 template <cint LI, cint LO>
 struct IO {
-    char a[LI], b[LO], r[std::max(LO, 20)], *s, *t, *z, c;
+    char a[LI], b[LO], r[20], *s, *t, *z, c;
     std::streambuf *fbi, *fbo;
     IO() : z(b) {
         std::ios::sync_with_stdio(false);
@@ -91,10 +91,12 @@ struct IO {
     }
     IO &operator << (cchar x) { return pc(x), *this; }
 };
-IO<1000000, 1000000> io;
-
-cint N = 100003;
+IO<10, 10> io;
 
 int main() {
+    int ans = 0;
+    for (char c = io.gc(); c != '\n'; c = io.gc())
+        ans += c != ' ';
+    io << ans daze;
     return 0;
 }
