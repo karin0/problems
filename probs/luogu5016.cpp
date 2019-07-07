@@ -5,9 +5,9 @@
 #define pe(i_, s_, t_) for (int i_ = (s_); i_ > (t_); --i_)
 #define go(e_, s_) for (Edge *e_ = (s_); e_; e_ = e_->e)
 #ifdef AKARI
-void c_() { std::cerr << "\033[39;0m" << std::endl; }
-template <typename T, typename... Args>
-void c_(T a, Args... args) { std::cerr << a << ", "; c_(args...); }
+    void c_() { std::cerr << "\033[39;0m" << std::endl; }
+    template <typename T, typename... Args>
+    void c_(T a, Args... args) { std::cerr << a << ", "; c_(args...); }
     #define ccc(args...) std::cerr << "\033[32;1m" << #args << "  =  ", c_(args)
     #define ccd(args...) std::cerr << "\033[32;1m", c_(args)
     #define ccf(args...) fprintf(stderr, args)
@@ -26,11 +26,7 @@ typedef const char cchar;
 
 template <cint LI, cint LO>
 struct IO {
-#ifdef AKARI
-    char gc() { return getchar(); }
-    void pc(cchar c) { putchar(c); }
-#else
-    char a[LI], b[LO], r[20], *s, *t, *z;
+    char a[LI], b[LO], r[std::max(LO, 20)], *s, *t, *z, c;
     std::streambuf *fbi, *fbo;
     IO() : z(b) {
         std::ios::sync_with_stdio(false);
@@ -42,14 +38,8 @@ struct IO {
         if (s == t) t = (s = a) + fbi->sgetn(a, LI);
         return s == t ? EOF : *s++;
     }
-    void pc(cchar x) {
-        if (z == b + LO) fbo->sputn(z = b, LO);
-        *z++ = x;
-    }
-#endif
     template <class T>
     IO &operator >> (T &x) {
-        char c;
         for (c = gc(); c != '-' && !isdigit(c); c = gc());
         bool f = c == '-';
         x = (f ? gc() : c) - '0';
@@ -58,24 +48,30 @@ struct IO {
         if (f) x = -x;
         return *this;
     }
-    char *gs(char *p) {
-        char c;
+    char *gs(char *x) {
         for (c = gc(); !isgraph(c); c = gc());
-        for (*p++ = c, c = gc(); isgraph(c); *p++ = c, c = gc());
-        return *p = 0, p;
+        for (*x++ = c, c = gc(); isgraph(c); *x++ = c, c = gc());
+        return *x = 0, x;
     }
-    IO &operator >> (char *p) {
-        char c;
+    IO &operator >> (char *x) {
         for (c = gc(); !isgraph(c); c = gc());
-        for (*p++ = c, c = gc(); isgraph(c); *p++ = c, c = gc());
-        return *p = 0, *this;
+        for (*x++ = c, c = gc(); isgraph(c); *x++ = c, c = gc());
+        return *x = 0, *this;
     }
-    IO &operator >> (char &c) {
-        for (c = gc(); !isgraph(c); c = gc());
+    IO &operator >> (char &x) {
+        for (x = gc(); !isgraph(x); x = gc());
         return *this;
     }
     template <class T>
     operator T () { T x; *this >> x; return x; }
+    void pc(cchar x) {
+        if (z == b + LO) fbo->sputn(z = b, LO);
+        *z++ = x;
+    }
+    void fl() {
+        fbo->sputn(b, z - b);
+        z = b;
+    }
     template <class T>
     IO &operator << (T x) {
         if (x == 0) return pc('0'), *this;
@@ -85,20 +81,37 @@ struct IO {
         while (j != r) pc(*--j);
         return *this;
     }
-    IO &operator << (char *p) {
-        while (*p) pc(*p++);
+    IO &operator << (char *x) {
+        while (*x) pc(*x++);
         return *this;
     }
-    IO &operator << (cchar *p) {
-        while (*p) pc(*p++);
+    IO &operator << (cchar *x) {
+        while (*x) pc(*x++);
         return *this;
     }
     IO &operator << (cchar x) { return pc(x), *this; }
 };
 IO<1000000, 1000000> io;
+cint N = 100003;
 
-cint N = 100002;
-
+int c[N];
 int main() {
+    int n, m, s1, p1, s2, p;
+    io >> n;
+    rep (i, 1, n)
+        io >> c[i];
+    io >> m >> p1 >> s1 >> s2;
+    c[p1] += s1;
+    ll d = 0;
+    rep (i, 1, n)
+        d += (ll)(m - i) * c[i];
+    ll r = LLONG_MAX;
+    rep (i, 1, n) {
+        ll rn = std::abs(d + (ll)(m - i) * s2);
+        if (rn < r)
+            r = rn, p = i;
+    }
+    io << p daze;
+
     return 0;
 }
