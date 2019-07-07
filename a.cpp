@@ -1,17 +1,17 @@
 #include <bits/stdc++.h>
-#define rep(i_, s_, t_) for (int i_ = (s_); i_ <= (t_); ++i_)
-#define re(i_, s_, t_) for (int i_ = (s_); i_ < (t_); ++i_)
-#define per(i_, s_, t_) for (int i_ = (s_); i_ >= (t_); --i_)
-#define pe(i_, s_, t_) for (int i_ = (s_); i_ > (t_); --i_)
-#define go(e_, s_) for (Edge *e_ = (s_); e_; e_ = e_->e)
 #ifdef AKARI
-    #include "karin0.hpp"
+    #include <akaza_akari>
 #else
     #define ccc(...) 0
     #define ccd(...) 0
     #define ccf(...) 0
     #define crep(...) if (false)
 #endif
+#define rep(i_, s_, t_) for (int i_ = (s_); i_ <= (t_); ++i_)
+#define re(i_, s_, t_) for (int i_ = (s_); i_ < (t_); ++i_)
+#define per(i_, s_, t_) for (int i_ = (s_); i_ >= (t_); --i_)
+#define pe(i_, s_, t_) for (int i_ = (s_); i_ > (t_); --i_)
+#define go(e_, s_) for (Edge *e_ = (s_); e_; e_ = e_->e)
 typedef long long ll;
 typedef const int cint;
 typedef const long long cll;
