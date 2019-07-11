@@ -1,12 +1,19 @@
 #include <bits/stdc++.h>
 
-void c_() { std::cerr << "\033[39;0m" << std::endl; }
-template <typename T, typename... Args>
-void c_(T a, Args... args) { std::cerr << a << ", "; c_(args...); }
-#define ccc(args...) std::cerr << "\033[32;1m" << #args << "  =  ", c_(args)
-#define ccd(args...) std::cerr << "\033[32;1m", c_(args)
-#define ccf(args...) fprintf(stderr, args)
-#define crep(i_, s_, t_) for (int i_ = (s_); i_ <= (t_); ++i_)
+#ifdef AKARI
+    void c_() { std::cerr << "\033[39;0m" << std::endl; }
+    template <typename T, typename... Args>
+    void c_(T a, Args... args) { std::cerr << a << ", "; c_(args...); }
+    #define ccc(args...) std::cerr << "\033[32;1m" << #args << "  =  ", c_(args)
+    #define ccd(args...) std::cerr << "\033[32;1m", c_(args)
+    #define ccf(args...) fprintf(stderr, args)
+    #define crep(i_, s_, t_) for (int i_ = (s_); i_ <= (t_); ++i_)
+#else
+    #define ccc(...) 0
+    #define ccd(...) 0
+    #define ccf(...) 0
+    #define crep(...) if (false)
+#endif
 
 #define rep(i_, s_, t_) for (int i_ = (s_); i_ <= (t_); ++i_)
 #define re(i_, s_, t_) for (int i_ = (s_); i_ < (t_); ++i_)
@@ -22,8 +29,27 @@ typedef const char cchar;
 
 template <cint I, cint O>
 struct IO {
+#ifdef AKARI
     char gc() { return getchar(); }
     void pc(cchar c) { putchar(c); }
+#else
+    char a[I], b[O], *s, *t, *z;
+    std::streambuf *i, *o;
+    IO() : z(b) {
+        std::ios::sync_with_stdio(false);
+        if (I) std::cin.tie(NULL), i = std::cin.rdbuf();
+        if (O) std::cout.tie(NULL), o = std::cout.rdbuf();
+    }
+    ~IO() { if (O) o->sputn(b, z - b); }
+    char gc() {
+        if (s == t) t = (s = a) + i->sgetn(a, I);
+        return s == t ? EOF : *s++;
+    }
+    void pc(cchar x) {
+        if (z == b + O) o->sputn(z = b, O);
+        *z++ = x;
+    }
+#endif
     template <class T>
     IO &operator >> (T &x) {
         char c;
