@@ -1,0 +1,11 @@
+.vscode
+*.ao
+*.a
+*.o
+*.exe
+*.in
+*.out
+*.ans
+*.tmp
+*.swp
+tmp/
