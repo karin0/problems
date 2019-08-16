@@ -11,12 +11,10 @@ void cca(T a, Args... args) {
     cca(args...);
 }
     #define ccc(args...) std::cerr << "\033[32;1m" << #args << "  =  ", cca(args)
-    #define ccd(args...) std::cerr << "\033[32;1m", cca(args)
     #define ccf(args...) fprintf(stderr, args)
     #define crep(i_, s_, t_) for (int i_ = (s_); i_ <= (t_); ++i_)
 #else
     #define ccc(...) 0
-    #define ccd(...) 0
     #define ccf(...) 0
     #define crep(...) if (0)
 #endif
@@ -67,40 +65,37 @@ struct IO {
         *z++ = c;
     }
 #endif
-    void gs(char *p) {
-        char c;
-        do c = gc(); while (!isgraph(c));
-        do *p++ = c, c = gc(); while (isgraph(c));
-        *p = 0;
-    }
     IO &operator >> (char *p) {
-        return gs(p), *this;
+        char c;
+        while (!isgraph(c = gc()));
+        while (*p++ = c, isgraph(c = gc()));
+        return *p = 0, *this;
     }
     IO &operator >> (char &c) {
-        do c = gc(); while (!isgraph(c));
+        while (!isgraph(c = gc()));
         return *this;
     }
     template <class T>
     IO &operator >> (T &x) {
         char c;
-        do c = gc(); while (!isdigit(c) && c != '-');
-        bool f = c == '-';
-        for (x = (f ? gc() : c) - '0'; isdigit(c = gc()); x = x * 10 + (c - '0'));
-        if (f) x = -x;
+        while (!isdigit(c = gc()) && c != '-');
+        if (c == '-')
+            for (x = '0' - gc(); isdigit(c = gc()); x = x * 10 + ('0' - c));
+        else
+            for (x = c - '0'; isdigit(c = gc()); x = x * 10 + (c - '0'));
         return *this;
     }
     template <class T>
     IO &operator > (T &x) {
         char c;
-        do c = gc(); while (!isdigit(c) && c != '-');
+        while (!isdigit(c = gc()) && c != '-');
         for (x = c - '0'; isdigit(c = gc()); x = x * 10 + (c - '0'));
         return *this;
     }
     template <class T>
     operator T () {
         T x;
-        *this >> x;
-        return x;
+        return *this >> x, x;
     }
     IO &operator << (char *p) {
         while (*p) pc(*p++);
@@ -115,26 +110,23 @@ struct IO {
     }
     template <class T>
     IO &operator << (T x) {
-        if (x == 0) return pc('0'), *this;
         if (x < 0) pc('-'), x = -x;
-        char *j = r;
-        for (T y; x; x = y) y = x / 10, *j++ = x - y * 10 + '0';
-        do pc(*--j); while (j != r);
+        else if (x == 0) return pc('0'), *this;
+#define OUT_ \
+        char *j = r; \
+        for (T y; x; y = x / 10, *j++ = x - y * 10 + '0', x = y); \
+        while (pc(*--j), j != r); \
         return *this;
+        OUT_;
     }
     template <class T>
     IO &operator < (T x) {
         if (x == 0) return pc('0'), *this;
-        char *j = r;
-        for (T y; x; x = y) y = x / 10, *j++ = x - y * 10 + '0';
-        do pc(*--j); while (j != r);
-        return *this;
+        OUT_;
     }
     template <class T>
     IO &operator - (T x) {
-        char *j = r;
-        for (T y; x; x = y) y = x / 10, *j++ = x - y * 10 + '0';
-        do pc(*--j); while (j != r);
-        return *this;
+        OUT_;
     }
+#undef OUT_
 };
