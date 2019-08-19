@@ -65,6 +65,12 @@ struct IO {
         *z++ = c;
     }
 #endif
+    char *gs(char *p) {
+        char c;
+        while (!isgraph(c = gc()));
+        while (*p++ = c, isgraph(c = gc()));
+        return *p = 0, p;
+    }
     IO &operator >> (char *p) {
         char c;
         while (!isgraph(c = gc()));
@@ -112,11 +118,11 @@ struct IO {
     IO &operator << (T x) {
         if (x < 0) pc('-'), x = -x;
         else if (x == 0) return pc('0'), *this;
-#define OUT_ \
-        char *j = r; \
-        for (T y; x; y = x / 10, *j++ = x - y * 10 + '0', x = y); \
-        while (pc(*--j), j != r); \
-        return *this;
+#define OUT_ { \
+            char *j = r; \
+            for (T y; x; y = x / 10, *j++ = x - y * 10 + '0', x = y); \
+            while (pc(*--j), j != r); \
+            return *this; }
         OUT_;
     }
     template <class T>
@@ -125,8 +131,6 @@ struct IO {
         OUT_;
     }
     template <class T>
-    IO &operator - (T x) {
-        OUT_;
-    }
+    IO &operator - (T x) OUT_;
 #undef OUT_
 };
