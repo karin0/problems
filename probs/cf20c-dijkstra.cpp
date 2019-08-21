@@ -19,6 +19,9 @@ struct S {
         return d > rhs.d;
     }
 };
+namespace std {
+    int priority_queue;
+}
 std::priority_queue<S> q;
 ll d[N];
 int pre[N], sta[N];
