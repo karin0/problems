@@ -1,6 +1,12 @@
 #pragma GCC optimize "Ofast,no-stack-protector"
 #include <bits/stdc++.h>
 
+#define rep(i_, s_, t_) for (int i_ = (s_); i_ <= (t_); ++i_)
+#define re(i_, s_, t_) for (int i_ = (s_); i_ < (t_); ++i_)
+#define per(i_, s_, t_) for (int i_ = (s_); i_ >= (t_); --i_)
+#define pe(i_, s_, t_) for (int i_ = (s_); i_ > (t_); --i_)
+#define daze << '\n'
+
 #ifdef AKARI
 void cca() {
     std::cerr << "\033[39;0m" << std::endl;
@@ -12,19 +18,12 @@ void cca(T a, Args... args) {
 }
     #define ccc(args...) std::cerr << "\033[32;1m" << #args << "  =  ", cca(args)
     #define ccf(args...) fprintf(stderr, args)
-    #define crep(i_, s_, t_) for (int i_ = (s_); i_ <= (t_); ++i_)
+    #define crep(i_, s_, t_) rep(i, s_, t_)
 #else
     #define ccc(...) 0
     #define ccf(...) 0
     #define crep(...) if (0)
 #endif
-
-#define rep(i_, s_, t_) for (int i_ = (s_); i_ <= (t_); ++i_)
-#define re(i_, s_, t_) for (int i_ = (s_); i_ < (t_); ++i_)
-#define per(i_, s_, t_) for (int i_ = (s_); i_ >= (t_); --i_)
-#define pe(i_, s_, t_) for (int i_ = (s_); i_ > (t_); --i_)
-#define go(e_, s_) for (Edge *e_ = (s_); e_; e_ = e_->e)
-#define daze << '\n'
 
 typedef long long ll;
 typedef unsigned int uint;
