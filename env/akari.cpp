@@ -30,10 +30,10 @@ typedef long long ll;
 typedef unsigned int uint;
 typedef unsigned long long ull;
 typedef const int cint;
-typedef const long long cll;
+typedef const ll cll;
 typedef const char cchar;
-typedef const unsigned int cuint;
-typedef const unsigned long long cull;
+typedef const uint cuint;
+typedef const ull cull;
 
 template <int I, int O>
 struct IO {
@@ -112,7 +112,7 @@ struct IO {
         if (x < 0) pc('-'), x = -x;
         else if (x == 0) return pc('0'), *this;
         char *j = r;
-        for (T y; x; y = x / 10, *j++ = x - y * 10 + '0', x = y);
+        while (*j++ = x % 10 + '0', x /= 10);
         while (pc(*--j), j != r);
         return *this;
     }
