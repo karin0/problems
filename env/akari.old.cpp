@@ -92,6 +92,13 @@ struct IO {
         return *this;
     }
     template <class T>
+    IO &operator > (T &x) {
+        char c;
+        while (!isdigit(c = gc()) && c != '-');
+        for (x = c - '0'; isdigit(c = gc()); x = x * 10 + (c - '0'));
+        return *this;
+    }
+    template <class T>
     operator T () {
         T x;
         return *this >> x, x;
@@ -111,9 +118,20 @@ struct IO {
     IO &operator << (T x) {
         if (x < 0) pc('-'), x = -x;
         else if (x == 0) return pc('0'), *this;
-        char *j = r;
-        for (T y; x; y = x / 10, *j++ = x - y * 10 + '0', x = y);
-        while (pc(*--j), j != r);
-        return *this;
+#define OUT_ { \
+            assert(x > 0); \
+            char *j = r; \
+            for (T y; x; y = x / 10, *j++ = x - y * 10 + '0', x = y); \
+            while (pc(*--j), j != r); \
+            return *this; }
+        OUT_;
     }
+    template <class T>
+    IO &operator < (T x) {
+        if (x == 0) return pc('0'), *this;
+        OUT_;
+    }
+    template <class T>
+    IO &operator - (T x) OUT_;
+#undef OUT_
 };
