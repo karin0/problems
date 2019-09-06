@@ -18,7 +18,7 @@ void cca(T a, Args... args) {
     cca(args...);
 }
     #define ccc(args...) std::cerr << "\033[32;1m" << #args << "  =  ", cca(args)
-    #define ccf(args...) fprintf(stderr, args)
+    #define ccf(args...) std::fprintf(stderr, args)
     #define crep(i_, s_, t_) rep(i, s_, t_)
 #else
     #define ccc(...) 0
@@ -40,10 +40,10 @@ struct IO {
     char r[20];
 #ifdef AKARI
     char gc() {
-        return getchar();
+        return std::getchar();
     }
     void pc(cchar c) {
-        putchar(c);
+        std::putchar(c);
     }
 #else
     char a[I], b[O], *s, *t, *z;
@@ -67,28 +67,28 @@ struct IO {
 #endif
     char *gs(char *p) {
         char c;
-        while (!isgraph(c = gc()));
-        while (*p++ = c, isgraph(c = gc()));
+        while (!std::isgraph(c = gc()));
+        while (*p++ = c, std::isgraph(c = gc()));
         return *p = 0, p;
     }
     IO &operator >> (char *p) {
         char c;
-        while (!isgraph(c = gc()));
-        while (*p++ = c, isgraph(c = gc()));
+        while (!std::isgraph(c = gc()));
+        while (*p++ = c, std::isgraph(c = gc()));
         return *p = 0, *this;
     }
     IO &operator >> (char &c) {
-        while (!isgraph(c = gc()));
+        while (!std::isgraph(c = gc()));
         return *this;
     }
     template <class T>
     IO &operator >> (T &x) {
         char c;
-        while (!isdigit(c = gc()) && c != '-');
+        while (!std::isdigit(c = gc()) && c != '-');
         if (c == '-')
-            for (x = '0' - gc(); isdigit(c = gc()); x = x * 10 + ('0' - c));
+            for (x = '0' - gc(); std::isdigit(c = gc()); x = x * 10 + ('0' - c));
         else
-            for (x = c - '0'; isdigit(c = gc()); x = x * 10 + (c - '0'));
+            for (x = c - '0'; std::isdigit(c = gc()); x = x * 10 + (c - '0'));
         return *this;
     }
     template <class T>
