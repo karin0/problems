@@ -1,6 +1,8 @@
 #pragma GCC optimize("Ofast", "unroll-loops", "no-stack-protector")
 #pragma GCC target("sse,sse2,sse3,ssse3,sse4,popcnt,abm,mmx,avx")
-#include <bits/stdc++.h>
+#include <cstdio>
+#include <cctype>
+#include <iostream>
 
 #define rep(i_, s_, t_) for (int i_ = (s_); i_ <= (t_); ++i_)
 #define re(i_, s_, t_) for (int i_ = (s_); i_ < (t_); ++i_)
