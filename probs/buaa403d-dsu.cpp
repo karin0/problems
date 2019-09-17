@@ -1,6 +1,5 @@
-#pragma GCC optimize("Ofast", "unroll-loops", "no-stack-protector")
-#pragma GCC target("sse,sse2,sse3,ssse3,sse4,popcnt,abm,mmx,avx")
-#include <bits/stdc++.h>
+#include <cctype>
+#include <iostream>
 
 #define rep(i_, s_, t_) for (int i_ = (s_); i_ <= (t_); ++i_)
 #define re(i_, s_, t_) for (int i_ = (s_); i_ < (t_); ++i_)
@@ -115,3 +114,39 @@ struct IO {
         return *this;
     }
 };
+
+IO<1000000, 1000000> io;
+
+cint N = 200002;
+
+int fa[N];
+bool dark[N];
+
+int find(int x) {
+    return fa[x] == x ? x : fa[x] = find(fa[x]);
+}
+
+int main() {
+    int n, m;
+    io >> n >> m;
+    rep (i, 1, n) {
+        fa[i] = i;
+        dark[i] = true;
+    }
+    int ans = n;
+    while (m--) {
+        int l, r;
+        io >> l >> r;
+        int u = find(r);
+        if (dark[u]) {
+            --ans;
+            dark[u] = false;
+        }
+        while ((l = find(l)) != u) {
+            if (dark[l])
+                --ans;
+            fa[l++] = u;
+        }
+        io << ans daze;
+    }
+}

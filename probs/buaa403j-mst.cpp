@@ -1,6 +1,6 @@
-#pragma GCC optimize("Ofast", "unroll-loops", "no-stack-protector")
-#pragma GCC target("sse,sse2,sse3,ssse3,sse4,popcnt,abm,mmx,avx")
-#include <bits/stdc++.h>
+#include <cctype>
+#include <iostream>
+#include <algorithm>
 
 #define rep(i_, s_, t_) for (int i_ = (s_); i_ <= (t_); ++i_)
 #define re(i_, s_, t_) for (int i_ = (s_); i_ < (t_); ++i_)
@@ -115,3 +115,51 @@ struct IO {
         return *this;
     }
 };
+
+IO<1000000, 100> io;
+
+cint N = 100002;
+
+int fa[N], siz[N];
+
+int find(int x) {
+    return fa[x] == x ? x : fa[x] = find(fa[x]);
+}
+
+struct Edge {
+    int u, v, w;
+    bool operator < (const Edge &rhs) const {
+        return w < rhs.w;
+    }
+} a[N];
+
+int main() {
+    int T;
+    io >> T;
+    while (T--) {
+        int n;
+        io >> n;
+        ll ans = 0;
+        re (i, 1, n) {
+            Edge &e = a[i];
+            io >> e.u >> e.v >> e.w;
+            ans += e.w;
+            fa[i] = i;
+            siz[i] = 1;
+        }
+        fa[n] = n;
+        siz[n] = 1;
+        std::sort(a + 1, a + n);
+        re (i, 1, n) {
+            Edge &e = a[i];
+            int u = find(e.u);
+            int v = find(e.v);
+            // assert(u != v);
+            // cccc(e.u, e.v, e.w, u, v, siz[u], siz[v], ans);
+            ans += ((ll)siz[u] * siz[v] - 1) * (e.w + 1);
+            siz[v] += siz[u];
+            fa[u] = v;
+        }
+        io << ans daze;
+    }
+}
