@@ -32,7 +32,7 @@ void dfs(int u, int p) {
         ans = std::max(ans, cnt);
         return;
     }
-    rep (i, p, 6)
+    rep (i, 1, 6) // *** ????
         dfs(u + 1, i);
 }
 
@@ -40,6 +40,6 @@ int main() {
     io >> n >> m;
     rep (i, 1, m)
         io >> a[i].u >> a[i].v;
-    dfs(0, 0);
+    dfs(0, 1); // ****
     io << ans daze;
 }

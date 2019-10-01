@@ -53,7 +53,7 @@ void tarjan(Node *u, Node *f) {
     }
     if (!f && ch > 1)
         u->cut = true;
-}
+}   
 
 int main() {
     static int kc, n, m, i, ans;
