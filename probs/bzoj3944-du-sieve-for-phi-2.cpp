@@ -110,6 +110,7 @@ void sieve(const int n) {
         if (n & 1)
             res = res * a % mo;
     return res;
+
 } */
 std::map<int, int> s;
 ll calc(int n) {

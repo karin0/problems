@@ -120,3 +120,5 @@ struct IO {
         return *this;
     }
 };
+
+typedef IO<1000000, 1000000> io_t;
