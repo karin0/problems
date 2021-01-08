@@ -1,3 +1,6 @@
+#ifndef AKARI_HPP
+#define AKARI_HPP
+
 #pragma GCC optimize("Ofast", "unroll-loops", "no-stack-protector")
 #pragma GCC target("sse,sse2,sse3,ssse3,sse4,popcnt,abm,mmx,avx")
 #include <cstdio>
@@ -31,10 +34,8 @@ void cca(T a, Args... args) {
 typedef long long ll;
 typedef unsigned int uint;
 typedef unsigned long long ull;
-typedef const int cint;
-typedef const ll cll;
 
-template <int I, int O>
+template <std::size_t I, std::size_t O>
 struct IO {
     char r[20];
 #ifdef AKARI
@@ -59,7 +60,7 @@ struct IO {
         if (s == t) t = (s = a) + i->sgetn(a, I);
         return *s++;
     }
-    void pc(cint c) {
+    void pc(const int c) {
         if (z == b + O) o->sputn(z = b, O);
         *z++ = c;
     }
@@ -122,3 +123,5 @@ struct IO {
 };
 
 typedef IO<1000000, 1000000> io_t;
+
+#endif
